@@ -102,7 +102,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   const isAdmin = userSession.data.user.role === "admin";
-  // const isAdminRoute = path.split("/")[1] === "admin";
+  const isAdminRoute = path.split("/")[1] === "admin";
 
   // Has session — redirect away from sign in
 
@@ -114,13 +114,13 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  // if (!isAdmin && isAdminRoute) {
-  //   return NextResponse.redirect(new URL("/dashboard", request.url));
-  // }
+  if (!isAdmin && isAdminRoute) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
-  // if (isAdmin && !isAdminRoute) {
-  //   return NextResponse.redirect(new URL("/admin/dashboard", request.url));
-  // }
+  if (isAdmin && !isAdminRoute) {
+    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+  }
 
   // Slide the session expiry forward
   const newExpires = new Date(Date.now() + EXPIRY_TIME * 1000);

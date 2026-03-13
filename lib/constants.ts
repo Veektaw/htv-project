@@ -1,17 +1,1 @@
-export const nameTitles = [
-  "Mr.",
-  "Mrs.",
-  "Miss",
-  "Ms.",
-  "Sir",
-  "Madam",
-  "Master",
-  "Dr.",
-  "Prof.",
-  "Rev.",
-  "Capt.",
-  "Sgt.",
-  "Lord",
-  "Dame",
-  "Apostle",
-];
+export const nameTitles = ["Dr.", "Mr.", "Mrs.", "Miss"];

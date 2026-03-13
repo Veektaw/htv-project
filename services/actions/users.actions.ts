@@ -6,6 +6,8 @@ import { createUserApi } from "../apis/users.api";
 export const createUserAction = async (data: CreateUserPayload) => {
   const response = await createUserApi(data);
 
+  // console.log({ response: response.body });
+
   if (!response.ok) {
     return {
       error: true,

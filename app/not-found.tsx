@@ -14,11 +14,7 @@ export default function NotFound() {
 
           <div className="space-y-2 p-4 text-center">
             <h1 className="text-[4.5rem] font-medium">Error 404</h1>
-            <p className="text-OsloGrey text-base">
-              We’ve sent a link to create a new password to
-              arurujeeme@gmail.com. If it’s not in your inbox, check your
-              spam/junk folder.
-            </p>
+            <p className="text-OsloGrey text-base">Page not found</p>
           </div>
 
           <div className="p-3 text-center">
