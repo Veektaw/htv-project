@@ -2,9 +2,9 @@
 
 import { logout, setCookie } from "../auth";
 import { resetPasswordApi, signInApi } from "../apis/auth.api";
-import { ResetPasswordBody, SignInBody } from "@/types/auth";
+import { ResetPasswordPayload, SignInPayload } from "@/types/auth";
 
-export const signInAction = async (data: SignInBody) => {
+export const signInAction = async (data: SignInPayload) => {
   const response = await signInApi(data);
 
   if (!response.ok) {
@@ -30,7 +30,7 @@ export const signInAction = async (data: SignInBody) => {
   };
 };
 
-export const resetPasswordAction = async (data: ResetPasswordBody) => {
+export const resetPasswordAction = async (data: ResetPasswordPayload) => {
   const response = await resetPasswordApi(data);
 
   console.log({ response: response.body });

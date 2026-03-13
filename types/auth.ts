@@ -1,5 +1,7 @@
 export type Roles = "admin" | "doctor";
 
+export type Status = "active" | "inactive";
+
 export type Permissions =
   | "create_user"
   | "update_user"
@@ -46,7 +48,7 @@ export type User = {
   permissions: Permissions[];
 };
 
-export type SignInBody = {
+export type SignInPayload = {
   email: string;
   password: string;
 };
@@ -84,7 +86,7 @@ export type UserSession = {
 
 // export type AccessToken = { access_token: string };
 
-export type ResetPasswordBody = {
+export type ResetPasswordPayload = {
   old_password: string;
   new_password: string;
   confirm_new_password: string;

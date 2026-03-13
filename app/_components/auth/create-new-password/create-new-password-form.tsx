@@ -11,7 +11,7 @@ import {
 } from "@/app/_components/ui/input-group";
 import { Button } from "@/app/_components/ui/button";
 import { Spinner } from "@/app/_components/ui/spinner";
-import useCreateNewPassword from "./hooks/useCreateNewPassword";
+import useCreateNewPassword from "./hooks/use-create-new-password";
 import PasswordRequirementsTooltip from "../password-requirements";
 import PasswordCreatedSuccessfully from "./password-created-successfully";
 
@@ -21,8 +21,9 @@ export default function CreateNewPasswordForm() {
   const [showPassword3, setShowPassword3] = useState(false);
   const [isSuccessful, setIsSuccessful] = useState(false);
 
-  const { form, register, onSubmit, formState, redirectPath } =
-    useCreateNewPassword({ setIsSuccessful });
+  const { form, onSubmit, formState, redirectPath } = useCreateNewPassword({
+    setIsSuccessful,
+  });
   const { isSubmitting } = formState;
 
   if (isSuccessful) {
@@ -53,7 +54,6 @@ export default function CreateNewPasswordForm() {
                       aria-invalid={fieldState.invalid}
                       type={showPassword ? "text" : "password"}
                       placeholder="Password*"
-                      {...register("old_password")}
                     />
 
                     <InputGroupAddon
@@ -95,7 +95,6 @@ export default function CreateNewPasswordForm() {
                       aria-invalid={fieldState.invalid}
                       type={showPassword2 ? "text" : "password"}
                       placeholder="New Password (12+ characters)*"
-                      {...register("new_password")}
                     />
 
                     <InputGroupAddon align="inline-end">
@@ -133,7 +132,6 @@ export default function CreateNewPasswordForm() {
                       aria-invalid={fieldState.invalid}
                       type={showPassword3 ? "text" : "password"}
                       placeholder="Password*"
-                      {...register("confirm_new_password")}
                     />
 
                     <InputGroupAddon

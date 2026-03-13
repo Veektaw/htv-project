@@ -1,12 +1,16 @@
 import { Api } from "./api";
-import { ResetPasswordBody, SignInBody, SignInResponse } from "@/types/auth";
+import {
+  ResetPasswordPayload,
+  SignInPayload,
+  SignInResponse,
+} from "@/types/auth";
 
-export const signInApi = (body: SignInBody) => {
-  return Api.post<SignInBody, SignInResponse>("/auth/login/", body);
+export const signInApi = (body: SignInPayload) => {
+  return Api.post<SignInPayload, SignInResponse>("/auth/login/", body);
 };
 
-export const resetPasswordApi = (body: ResetPasswordBody) => {
-  return Api.post<ResetPasswordBody, { message: string }>(
+export const resetPasswordApi = (body: ResetPasswordPayload) => {
+  return Api.post<ResetPasswordPayload, { message: string }>(
     "/auth/change-password/",
     body,
     true,

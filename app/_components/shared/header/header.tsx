@@ -1,6 +1,7 @@
+import { ReactNode } from "react";
 import Username from "./username";
 
-export default function Header() {
+export default function Header({ children }: { children: ReactNode }) {
   return (
     <header className="space-y-7.5">
       <section className="flex h-14 items-center justify-between gap-4">
@@ -13,7 +14,7 @@ export default function Header() {
         <Username />
       </section>
 
-      <p className="py-2 text-base font-bold">Dashboard</p>
+      {children}
     </header>
   );
 }

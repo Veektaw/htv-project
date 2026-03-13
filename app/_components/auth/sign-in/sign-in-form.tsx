@@ -12,13 +12,13 @@ import {
 } from "@/app/_components/ui/input-group";
 import { Button } from "@/app/_components/ui/button";
 import { Spinner } from "@/app/_components/ui/spinner";
-import useLogin from "./hooks/useLogin";
+import useLogin from "./hooks/use-login";
 import PasswordRequirementsTooltip from "../password-requirements";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
 
-  const { form, register, onSubmit, formState } = useLogin();
+  const { form, onSubmit, formState } = useLogin();
   const { isSubmitting } = formState;
 
   return (
@@ -64,7 +64,6 @@ export default function SignInForm() {
                       aria-invalid={fieldState.invalid}
                       type={showPassword ? "text" : "password"}
                       placeholder="Password*"
-                      {...register("password")}
                     />
 
                     <InputGroupAddon
