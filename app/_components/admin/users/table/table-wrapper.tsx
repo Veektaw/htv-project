@@ -1,19 +1,17 @@
 "use client";
 
-import { User } from "@/types/auth";
+import { useUsers } from "../contexts/users-provider";
 import { usersColumns } from "./columns";
-import TableComponent from "@/app/_components/shared/tableComponent/TableComponent";
+import TableComponent from "@/app/_components/shared/table-component/table-component";
 
-type TableWrapperProps = {
-  data: User[];
-};
+export default function TableWrapper() {
+  const { users } = useUsers();
 
-export default function TableWrapper({ data }: TableWrapperProps) {
   return (
     <TableComponent
       title="Users"
       columns={usersColumns}
-      data={data}
+      data={users}
       // className={isPending ? "animate-pulse" : ""}
     />
   );

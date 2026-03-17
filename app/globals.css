@@ -76,7 +76,10 @@
 @theme {
   --color-RangoonGreen: #171717;
   --color-DarkJungleGreen: #1e1e1e;
+  --color-BalticSea: #25282b;
+  --color-Dune: #323232;
   --color-GreenWhite: #e9e9e9;
+  --color-Mercury: #e8e8e8;
   --color-OsloGrey: #808d9e;
   --color-MountainMist: #959595;
   --color-CatskillWhite: #f2f5fa;
@@ -84,6 +87,7 @@
   --color-MediumGrey: #7d7d7d;
   --color-GreyCloud: #b4b4b4;
   --color-CloudyGrey: #686868;
+  --color-IronsideGrey: #666666;
   --color-BluishGrey: #7e8ca0;
   --color-GreySuit: #bec0ca;
   --color-Gunmetal: #2b2f32;
@@ -94,12 +98,17 @@
   --color-BlueChalk: #e9ecf2;
   --color-SoftPeach: #eeeeee;
   --color-ChiliPepper: #ca1515;
+  --color-Geraldine: #ff8c7e;
   --color-PortlandOrnage: #ff513b;
   --color-DeepSea: #048848;
+  --color-GreenHaze: #02a461;
+  --color-KellyGreen: #25b922;
 }
 
 @theme inline {
   --font-inter: var(--inter);
+
+  --radius-xs: calc(var(--radius) - 6px);
 
   --radius-sm: calc(var(--radius) - 4px);
 

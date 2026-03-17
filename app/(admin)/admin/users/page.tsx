@@ -15,7 +15,7 @@ export default function page() {
         <SubHeader />
       </Header>
 
-      <section className="flex-1 rounded-sm bg-white px-7 py-5.5">
+      <section className="flex-1 overflow-y-auto rounded-sm bg-white px-7 py-5.5 shadow-[0px_9px_20px_0px_#101E730F]">
         <Suspense fallback={<Loader />}>
           <AllUsers />
         </Suspense>

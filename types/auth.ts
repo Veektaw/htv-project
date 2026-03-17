@@ -34,7 +34,7 @@ export type User = {
   title: string | null;
   phone: string | null;
   role: Roles;
-  status: "active";
+  status: Status;
   must_change_password: boolean;
   language_pref: string;
   is_deactivated: boolean;
@@ -77,14 +77,6 @@ export type UserSession = {
   iat: number;
   exp: number;
 };
-
-// export type ResetPassword = {
-//   email: string;
-//   otp: string;
-//   password: string;
-// };
-
-// export type AccessToken = { access_token: string };
 
 export type ResetPasswordPayload = {
   old_password: string;

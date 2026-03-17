@@ -1,3 +1,4 @@
+import { User } from "@/types/auth";
 import { Api } from "./api";
 import {
   CreateUserPayload,
@@ -15,4 +16,12 @@ export const createUserApi = (body: CreateUserPayload) => {
     body,
     true,
   );
+};
+
+export const deactivateUserApi = (userId: string) => {
+  return Api.post<null, User>(`/admin/users/${userId}/`, null, true);
+};
+
+export const activateUserApi = (userId: string) => {
+  return Api.post<null, User>(`/admin/${userId}/reactivate-users/`, null, true);
 };

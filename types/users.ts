@@ -1,9 +1,12 @@
 import { Permissions, Roles, Status, User } from "./auth";
 
-export type GetUsersResponse = {
+export type Pagination = {
   total: number;
   page: number;
   limit: number;
+};
+
+export type GetUsersResponse = Pagination & {
   users: User[];
 };
 
@@ -15,11 +18,12 @@ export type CreateUserPayload = {
   phone: string;
   role: Roles;
 };
+
 export type CreateUserResponse = {
   message: string;
   user: {
     id: string;
-    email: "tobilobaoduk@mailinator.com";
+    email: string;
     first_name: string;
     last_name: string;
     company_name: string | null;

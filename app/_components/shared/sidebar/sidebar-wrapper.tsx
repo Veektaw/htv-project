@@ -10,7 +10,7 @@ export default function SidebarWrapper({ children }: { children: ReactNode }) {
   return (
     <aside
       className={cn(
-        "h-full transition-all duration-300",
+        "hidden h-full transition-all duration-300 lg:block",
         isAdminRoute ? "bg-white" : "bg-black",
         openSidebar ? "w-sidebar-open" : "w-sidebar-close",
       )}
