@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import SidebarProvider from "@/contexts/sidebar-provider";
 import Sidebar from "../_components/shared/sidebar/sidebar";
+import MainWrapper from "../_components/shared/main-wrapper";
 
 export default function layout({
   children,
@@ -12,7 +13,7 @@ export default function layout({
       <section className="flex h-screen">
         <Sidebar />
 
-        <main className="flex-1 bg-white">{children}</main>
+        <MainWrapper>{children}</MainWrapper>
       </section>
     </SidebarProvider>
   );

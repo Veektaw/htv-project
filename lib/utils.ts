@@ -8,3 +8,17 @@ export function cn(...inputs: ClassValue[]) {
 export const generateRandomId = () => {
   return "id-" + Math.random().toString(36).substring(2, 11);
 };
+
+export function debouncer<T>(func: (val: T) => void, delay: number) {
+  let timeoutId: NodeJS.Timeout | null = null;
+
+  return (val: T) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(() => {
+      func(val);
+    }, delay);
+  };
+}

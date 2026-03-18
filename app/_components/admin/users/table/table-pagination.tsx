@@ -1,69 +1,49 @@
 "use client";
 
-// import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { useUsers } from "../contexts/users-provider";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function TablePagination() {
-  // const {
-  //   currentPage,
-  //   totalPages,
-  //   handlePrev,
-  //   handleNext,
-  //   goToPageNumber,
-  //   previousBtnState,
-  //   nextBtnState,
-  //   setPageLimit,
-  // } = useAssets();
+  const { pagination } = useUsers();
 
-  return;
-  // (
-  //   <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-CharcoalGrey">
-  //     <div className="hidden items-center gap-2.5 sm:flex">
-  //       <label htmlFor="rows-per-page">Rows per page</label>
+  const {
+    currentPage,
+    totalPages,
+    handlePrev,
+    handleNext,
+    goToPageNumber,
+    previousBtnState,
+    nextBtnState,
+  } = pagination;
 
-  //       <div className="flex items-center border-b border-Heather px-1.5 py-0.5">
-  //         <select
-  //           id="rows-per-page"
-  //           onChange={(e) => setPageLimit(e.target.value)}
-  //           className="size-full outline-Black"
-  //         >
-  //           <option value="10">10</option>
-  //           <option value="20">20</option>
-  //         </select>
-  //       </div>
-  //     </div>
+  return (
+    <div className="text-BalticSea flex flex-wrap items-center gap-3.5 text-xs">
+      <div className="text-Grey flex items-center gap-1">
+        <button
+          disabled={previousBtnState}
+          onClick={handlePrev}
+          className="border-Mercury flex size-8 items-center justify-center border disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <ChevronLeft className="text-Dune size-4" />
+        </button>
 
-  //     <div className="flex items-center gap-2 text-Grey">
-  //       <button
-  //         disabled={previousBtnState}
-  //         onClick={handlePrev}
-  //         className="flex size-6 items-center justify-center border border-Platinum disabled:cursor-not-allowed disabled:opacity-50"
-  //       >
-  //         <Image src={LeftCaret} alt="left caret" />
-  //       </button>
+        {renderPageNumbers(currentPage, totalPages, goToPageNumber)}
 
-  //       {renderPageNumbers(currentPage, totalPages, goToPageNumber)}
+        <button
+          disabled={nextBtnState}
+          onClick={handleNext}
+          className="border-Mercury flex size-8 items-center justify-center border disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <ChevronRight className="text-Dune size-4" />
+        </button>
+      </div>
 
-  //       <button
-  //         disabled={nextBtnState}
-  //         onClick={handleNext}
-  //         className="flex size-6 items-center justify-center border border-Platinum disabled:cursor-not-allowed disabled:opacity-50"
-  //       >
-  //         <Image src={LeftCaret} alt="left caret" className="rotate-180" />
-  //       </button>
-  //     </div>
-
-  //     <div className="flex items-center gap-2.5">
-  //       <span>Go to page</span>
-
-  //       <button
-  //         onClick={() => goToPageNumber(totalPages)}
-  //         className="font-semibold text-Haiti"
-  //       >
-  //         {totalPages}
-  //       </button>
-  //     </div>
-  //   </div>
-  // );
+      <p className="text-IronsideGrey">
+        of {totalPages} {totalPages === 1 ? "page" : "pages"}
+      </p>
+    </div>
+  );
 }
 
 export function PageNumber({
@@ -78,7 +58,10 @@ export function PageNumber({
   return (
     <button
       onClick={() => goToPageNumber(index)}
-      className={`size-6 ${currentPage === index ? "text-Heading-300 font-semibold" : ""}`}
+      className={cn(
+        "flex size-8 items-center justify-center rounded-xs px-1.5 py-2",
+        currentPage === index ? "bg-black text-white" : "border-Mercury border",
+      )}
     >
       {index}
     </button>
