@@ -4,6 +4,12 @@ export type Pagination = {
   total: number;
   page: number;
   limit: number;
+  total_page: number;
+};
+
+export type GetUsersParams = {
+  search?: string;
+  page?: string;
 };
 
 export type GetUsersResponse = Pagination & {

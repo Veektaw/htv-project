@@ -5,14 +5,14 @@ import { usersColumns } from "./columns";
 import TableComponent from "@/app/_components/shared/table-component/table-component";
 
 export default function TableWrapper() {
-  const { users } = useUsers();
+  const { users, isPending } = useUsers();
 
   return (
     <TableComponent
       title="Users"
       columns={usersColumns}
       data={users}
-      // className={isPending ? "animate-pulse" : ""}
+      className={isPending ? "animate-pulse" : ""}
     />
   );
 }

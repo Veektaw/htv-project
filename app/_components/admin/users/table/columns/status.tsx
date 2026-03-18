@@ -8,7 +8,7 @@ export default function UserStatus({
   return (
     <div
       className={cn(
-        "rounded-xls w-36 px-4 py-1.5 text-center text-xs font-semibold",
+        "w-32 rounded-xl px-4 py-1.5 text-center text-xs font-semibold",
         !deactivatedStatus
           ? "text-GreenHaze bg-KellyGreen/10"
           : "bg-PortlandOrnage/10 text-PortlandOrnage",

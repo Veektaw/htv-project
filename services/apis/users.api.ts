@@ -3,11 +3,21 @@ import { Api } from "./api";
 import {
   CreateUserPayload,
   CreateUserResponse,
+  GetUsersParams,
   GetUsersResponse,
 } from "@/types/users";
 
-export const getUsersApi = () => {
-  return Api.get<GetUsersResponse>("/admin/users/", true);
+export const getUsersApi = ({ search, page = "1" }: GetUsersParams) => {
+  const params: Record<string, string> = {
+    page,
+  };
+
+  if (search) params.keyword = search;
+
+  const queryString = new URLSearchParams(params).toString();
+  const url = `/admin/users/${queryString ? `?${queryString}` : ""}`;
+
+  return Api.get<GetUsersResponse>(url, true);
 };
 
 export const createUserApi = (body: CreateUserPayload) => {

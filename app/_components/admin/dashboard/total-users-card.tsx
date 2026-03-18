@@ -3,7 +3,7 @@ import { getUsersApi } from "@/services/apis/users.api";
 import Card, { CardLoader } from "../../shared/dashboard/card";
 
 export default async function TotalUsersCard() {
-  const res = await getUsersApi();
+  const res = await getUsersApi({});
 
   let total = 0;
 

@@ -10,7 +10,7 @@ export default function usePagination(paginationData: Pagination) {
 
   const currentPage = Number(searchParams.get("page") || "1");
 
-  const totalPages = paginationData.total || 0;
+  const totalPages = paginationData.total_page || 0;
   const perPage = paginationData.limit || 10;
   const totalItems = paginationData.total || 0;
 
