@@ -7,7 +7,7 @@ export default function SidebarLinks() {
   const { links } = useSiderbar();
 
   return (
-    <nav className="space-y-3 px-2.25">
+    <nav className="space-y-3">
       {links.map((item) => (
         <SidebarLink key={item.name} item={item} />
       ))}
