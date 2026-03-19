@@ -16,7 +16,7 @@ import InvoicesIcon from "@/app/_components/shared/sidebar/icons/invoices";
 import PaymentsIcon from "@/app/_components/shared/sidebar/icons/payments";
 import ReconciliationIcon from "@/app/_components/shared/sidebar/icons/reconciliation";
 import AppointmentsIcon from "@/app/_components/shared/sidebar/icons/appointments";
-import SettingsIcon from "@/app/_components/shared/sidebar/settings";
+import SettingsIcon from "@/app/_components/shared/sidebar/icons/settings";
 import PrescriptionsIcon from "@/app/_components/shared/sidebar/icons/prescriptions";
 import ProfileIcon from "@/app/_components/shared/sidebar/icons/profile";
 
