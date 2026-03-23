@@ -1,31 +1,29 @@
-import { useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { showToast } from "@/lib/toast";
-import { setNewPasswordAction } from "@/services/actions/auth.actions";
-import { setNewPasswordFormSchema, SetNewPasswordSchemaType } from "../schemas";
+import { forgotPasswordAction } from "@/services/actions/auth.actions";
+import { forgotPasswordFormSchema, ForgotPasswordSchemaType } from "../schemas";
 
-export default function useCreateNewPassword({
+export default function useForgotPassword({
+  setEmail,
   setIsSuccessful,
 }: {
+  setEmail: (val: string) => void;
   setIsSuccessful: (val: boolean) => void;
 }) {
-  const redirectPath = useSearchParams().get("redirect");
-
-  const form = useForm<SetNewPasswordSchemaType>({
-    resolver: zodResolver(setNewPasswordFormSchema),
+  const form = useForm<ForgotPasswordSchemaType>({
+    resolver: zodResolver(forgotPasswordFormSchema),
     defaultValues: {
-      old_password: "",
-      new_password: "",
-      confirm_new_password: "",
+      email: "",
     },
   });
   const { register, handleSubmit, formState, reset } = form;
 
-  const onSubmit = async (data: SetNewPasswordSchemaType) => {
+  const onSubmit = async (data: ForgotPasswordSchemaType) => {
     try {
-      const res = await setNewPasswordAction(data);
+      const res = await forgotPasswordAction(data);
       if (!res.error) {
+        setEmail(data.email);
         showToast(res.message);
         setIsSuccessful(true);
         reset();
@@ -43,6 +41,5 @@ export default function useCreateNewPassword({
     onSubmit: handleSubmit(onSubmit),
     formState,
     reset,
-    redirectPath,
   };
 }

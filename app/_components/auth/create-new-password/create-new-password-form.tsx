@@ -94,7 +94,7 @@ export default function CreateNewPasswordForm() {
                       id={field.name}
                       aria-invalid={fieldState.invalid}
                       type={showPassword2 ? "text" : "password"}
-                      placeholder="New Password (12+ characters)*"
+                      placeholder="New Password*"
                     />
 
                     <InputGroupAddon align="inline-end">
@@ -131,7 +131,7 @@ export default function CreateNewPasswordForm() {
                       id={field.name}
                       aria-invalid={fieldState.invalid}
                       type={showPassword3 ? "text" : "password"}
-                      placeholder="Password*"
+                      placeholder="Confirm New Password*"
                     />
 
                     <InputGroupAddon

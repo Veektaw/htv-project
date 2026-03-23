@@ -13,6 +13,7 @@ import {
 import { Button } from "@/app/_components/ui/button";
 import { Spinner } from "@/app/_components/ui/spinner";
 import useLogin from "./hooks/use-login";
+import Link from "next/link";
 import PasswordRequirementsTooltip from "../password-requirements";
 
 export default function SignInForm() {
@@ -92,7 +93,9 @@ export default function SignInForm() {
             }}
           />
 
-          <p className="font-semibold text-black">Forgot password?</p>
+          <Link href="/reset-password" className="font-semibold text-black">
+            Forgot password?
+          </Link>
         </div>
 
         <Button className="w-full" disabled={isSubmitting}>
