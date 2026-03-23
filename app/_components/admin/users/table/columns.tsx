@@ -13,21 +13,27 @@ export const usersColumns: Column<ColumnType>[] = [
     title: "First Name",
     key: "first_name",
     render: (value, record) => (
-      <span className={cn(record.is_deactivated && "opacity-50")}>{value}</span>
+      <span className={cn(record.is_deactivated && "opacity-50")}>
+        {value as string}
+      </span>
     ),
   },
   {
     title: "Last Name",
     key: "last_name",
     render: (value, record) => (
-      <span className={cn(record.is_deactivated && "opacity-50")}>{value}</span>
+      <span className={cn(record.is_deactivated && "opacity-50")}>
+        {value as string}
+      </span>
     ),
   },
   {
     title: "Email",
     key: "email",
     render: (value, record) => (
-      <span className={cn(record.is_deactivated && "opacity-50")}>{value}</span>
+      <span className={cn(record.is_deactivated && "opacity-50")}>
+        {value as string}
+      </span>
     ),
   },
   {
@@ -35,7 +41,7 @@ export const usersColumns: Column<ColumnType>[] = [
     key: "role",
     render: (value, record) => (
       <span className={cn("capitalize", record.is_deactivated && "opacity-50")}>
-        {value}
+        {value as string}
       </span>
     ),
   },

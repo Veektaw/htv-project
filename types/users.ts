@@ -10,6 +10,7 @@ export type Pagination = {
 export type GetUsersParams = {
   search?: string;
   page?: string;
+  role?: string;
 };
 
 export type GetUsersResponse = Pagination & {

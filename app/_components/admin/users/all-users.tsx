@@ -1,4 +1,5 @@
 import { getUsersApi } from "@/services/apis/users.api";
+import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import UsersProvider from "./contexts/users-provider";
 import Search from "./search";
 import TableWrapper from "./table/table-wrapper";
@@ -7,10 +8,11 @@ import TablePagination from "./table/table-pagination";
 type AllUsersProps = {
   search?: string;
   page?: string;
+  role?: string;
 };
 
-export default async function AllUsers({ search, page }: AllUsersProps) {
-  const res = await getUsersApi({ search, page });
+export default async function AllUsers({ search, page, role }: AllUsersProps) {
+  const res = await getUsersApi({ search, page, role });
 
   if (!res.ok) {
     const { message } = res.body;
@@ -33,12 +35,14 @@ export default async function AllUsers({ search, page }: AllUsersProps) {
         <section className="flex size-full flex-col gap-y-4">
           <Search />
 
-          <div className="flex flex-1 items-center justify-center p-2">
-            <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-              No users found for{" "}
-              <span className="font-medium">&quot;{search}&quot;</span>
-            </p>
-          </div>
+          <Empty className="flex flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No users found for{" "}
+                <span className="font-medium">&quot;{search}&quot;</span>
+              </p>
+            </EmptyContent>
+          </Empty>
         </section>
       </UsersProvider>
     );
@@ -50,12 +54,15 @@ export default async function AllUsers({ search, page }: AllUsersProps) {
         <section className="flex size-full flex-col gap-y-4">
           <Search />
 
-          <div className="flex size-full flex-1 items-center justify-center p-2">
-            <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-              No users have been created yet. <br /> Click the “Create New User”
-              button to add a new user.
-            </p>
-          </div>
+          <Empty className="flex size-full flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No users have been created yet. <br /> Click the “Create New
+                User” button to add a new user.
+              </p>
+            </EmptyContent>
+          </Empty>
+
           <TablePagination />
         </section>
       </UsersProvider>
