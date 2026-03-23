@@ -11,9 +11,25 @@ import { Button } from "@/app/_components/ui/button";
 import { ChevronDown } from "lucide-react";
 import useSetParam from "@/hooks/use-set-param";
 
+const roles = [
+  {
+    name: "All",
+    value: "",
+  },
+  {
+    name: "Admin",
+    value: "admin",
+  },
+  {
+    name: "Doctor",
+    value: "doctor",
+  },
+];
+
 export default function RoleFilter() {
   const pathname = usePathname();
   const useRoleFilterValues = useSetParam("role");
+  const { value, handleSetParam } = useRoleFilterValues;
 
   if (pathname !== "/admin/users") {
     return null;
@@ -26,27 +42,23 @@ export default function RoleFilter() {
           variant="outline"
           className="group h-10.5 w-44 justify-between rounded-[24px] border border-black px-6 text-xs font-semibold text-black"
         >
-          Click to select
+          {value
+            ? roles.find((item) => item.value === value)?.name ||
+              "Click to select"
+            : "All"}
           <ChevronDown className="transition-transform duration-300 group-data-[state=open]:rotate-180" />
         </Button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="rounded-base w-44 px-3 py-2">
-        <DropdownMenuItem
-          onClick={() => useRoleFilterValues.handleSetParam("")}
-        >
-          All
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => useRoleFilterValues.handleSetParam("admin")}
-        >
-          Admin
-        </DropdownMenuItem>
-        <DropdownMenuItem
-          onClick={() => useRoleFilterValues.handleSetParam("doctor")}
-        >
-          Doctor
-        </DropdownMenuItem>
+        {roles.map((item, index) => (
+          <DropdownMenuItem
+            key={index}
+            onSelect={() => handleSetParam(item.value)}
+          >
+            {item.name}
+          </DropdownMenuItem>
+        ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
