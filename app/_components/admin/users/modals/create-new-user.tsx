@@ -85,7 +85,7 @@ function CreateNewUserForm() {
                       <SelectItem key={index} value={item}>
                         {item}
                       </SelectItem>
-                    ))}{" "}
+                    ))}
                   </SelectContent>
                 </Select>
                 {fieldState.invalid && (

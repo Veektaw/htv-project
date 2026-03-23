@@ -7,12 +7,14 @@ import {
   GetUsersResponse,
 } from "@/types/users";
 
-export const getUsersApi = ({ search, page = "1" }: GetUsersParams) => {
+export const getUsersApi = ({ search, page = "1", role }: GetUsersParams) => {
   const params: Record<string, string> = {
     page,
   };
 
   if (search) params.keyword = search;
+
+  if (role) params.role = role;
 
   const queryString = new URLSearchParams(params).toString();
   const url = `/admin/users/${queryString ? `?${queryString}` : ""}`;
@@ -34,4 +36,8 @@ export const deactivateUserApi = (userId: string) => {
 
 export const activateUserApi = (userId: string) => {
   return Api.post<null, User>(`/admin/${userId}/reactivate-users/`, null, true);
+};
+
+export const getUserApi = (userId: string) => {
+  return Api.get<User>(`/admin/users/${userId}/`, true);
 };

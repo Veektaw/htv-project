@@ -46,6 +46,19 @@ export type User = {
   created_by: null;
   full_name: string;
   permissions: Permissions[];
+  admin_profile: [];
+  creator_info: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    status: Status;
+    role: Roles;
+    permissions: Permissions[];
+    company_name: string;
+  } | null;
+  platforms: [];
+  commissions: [];
 };
 
 export type SignInPayload = {

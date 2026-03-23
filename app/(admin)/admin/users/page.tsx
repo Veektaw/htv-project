@@ -14,17 +14,17 @@ type PageParams = {
 };
 
 export default async function page({ searchParams }: PageParams) {
-  const { search, page } = await searchParams;
+  const { search, page, role } = await searchParams;
 
   return (
     <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 pt-10 pb-6">
-      <Header>
+      <Header type="Admin">
         <SubHeader />
       </Header>
 
       <section className="flex-1 overflow-y-auto rounded-sm bg-white px-7 py-5.5 shadow-[0px_9px_20px_0px_#101E730F]">
         <Suspense fallback={<Loader text="Getting users..." />}>
-          <AllUsers search={search} page={page} />
+          <AllUsers search={search} page={page} role={role} />
         </Suspense>
       </section>
     </section>
