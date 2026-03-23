@@ -91,8 +91,16 @@ export type UserSession = {
   exp: number;
 };
 
-export type ResetPasswordPayload = {
+export type SetNewPasswordPayload = {
   old_password: string;
   new_password: string;
   confirm_new_password: string;
+};
+
+export type ForgotPasswordPayload = { email: string };
+
+export type ResetPasswordPayload = {
+  token: string;
+  password: string;
+  confirm_password: string;
 };
