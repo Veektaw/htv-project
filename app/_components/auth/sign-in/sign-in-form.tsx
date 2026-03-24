@@ -69,7 +69,7 @@ export default function SignInForm() {
 
                     <InputGroupAddon
                       align="inline-end"
-                      className="flex items-center gap-[12.5px]"
+                      className="flex items-center gap-[12.5px] pr-4.5"
                     >
                       <button
                         type="button"

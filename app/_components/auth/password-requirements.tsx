@@ -14,7 +14,6 @@ export default function PasswordRequirementsTooltip() {
     <Tooltip>
       <TooltipTrigger type="button">
         <CircleQuestionMark className="text-OsloGrey size-4.5" />
-        {/* <Button variant="outline">Hover</Button> */}
       </TooltipTrigger>
       <TooltipContent className="rounded-base w-40 bg-black px-3 py-3.5">
         <ul className="list-disc space-y-3 pl-3 text-xs text-white">
