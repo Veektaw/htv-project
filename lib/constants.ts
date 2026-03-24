@@ -5,4 +5,8 @@ export const languages = [
     name: "English",
     type: "en",
   },
+  {
+    name: "German (Deutsch)",
+    type: "de",
+  },
 ];

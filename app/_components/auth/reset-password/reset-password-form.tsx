@@ -25,7 +25,7 @@ export default function ResetPasswordForm() {
   return (
     <section className="space-y-8 text-sm">
       <header className="space-y-2 text-center">
-        <h1 className="text-2xl font-medium">Forgot Passoword</h1>
+        <h1 className="text-2xl font-medium">Forgot Password</h1>
         <p className="text-OsloGrey text-base">
           Enter the your new password and confirm your new password to continue
           to log in.

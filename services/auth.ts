@@ -105,13 +105,32 @@ export async function updateSession(request: NextRequest) {
   const isAdminRoute = path.split("/")[1] === "admin";
 
   // Has session — redirect away from sign in
-
   if (isSignIn && isAdmin) {
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
   if (isSignIn && !isAdmin) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
+
+  if (
+    userSession.data.user.must_change_password &&
+    path !== "/create-new-password"
+  ) {
+    return NextResponse.redirect(new URL("/create-new-password", request.url));
+  }
+
+  if (
+    !userSession.data.user.must_change_password &&
+    path === "/create-new-password"
+  ) {
+    if (!isAdmin) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+
+    if (isAdmin) {
+      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    }
   }
 
   if (!isAdmin && isAdminRoute) {

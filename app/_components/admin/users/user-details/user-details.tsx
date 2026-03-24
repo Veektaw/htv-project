@@ -31,11 +31,20 @@ export default async function UserDetails({ userId }: UserDetailsProps) {
       <div className="flex items-center justify-between">
         <h2 className="text-[2rem] font-bold">User Profile</h2>
 
-        <ActivateUserModal user={res.body}>
-          <Button variant="secondary" className="h-9 px-13">
-            {user.is_deactivated ? "Reactivate" : "Deactivate"} User
+        <div className="flex items-center gap-2.5">
+          <Button
+            variant="outline"
+            className="h-12 w-44 rounded-[24px] border border-black px-6 text-sm font-semibold text-black"
+          >
+            Edit Profile
           </Button>
-        </ActivateUserModal>
+
+          <ActivateUserModal user={res.body}>
+            <Button variant="secondary" className="h-12 px-13">
+              {user.is_deactivated ? "Reactivate" : "Deactivate"} User
+            </Button>
+          </ActivateUserModal>
+        </div>
       </div>
 
       <div className="pb-10">

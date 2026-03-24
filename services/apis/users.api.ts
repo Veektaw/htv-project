@@ -41,3 +41,11 @@ export const activateUserApi = (userId: string) => {
 export const getUserApi = (userId: string) => {
   return Api.get<User>(`/admin/users/${userId}/`, true);
 };
+
+export const updateUserApi = (body: User) => {
+  return Api.put<User, { message: string }>(
+    `/auth/update-profile/`,
+    body,
+    true,
+  );
+};

@@ -40,7 +40,7 @@ export default function RoleFilter() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="group h-10.5 w-44 justify-between rounded-[24px] border border-black px-6 text-xs font-semibold text-black"
+          className="group h-10.5 w-30 justify-between rounded-[24px] border border-black px-6 text-xs font-semibold text-black"
         >
           {value
             ? roles.find((item) => item.value === value)?.name ||

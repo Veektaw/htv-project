@@ -26,7 +26,7 @@ export default function ForgotPasswordForm({
   return (
     <section className="space-y-8 text-sm">
       <header className="space-y-2 text-center">
-        <h1 className="text-2xl font-medium">Forgot Passoword</h1>
+        <h1 className="text-2xl font-medium">Forgot Password</h1>
         <p className="text-OsloGrey text-base">
           Enter the email address you registered with and we will send you a
           link to create a new password.

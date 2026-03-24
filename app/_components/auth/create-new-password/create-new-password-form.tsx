@@ -58,7 +58,7 @@ export default function CreateNewPasswordForm() {
 
                     <InputGroupAddon
                       align="inline-end"
-                      className="flex items-center gap-[12.5px]"
+                      className="flex items-center gap-[12.5px] pr-4.5"
                     >
                       <button
                         type="button"
@@ -101,6 +101,7 @@ export default function CreateNewPasswordForm() {
                       <button
                         type="button"
                         onClick={() => setShowPassword2((prev) => !prev)}
+                        className="pr-2"
                       >
                         {showPassword2 ? (
                           <Eye className="text-OsloGrey size-4.5" />
@@ -136,7 +137,7 @@ export default function CreateNewPasswordForm() {
 
                     <InputGroupAddon
                       align="inline-end"
-                      className="flex items-center gap-[12.5px]"
+                      className="flex items-center gap-[12.5px] pr-4.5"
                     >
                       <button
                         type="button"
@@ -159,8 +160,6 @@ export default function CreateNewPasswordForm() {
               );
             }}
           />
-
-          <p className="font-semibold text-black">Forgot password?</p>
         </div>
 
         <Button className="w-full" disabled={isSubmitting}>
