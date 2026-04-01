@@ -53,3 +53,31 @@ export type CreateUserResponse = {
   };
   temp_password: string;
 };
+
+export type UpdateUserDetailsPayload = {
+  email: string;
+  first_name: string;
+  last_name: string;
+  company_name: string;
+  title: string;
+  phone: string;
+  role: Roles;
+  status: Status;
+  language_pref: string;
+  platforms: {
+    platform: string;
+    brand_partner: string;
+    external_user_id: string;
+  }[];
+  commissions: {
+    platform: string;
+    amount_per_prescription: number;
+    currency: string;
+    scheduled_appointments: boolean;
+    completed_appointments: boolean;
+    cancelled_appointments: boolean;
+    all_prescriptions: boolean;
+    signed_prescriptions: boolean;
+    cancelled_prescriptions: boolean;
+  }[];
+};

@@ -5,6 +5,7 @@ import {
   CreateUserResponse,
   GetUsersParams,
   GetUsersResponse,
+  UpdateUserDetailsPayload,
 } from "@/types/users";
 
 export const getUsersApi = ({ search, page = "1", role }: GetUsersParams) => {
@@ -42,10 +43,12 @@ export const getUserApi = (userId: string) => {
   return Api.get<User>(`/admin/users/${userId}/`, true);
 };
 
-export const updateUserApi = (body: User) => {
-  return Api.put<User, { message: string }>(
-    `/auth/update-profile/`,
-    body,
-    true,
-  );
+export const updateUserApi = (
+  userId: string,
+  body: Partial<UpdateUserDetailsPayload>,
+) => {
+  return Api.put<
+    Partial<UpdateUserDetailsPayload>,
+    { message: string; user: User }
+  >(`/admin/users/${userId}/`, body, true);
 };

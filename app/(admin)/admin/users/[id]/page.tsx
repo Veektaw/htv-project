@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import Header from "@/app/_components/shared/header/header";
 import SubHeader from "@/app/_components/admin/users/sub-header";
 import Loader from "@/app/_components/shared/loader";
-import UserDetails from "@/app/_components/admin/users/user-details/user-details";
+import UserDetailsWrapper from "@/app/_components/admin/users/user-details/user-details-wrapper";
 
 // export async function generateStaticParams() {
 //   const posts = await fetch('https://.../posts').then((res) => res.json())
@@ -27,7 +27,7 @@ export default async function page({ params }: PageParams) {
 
       <section className="flex-1 overflow-y-auto rounded-sm bg-white px-7 py-5.5 shadow-[0px_9px_20px_0px_#101E730F]">
         <Suspense fallback={<PageLoader />}>
-          <UserDetails userId={id!} />
+          <UserDetailsWrapper userId={id!} />
         </Suspense>
       </section>
     </section>
