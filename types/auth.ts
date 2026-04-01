@@ -25,6 +25,32 @@ export type Permissions =
   | "view_notifications"
   | "mark_notifications_read";
 
+export type Platform = {
+  id: string;
+  user_id: string;
+  platform: string;
+  brand_partner: string;
+  external_user_id: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type Commission = {
+  id: string;
+  user_id: string;
+  platform: string;
+  amount_per_prescription: number;
+  currency: string;
+  scheduled_appointments: boolean;
+  completed_appointments: boolean;
+  cancelled_appointments: boolean;
+  all_prescriptions: boolean;
+  signed_prescriptions: boolean;
+  cancelled_prescriptions: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export type User = {
   id: string;
   email: string;
@@ -57,8 +83,10 @@ export type User = {
     permissions: Permissions[];
     company_name: string;
   } | null;
-  platforms: [];
-  commissions: [];
+  platforms: Platform[];
+  commissions: Commission[];
+  all_platforms: string[];
+  all_brand_partners: string[];
 };
 
 export type SignInPayload = {

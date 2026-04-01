@@ -16,7 +16,6 @@ export default function useCreateUser() {
       last_name: "",
       title: "",
       phone: "",
-      // role: "",
     },
   });
   const { register, handleSubmit, formState, reset } = form;

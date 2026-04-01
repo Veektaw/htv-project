@@ -1,55 +1,942 @@
-import { getUserApi } from "@/services/apis/users.api";
+"use client";
+
+import { useState } from "react";
+import { languages, nameTitles } from "@/lib/constants";
+import { User } from "@/types/auth";
+import { cn } from "@/lib/utils";
+import { Check, ChevronDown, Plus } from "lucide-react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/app/_components/ui/accordion";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/app/_components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+} from "@/app/_components/ui/command";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/_components/ui/select";
+import { Controller } from "react-hook-form";
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldSet,
+} from "@/app/_components/ui/field";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupText,
+} from "@/app/_components/ui/input-group";
+import { Input } from "@/app/_components/ui/input";
 import { Button } from "@/app/_components/ui/button";
+import { Spinner } from "@/app/_components/ui/spinner";
+import useUpdateUserDetails, {
+  commissionOptions,
+  defaultCommissionValue,
+  defaultPlatformValue,
+} from "./hooks/use-update-user-details";
+import Image from "next/image";
 import ActivateUserModal from "@/app/_components/admin/users/modals/activate-user";
-import UserDetailsForm from "./form";
+import plus from "@/public/svgs/plus.svg";
+import minus from "@/public/svgs/minus.svg";
+import { Checkbox } from "@/app/_components/ui/checkbox";
 
-type UserDetailsProps = {
-  userId: string;
-};
+export default function UserDetails({ user }: { user: User }) {
+  console.log({ user });
+  const {
+    form,
+    onSubmit,
+    formState,
+    platformFieldsArrayValues,
+    commissionFieldsArrayValues,
+  } = useUpdateUserDetails({
+    user,
+  });
+  const { isSubmitting } = formState;
 
-export default async function UserDetails({ userId }: UserDetailsProps) {
-  const res = await getUserApi(userId);
+  const {
+    fields: platformFields,
+    append: appendPlatform,
+    remove: removePlatform,
+  } = platformFieldsArrayValues;
 
-  if (!res.ok) {
-    const { message } = res.body;
+  const {
+    fields: commissionFields,
+    append: appendCommission,
+    remove: removeCommission,
+  } = commissionFieldsArrayValues;
 
-    return (
-      <section className="flex h-full flex-col">
-        <h2 className="text-[2rem] font-bold">User Profile</h2>
+  // platforms state management
+  const [openPlatforms, setOpenPlatforms] = useState<Record<string, boolean>>(
+    {},
+  );
+  const [platformOptions, setPlatformOptions] = useState(user.all_platforms);
+  const [newPlatform, setNewPlatform] = useState("");
 
-        <div className="flex flex-1 items-center justify-center">
-          <p>{message || "Error getting user details"}</p>
-        </div>
-      </section>
-    );
-  }
+  // brand partners state management
+  const [openPartners, setOpenPartners] = useState<Record<string, boolean>>({});
+  const [openPartners2, setOpenPartners2] = useState<Record<string, boolean>>(
+    {},
+  );
+  const [brandPartnerOptions, setBrandPartnerOptions] = useState(
+    user.all_brand_partners,
+  );
+  const [newBrandPartner, setNewBrandPartner] = useState("");
 
-  const user = res.body;
+  const handleAddItem = () => {
+    if (!newPlatform.trim()) return;
+
+    setPlatformOptions((prev) => [...prev, newPlatform]);
+    setNewPlatform("");
+  };
+
+  const handleAddPartnerItem = () => {
+    if (!newBrandPartner.trim()) return;
+
+    setBrandPartnerOptions((prev) => [...prev, newBrandPartner]);
+    setNewBrandPartner("");
+  };
 
   return (
-    <section className="flex h-full flex-col gap-10">
-      <div className="flex items-center justify-between">
-        <h2 className="text-[2rem] font-bold">User Profile</h2>
+    <form onSubmit={onSubmit}>
+      <FieldGroup className="flex h-full flex-col gap-10">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-bold lg:text-[2rem]">User Profile</h2>
 
-        <div className="flex items-center gap-2.5">
-          <Button
-            variant="outline"
-            className="h-12 w-44 rounded-[24px] border border-black px-6 text-sm font-semibold text-black"
-          >
-            Edit Profile
-          </Button>
-
-          <ActivateUserModal user={res.body}>
-            <Button variant="secondary" className="h-12 px-13">
-              {user.is_deactivated ? "Reactivate" : "Deactivate"} User
+          <div className="flex flex-wrap items-center gap-2.5">
+            <Button
+              disabled={isSubmitting}
+              variant="outline"
+              className="inline-flex h-12 w-44 items-center justify-center rounded-[24px] border border-black px-6 text-sm font-semibold text-black"
+            >
+              Edit Profile{" "}
+              {isSubmitting && <Spinner data-icon="inline-start" />}
             </Button>
-          </ActivateUserModal>
-        </div>
-      </div>
 
-      <div className="pb-10">
-        <UserDetailsForm user={user} />
-      </div>
-    </section>
+            <ActivateUserModal user={user}>
+              <Button variant="secondary" className="h-12 px-13">
+                {user.is_deactivated ? "Reactivate" : "Deactivate"} User
+              </Button>
+            </ActivateUserModal>
+          </div>
+        </div>
+
+        <div className="pb-10">
+          <Accordion
+            type="multiple"
+            defaultValue={["item-1"]}
+            className="space-y-5"
+          >
+            <AccordionItem value="item-1" className="space-y-3 border-none">
+              <AccordionTrigger
+                className="bg-CloudyGrey rounded-xls px-5 py-4.5 text-lg font-medium text-white hover:no-underline"
+                chevronDownClassName="size-6 text-GreyCloud"
+              >
+                Basic Settings
+              </AccordionTrigger>
+
+              <AccordionContent className="border-GreyCloud rounded-xls space-y-3 border px-10 py-7">
+                <div className="flex items-center gap-3">
+                  <div className="flex w-1/2 items-center gap-3">
+                    <Controller
+                      name="title"
+                      control={form.control}
+                      render={({ field, fieldState }) => {
+                        return (
+                          <Field
+                            data-invalid={fieldState.invalid}
+                            className="w-21.75"
+                          >
+                            <FieldLabel htmlFor={field.name}>Title</FieldLabel>
+
+                            <Select
+                              name={field.name}
+                              value={field.value}
+                              onValueChange={field.onChange}
+                            >
+                              <SelectTrigger
+                                id={field.name}
+                                aria-invalid={fieldState.invalid}
+                                className="min-w-full"
+                              >
+                                <SelectValue placeholder="Title" />
+                              </SelectTrigger>
+                              <SelectContent position="item-aligned">
+                                {nameTitles.map((item, index) => (
+                                  <SelectItem key={index} value={item}>
+                                    {item}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                            {fieldState.invalid && (
+                              <FieldError errors={[fieldState.error]} />
+                            )}
+                          </Field>
+                        );
+                      }}
+                    />
+
+                    <Controller
+                      name="first_name"
+                      control={form.control}
+                      render={({ field, fieldState }) => {
+                        return (
+                          <Field data-invalid={fieldState.invalid}>
+                            <FieldLabel htmlFor={field.name}>
+                              First Name
+                            </FieldLabel>
+                            <Input
+                              {...field}
+                              id={field.name}
+                              aria-invalid={fieldState.invalid}
+                              placeholder="First name"
+                            />
+                            {fieldState.invalid && (
+                              <FieldError errors={[fieldState.error]} />
+                            )}
+                          </Field>
+                        );
+                      }}
+                    />
+                  </div>
+
+                  <Controller
+                    name="last_name"
+                    control={form.control}
+                    render={({ field, fieldState }) => {
+                      return (
+                        <Field
+                          data-invalid={fieldState.invalid}
+                          className="w-1/2"
+                        >
+                          <FieldLabel htmlFor={field.name}>
+                            Last Name
+                          </FieldLabel>
+                          <Input
+                            {...field}
+                            id={field.name}
+                            aria-invalid={fieldState.invalid}
+                            placeholder="Last name"
+                          />
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      );
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Controller
+                    name="email"
+                    control={form.control}
+                    render={({ field, fieldState }) => {
+                      return (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor={field.name}>
+                            Email address
+                          </FieldLabel>
+                          <Input
+                            {...field}
+                            id={field.name}
+                            aria-invalid={fieldState.invalid}
+                            type="email"
+                            placeholder="Email address"
+                          />
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      );
+                    }}
+                  />
+
+                  <Controller
+                    name="phone"
+                    control={form.control}
+                    render={({ field, fieldState }) => {
+                      return (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor={field.name}>
+                            Phone Number
+                          </FieldLabel>
+                          <Input
+                            {...field}
+                            id={field.name}
+                            aria-invalid={fieldState.invalid}
+                            placeholder="Phone"
+                          />
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      );
+                    }}
+                  />
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Controller
+                    name="role"
+                    control={form.control}
+                    render={({ field, fieldState }) => {
+                      return (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor={field.name}>Role</FieldLabel>
+
+                          <Select
+                            name={field.name}
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger
+                              id={field.name}
+                              aria-invalid={fieldState.invalid}
+                              className="min-w-full"
+                            >
+                              <SelectValue placeholder="Click to select role" />
+                            </SelectTrigger>
+                            <SelectContent position="item-aligned">
+                              <SelectItem value="doctor">Doctor</SelectItem>
+                              <SelectItem value="admin">Admin</SelectItem>
+                            </SelectContent>
+                          </Select>
+
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      );
+                    }}
+                  />
+
+                  <Controller
+                    name="language_pref"
+                    control={form.control}
+                    render={({ field, fieldState }) => {
+                      return (
+                        <Field data-invalid={fieldState.invalid}>
+                          <FieldLabel htmlFor={field.name}>
+                            Language Preference
+                          </FieldLabel>
+
+                          <Select
+                            name={field.name}
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger
+                              id={field.name}
+                              aria-invalid={fieldState.invalid}
+                              className="min-w-full"
+                            >
+                              <SelectValue placeholder="Click to select language preference" />
+                            </SelectTrigger>
+                            <SelectContent position="item-aligned">
+                              {languages.map((item, index) => (
+                                <SelectItem key={index} value={item.type}>
+                                  {item.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+
+                          {fieldState.invalid && (
+                            <FieldError errors={[fieldState.error]} />
+                          )}
+                        </Field>
+                      );
+                    }}
+                  />
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="item-2" className="space-y-3">
+              <AccordionTrigger
+                className="bg-CloudyGrey rounded-xls px-5 py-4.5 text-lg font-medium text-white hover:no-underline"
+                chevronDownClassName="size-6 text-GreyCloud"
+              >
+                Advanced Settings
+              </AccordionTrigger>
+
+              <AccordionContent className="border-GreyCloud rounded-xls space-y-9 border px-10 py-7">
+                {/* Platform Configuration */}
+                <div className="space-y-4">
+                  <h2 className="text-sm font-semibold text-black">
+                    Platform Configuration
+                  </h2>
+
+                  {platformFields.map((field, index) => (
+                    <div key={field.id} className="flex justify-between gap-3">
+                      <div className="border-GreyCloud rounded-xls grid flex-1 gap-2 border px-5.5 py-6 lg:grid-cols-2">
+                        {/* Platform Selection */}
+                        <div className="space-y-1">
+                          <p className="text-BluishGrey text-xs">Platform</p>
+
+                          <Controller
+                            control={form.control}
+                            name={`platforms.${index}.platform`}
+                            render={({ field }) => (
+                              <Popover
+                                open={openPlatforms[field.name] ?? false}
+                                onOpenChange={(value) =>
+                                  setOpenPlatforms((prev) => ({
+                                    ...prev,
+                                    [field.name]: value,
+                                  }))
+                                }
+                              >
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    className="rounded-base border-GreyChateau w-full justify-between border"
+                                  >
+                                    {field.value ? (
+                                      <span className="capitalize">
+                                        {field.value}
+                                      </span>
+                                    ) : (
+                                      "Select Platform here"
+                                    )}
+                                    <ChevronDown className="text-OsloGrey size-4.5" />
+                                  </Button>
+                                </PopoverTrigger>
+
+                                <PopoverContent className="rounded-base w-full min-w-100 p-0 px-4 py-2 shadow-[2px_4px_10px_0px_#00000040]">
+                                  <Command>
+                                    <CommandList>
+                                      <CommandGroup>
+                                        {platformOptions.length > 0 ? (
+                                          platformOptions.map(
+                                            (platform, optionIndex) => (
+                                              <CommandItem
+                                                key={optionIndex}
+                                                onSelect={() => {
+                                                  field.onChange(platform);
+                                                  setOpenPlatforms((prev) => ({
+                                                    ...prev,
+                                                    [field.name]: false,
+                                                  }));
+                                                }}
+                                                className={cn(
+                                                  "data-[selected=true]:bg-PortlandOrnage text-CloudyGrey cursor-pointer rounded-lg! px-3 py-1 text-xs capitalize data-[selected=true]:text-white",
+                                                  field.value === platform
+                                                    ? "font-semibold"
+                                                    : "font-medium",
+                                                )}
+                                              >
+                                                {platform}
+                                                <Check
+                                                  className={cn(
+                                                    "ml-auto size-4",
+                                                    field.value === platform
+                                                      ? "text-white opacity-100"
+                                                      : "opacity-0",
+                                                  )}
+                                                />
+                                              </CommandItem>
+                                            ),
+                                          )
+                                        ) : (
+                                          <CommandEmpty>
+                                            No platform added yet
+                                          </CommandEmpty>
+                                        )}
+
+                                        <CommandItem className="mt-2 flex-col items-start gap-y-2 px-3 py-2">
+                                          <button
+                                            type="button"
+                                            onClick={handleAddItem}
+                                            className="flex items-center gap-1"
+                                          >
+                                            <Plus className="text-CloudyGrey size-4" />
+                                            <span className="text-CloudyGrey text-xs font-medium">
+                                              Create New
+                                            </span>
+                                          </button>
+
+                                          <Input
+                                            value={newPlatform}
+                                            onChange={(e) =>
+                                              setNewPlatform(e.target.value)
+                                            }
+                                            className="border-OsloGrey h-8 rounded-xs"
+                                          />
+                                        </CommandItem>
+                                      </CommandGroup>
+                                    </CommandList>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
+                            )}
+                          />
+                        </div>
+
+                        {/* Brand Partner Selection */}
+                        <div className="space-y-1">
+                          <p className="text-BluishGrey text-xs">
+                            Brand Partner
+                          </p>
+
+                          <Controller
+                            control={form.control}
+                            name={`platforms.${index}.brand_partner`}
+                            render={({ field }) => (
+                              <Popover
+                                open={openPartners[field.name] ?? false}
+                                onOpenChange={(value) =>
+                                  setOpenPartners((prev) => ({
+                                    ...prev,
+                                    [field.name]: value,
+                                  }))
+                                }
+                              >
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    className="rounded-base border-GreyChateau w-full justify-between border"
+                                  >
+                                    {field.value ? (
+                                      <span className="capitalize">
+                                        {field.value}
+                                      </span>
+                                    ) : (
+                                      "Select Brand Partner here"
+                                    )}
+
+                                    <ChevronDown className="text-OsloGrey size-4.5" />
+                                  </Button>
+                                </PopoverTrigger>
+
+                                <PopoverContent className="rounded-base w-full min-w-100 p-0 px-4 py-2 shadow-[2px_4px_10px_0px_#00000040]">
+                                  <Command>
+                                    <CommandList>
+                                      <CommandGroup>
+                                        {brandPartnerOptions.length > 0 ? (
+                                          brandPartnerOptions.map(
+                                            (partner, optionIndex) => (
+                                              <CommandItem
+                                                key={optionIndex}
+                                                onSelect={() => {
+                                                  field.onChange(partner);
+                                                  setOpenPartners((prev) => ({
+                                                    ...prev,
+                                                    [field.name]: false,
+                                                  }));
+                                                }}
+                                                className={cn(
+                                                  "data-[selected=true]:bg-PortlandOrnage text-CloudyGrey cursor-pointer rounded-lg! px-3 py-1 text-xs capitalize data-[selected=true]:text-white",
+                                                  field.value === partner
+                                                    ? "font-semibold"
+                                                    : "font-medium",
+                                                )}
+                                              >
+                                                {partner}
+                                                <Check
+                                                  className={cn(
+                                                    "ml-auto size-4",
+                                                    field.value === partner
+                                                      ? "text-white opacity-100"
+                                                      : "opacity-0",
+                                                  )}
+                                                />
+                                              </CommandItem>
+                                            ),
+                                          )
+                                        ) : (
+                                          <CommandEmpty>
+                                            No brand partner added yet
+                                          </CommandEmpty>
+                                        )}
+
+                                        <CommandItem className="mt-2 flex-col items-start gap-y-2 px-3 py-2">
+                                          <button
+                                            type="button"
+                                            onClick={handleAddPartnerItem}
+                                            className="flex items-center gap-1"
+                                          >
+                                            <Plus className="text-CloudyGrey size-4" />
+                                            <span className="text-CloudyGrey text-xs font-medium">
+                                              Create New
+                                            </span>
+                                          </button>
+
+                                          <Input
+                                            value={newBrandPartner}
+                                            onChange={(e) =>
+                                              setNewBrandPartner(e.target.value)
+                                            }
+                                            className="border-OsloGrey h-8 rounded-xs"
+                                          />
+                                        </CommandItem>
+                                      </CommandGroup>
+                                    </CommandList>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
+                            )}
+                          />
+                        </div>
+
+                        <Controller
+                          name={`platforms.${index}.external_user_id`}
+                          control={form.control}
+                          render={({ field, fieldState }) => {
+                            return (
+                              <Field
+                                data-invalid={fieldState.invalid}
+                                className="col-span-2"
+                              >
+                                <FieldLabel htmlFor={field.name}>
+                                  User ID
+                                </FieldLabel>
+                                <Input
+                                  {...field}
+                                  id={field.name}
+                                  aria-invalid={fieldState.invalid}
+                                  placeholder="Enter User ID here"
+                                />
+                                {fieldState.invalid && (
+                                  <FieldError errors={[fieldState.error]} />
+                                )}
+                              </Field>
+                            );
+                          }}
+                        />
+                      </div>
+
+                      {/* Add and remove buttons */}
+                      <menu className="flex flex-col gap-y-1">
+                        {index === 0 && (
+                          <button
+                            type="button"
+                            onClick={() => appendPlatform(defaultPlatformValue)}
+                          >
+                            <Image src={plus} alt="plus icon" />
+                          </button>
+                        )}
+
+                        {index > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => removePlatform(index)}
+                          >
+                            <Image src={minus} alt="minus icon" />
+                          </button>
+                        )}
+                      </menu>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Commission Configuration */}
+                <div className="space-y-4">
+                  <h2 className="text-sm font-semibold text-black">
+                    Commission Configuration
+                  </h2>
+
+                  {commissionFields.map((field, index) => (
+                    <div key={field.id} className="flex justify-between gap-3">
+                      <div className="border-GreyCloud rounded-xls grid flex-1 gap-x-2 gap-y-3 border px-5.5 py-6 lg:grid-cols-2">
+                        {/* Brand Partner selection */}
+                        <div className="space-y-1">
+                          <p className="text-BluishGrey text-xs">
+                            Brand Partner
+                          </p>
+
+                          <Controller
+                            control={form.control}
+                            name={`commissions.${index}.platform`}
+                            render={({ field }) => (
+                              <Popover
+                                open={openPartners2[field.name] ?? false}
+                                onOpenChange={(value) =>
+                                  setOpenPartners2((prev) => ({
+                                    ...prev,
+                                    [field.name]: value,
+                                  }))
+                                }
+                              >
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    className="rounded-base border-GreyChateau w-full justify-between border"
+                                  >
+                                    {field.value ? (
+                                      <span className="capitalize">
+                                        {field.value}
+                                      </span>
+                                    ) : (
+                                      "Select Platform here"
+                                    )}
+                                    <ChevronDown className="text-OsloGrey size-4.5" />
+                                  </Button>
+                                </PopoverTrigger>
+
+                                <PopoverContent className="rounded-base w-full min-w-100 p-0 px-4 py-2 shadow-[2px_4px_10px_0px_#00000040]">
+                                  <Command>
+                                    <CommandList>
+                                      <CommandGroup>
+                                        {brandPartnerOptions.length > 0 ? (
+                                          brandPartnerOptions.map(
+                                            (partner, optionIndex) => (
+                                              <CommandItem
+                                                key={optionIndex}
+                                                onSelect={() => {
+                                                  field.onChange(partner);
+                                                  setOpenPartners2((prev) => ({
+                                                    ...prev,
+                                                    [field.name]: false,
+                                                  }));
+                                                }}
+                                                className={cn(
+                                                  "data-[selected=true]:bg-PortlandOrnage text-CloudyGrey cursor-pointer rounded-lg! px-3 py-1 text-xs capitalize data-[selected=true]:text-white",
+                                                  field.value === partner
+                                                    ? "font-semibold"
+                                                    : "font-medium",
+                                                )}
+                                              >
+                                                {partner}
+                                                <Check
+                                                  className={cn(
+                                                    "ml-auto size-4",
+                                                    field.value === partner
+                                                      ? "text-white opacity-100"
+                                                      : "opacity-0",
+                                                  )}
+                                                />
+                                              </CommandItem>
+                                            ),
+                                          )
+                                        ) : (
+                                          <CommandEmpty>
+                                            No brand partner added yet
+                                          </CommandEmpty>
+                                        )}
+
+                                        <CommandItem className="mt-2 flex-col items-start gap-y-2 px-3 py-2">
+                                          <button
+                                            type="button"
+                                            onClick={handleAddPartnerItem}
+                                            className="flex items-center gap-1"
+                                          >
+                                            <Plus className="text-CloudyGrey size-4" />
+                                            <span className="text-CloudyGrey text-xs font-medium">
+                                              Create New
+                                            </span>
+                                          </button>
+
+                                          <Input
+                                            value={newBrandPartner}
+                                            onChange={(e) =>
+                                              setNewBrandPartner(e.target.value)
+                                            }
+                                            className="border-OsloGrey h-8 rounded-xs"
+                                          />
+                                        </CommandItem>
+                                      </CommandGroup>
+                                    </CommandList>
+                                  </Command>
+                                </PopoverContent>
+                              </Popover>
+                            )}
+                          />
+                        </div>
+
+                        {/* Amount Per Prescription */}
+                        <div className="space-y-1">
+                          <Controller
+                            control={form.control}
+                            name={`commissions.${index}.amount_per_prescription`}
+                            render={({ field, fieldState }) => {
+                              return (
+                                <Field data-invalid={fieldState.invalid}>
+                                  <FieldLabel htmlFor={field.name}>
+                                    Amount Per Prescription
+                                  </FieldLabel>
+
+                                  <InputGroup className="border-GreyChateau py-2.5 text-black">
+                                    <InputGroupAddon>
+                                      <InputGroupText className="font-normal text-black">
+                                        EUR:
+                                      </InputGroupText>
+                                    </InputGroupAddon>
+                                    <InputGroupInput
+                                      {...field}
+                                      onChange={(e) => {
+                                        const value = e.target.value;
+
+                                        // Allow only numbers and at most two decimal places
+                                        if (/^\d*\.?\d{0,2}$/.test(value)) {
+                                          field.onChange(value);
+                                        }
+                                      }}
+                                      inputMode="numeric"
+                                      id={field.name}
+                                      aria-invalid={fieldState.invalid}
+                                      placeholder="00"
+                                      className="border-GreyChateau border placeholder:text-black"
+                                    />
+                                  </InputGroup>
+
+                                  {fieldState.invalid && (
+                                    <FieldError errors={[fieldState.error]} />
+                                  )}
+                                </Field>
+                              );
+                            }}
+                          />
+                        </div>
+
+                        {/* Commission Options */}
+                        <FieldGroup
+                          data-slot="checkbox-group"
+                          className="col-span-2 grid gap-x-6 lg:grid-cols-2"
+                        >
+                          {commissionOptions.map(
+                            (commissionOption, commissionOptionIndex) => (
+                              <Controller
+                                key={commissionOptionIndex}
+                                name={`commissions.${index}.${commissionOption.id}`}
+                                control={form.control}
+                                render={({ field, fieldState }) => {
+                                  return (
+                                    <FieldSet className="gap-2">
+                                      <Field
+                                        key={commissionOptionIndex}
+                                        orientation="horizontal"
+                                        data-invalid={fieldState.invalid}
+                                        className="gap-2 px-3 py-1"
+                                      >
+                                        <Checkbox
+                                          id={`form-rhf-checkbox-${index}-${commissionOption.id}`}
+                                          name={field.name}
+                                          aria-invalid={fieldState.invalid}
+                                          checked={!!field.value}
+                                          onCheckedChange={(checked) => {
+                                            const path =
+                                              `commissions.${index}` as const;
+
+                                            if (
+                                              commissionOption.id ===
+                                              "all_prescriptions"
+                                            ) {
+                                              form.setValue(
+                                                `${path}.all_prescriptions`,
+                                                !!checked,
+                                              );
+                                              form.setValue(
+                                                `${path}.signed_prescriptions`,
+                                                !!checked,
+                                              );
+                                              form.setValue(
+                                                `${path}.cancelled_prescriptions`,
+                                                !!checked,
+                                              );
+                                            } else {
+                                              field.onChange(checked);
+
+                                              // If either sub-option is unchecked, uncheck all_prescriptions
+                                              if (!checked) {
+                                                form.setValue(
+                                                  `${path}.all_prescriptions`,
+                                                  false,
+                                                );
+                                              }
+
+                                              // If both sub-options are now checked, check all_prescriptions
+                                              const signed = form.getValues(
+                                                `${path}.signed_prescriptions`,
+                                              );
+                                              const cancelled = form.getValues(
+                                                `${path}.cancelled_prescriptions`,
+                                              );
+
+                                              if (signed && cancelled) {
+                                                form.setValue(
+                                                  `${path}.all_prescriptions`,
+                                                  true,
+                                                );
+                                              }
+                                            }
+                                          }}
+                                          className="border-OsloGrey size-6"
+                                        />
+                                        <FieldLabel
+                                          htmlFor={`form-rhf-checkbox-${index}-${commissionOption.id}`}
+                                          className="font-medium text-black"
+                                        >
+                                          {commissionOption.label}
+                                        </FieldLabel>
+                                      </Field>
+
+                                      {fieldState.invalid && (
+                                        <FieldError
+                                          errors={[fieldState.error]}
+                                        />
+                                      )}
+                                    </FieldSet>
+                                  );
+                                }}
+                              />
+                            ),
+                          )}
+                        </FieldGroup>
+                      </div>
+
+                      {/* Add and remove buttons */}
+                      <menu className="flex flex-col gap-y-1">
+                        {index === 0 && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              appendCommission(defaultCommissionValue)
+                            }
+                          >
+                            <Image src={plus} alt="plus icon" />
+                          </button>
+                        )}
+
+                        {index > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => removeCommission(index)}
+                          >
+                            <Image src={minus} alt="minus icon" />
+                          </button>
+                        )}
+                      </menu>
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+      </FieldGroup>
+    </form>
   );
 }
