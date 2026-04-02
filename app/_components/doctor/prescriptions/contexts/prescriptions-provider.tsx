@@ -28,7 +28,7 @@ export default function PrescriptionsProvider({
   data: GetDoctorPrescriptions;
   children: ReactNode;
 }) {
-  const { prescriptions, total, page, limit, total_pages } = data;
+  const { prescriptions, total, page, limit, total_page } = data;
 
   const useSearchValues = useSetParam("search");
   const useRoleFilterValues = useSetParam("role");
@@ -37,7 +37,7 @@ export default function PrescriptionsProvider({
     total,
     page,
     limit,
-    total_page: total_pages || 0,
+    total_page,
   });
 
   const isPending =
