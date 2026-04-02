@@ -13,6 +13,7 @@ export default function SidebarLink({ item }: { item: NavigationItem }) {
 
   return (
     <Link
+      title={item.name}
       href={item.href}
       className={cn(
         "hover:bg-PortlandOrnage mx-auto flex items-center p-4 text-sm font-bold transition-all duration-300 hover:text-white",

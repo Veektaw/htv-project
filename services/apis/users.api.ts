@@ -1,5 +1,5 @@
-import { User } from "@/types/auth";
 import { Api } from "./api";
+import { User } from "@/types/auth";
 import {
   CreateUserPayload,
   CreateUserResponse,
