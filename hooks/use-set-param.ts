@@ -24,6 +24,24 @@ export default function useSetParam(paramKey: string) {
     });
   };
 
+  const setParams = (updates: Record<string, string | null>) => {
+    const params = new URLSearchParams(searchParams);
+
+    params.set("page", "1");
+
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+
+    startTransition(() => {
+      replace(`${pathName}?${params.toString()}`);
+    });
+  };
+
   const clearParam = () => {
     const params = new URLSearchParams(searchParams);
 
@@ -40,6 +58,7 @@ export default function useSetParam(paramKey: string) {
     isPending,
     value,
     handleSetParam,
+    setParams,
     clearParam,
   };
 }

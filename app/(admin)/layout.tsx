@@ -10,7 +10,7 @@ export default function layout({
 }>) {
   return (
     <SidebarProvider>
-      <section className="flex h-screen">
+      <section className="group flex h-screen">
         <Sidebar />
 
         <MainWrapper>{children}</MainWrapper>

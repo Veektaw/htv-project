@@ -1,18 +1,27 @@
-import { getUsersApi } from "@/services/apis/users.api";
+import { getDoctorPrescriptionsApi } from "@/services/apis/prescriptions.api";
+import { User } from "@/types/auth";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
-import UsersProvider from "./contexts/users-provider";
-import SearchWrapper from "./search-wrapper";
+import PrescriptionsProvider from "./contexts/prescriptions-provider";
 import TableWrapper from "./table/table-wrapper";
+import SortAndDateFilter from "./sort-and-date-filter";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
 
-type AllUsersProps = {
-  search?: string;
-  page?: string;
-  role?: string;
+type DoctorPrescriptionsProps = {
+  searchParamsValues: { [key: string]: string | undefined };
+  user: User | undefined;
 };
 
-export default async function AllUsers({ search, page, role }: AllUsersProps) {
-  const res = await getUsersApi({ search, page, role });
+export default async function DoctorPrescriptions({
+  searchParamsValues,
+  user,
+}: DoctorPrescriptionsProps) {
+  const { page, platform, start_date, end_date } = searchParamsValues;
+  const res = await getDoctorPrescriptionsApi({
+    page,
+    platform,
+    start_date,
+    end_date,
+  });
 
   if (!res.ok) {
     const { message } = res.body;
@@ -20,62 +29,63 @@ export default async function AllUsers({ search, page, role }: AllUsersProps) {
       <div className="flex size-full items-center justify-center p-2">
         <div className="w-full max-w-150.25">
           <p className="text-center text-sm font-medium text-black">
-            {message || "Error getting data"}
+            {message || "Error getting prescriptions"}
           </p>
         </div>
       </div>
     );
   }
 
-  const total = res.body.users.length;
+  // console.log({ res: res.body });
 
-  if (search && total === 0) {
+  const total = res.body.prescriptions.length;
+
+  if (platform && total === 0) {
     return (
-      <UsersProvider data={res.body}>
+      <PrescriptionsProvider user={user} data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
-          <SearchWrapper />
+          <SortAndDateFilter />
 
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-                No users found for{" "}
-                <span className="font-medium">&quot;{search}&quot;</span>
+                No prescriptions found for{" "}
+                <span className="font-medium">&quot;{platform}&quot;</span>
               </p>
             </EmptyContent>
           </Empty>
         </section>
-      </UsersProvider>
+      </PrescriptionsProvider>
     );
   }
 
   if (total === 0) {
     return (
-      <UsersProvider data={res.body}>
+      <PrescriptionsProvider user={user} data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
-          <SearchWrapper />
+          <SortAndDateFilter />
 
           <Empty className="flex size-full flex-1 items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-                No users have been created yet. <br /> Click the “Create New
-                User” button to add a new user.
+                No prescriptions yet
               </p>
             </EmptyContent>
           </Empty>
 
           <TablePaginationWrapper />
         </section>
-      </UsersProvider>
+      </PrescriptionsProvider>
     );
   }
 
   return (
-    <UsersProvider data={res.body}>
+    <PrescriptionsProvider user={user} data={res.body}>
       <section className="space-y-4">
-        <SearchWrapper />
+        <SortAndDateFilter />
         <TableWrapper />
         <TablePaginationWrapper />
       </section>
-    </UsersProvider>
+    </PrescriptionsProvider>
   );
 }

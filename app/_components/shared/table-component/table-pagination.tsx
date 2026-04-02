@@ -1,13 +1,16 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useUsers } from "../contexts/users-provider";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import usePagination from "@/hooks/use-pagination";
 
-export default function TablePagination() {
-  const { pagination } = useUsers();
-
+export default function TablePagination({
+  pagination,
+}: {
+  pagination: ReturnType<typeof usePagination>;
+}) {
   const {
+    isPending,
     currentPage,
     totalPages,
     handlePrev,
@@ -18,7 +21,10 @@ export default function TablePagination() {
   } = pagination;
 
   return (
-    <div className="text-BalticSea flex flex-wrap items-center gap-3.5 text-xs">
+    <div
+      data-paginationpending={isPending}
+      className="text-BalticSea flex flex-wrap items-center gap-3.5 text-xs"
+    >
       <div className="text-Grey flex items-center gap-1">
         <button
           disabled={previousBtnState}

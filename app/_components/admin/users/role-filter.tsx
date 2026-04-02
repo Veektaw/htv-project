@@ -29,7 +29,7 @@ const roles = [
 export default function RoleFilter() {
   const pathname = usePathname();
   const useRoleFilterValues = useSetParam("role");
-  const { value, handleSetParam } = useRoleFilterValues;
+  const { value, handleSetParam, isPending } = useRoleFilterValues;
 
   if (pathname !== "/admin/users") {
     return null;
@@ -40,6 +40,7 @@ export default function RoleFilter() {
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
+          data-rolefilterpending={isPending}
           className="group h-10.5 w-30 justify-between rounded-[24px] border border-black px-6 text-xs font-semibold text-black"
         >
           {value

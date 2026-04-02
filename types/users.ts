@@ -4,7 +4,8 @@ export type Pagination = {
   total: number;
   page: number;
   limit: number;
-  total_page: number;
+  total_page?: number;
+  total_pages?: number;
 };
 
 export type GetUsersParams = {

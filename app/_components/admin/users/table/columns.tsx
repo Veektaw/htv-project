@@ -8,7 +8,7 @@ import UserStatus from "./columns/status";
 
 type ColumnType = User & { actions?: ReactNode };
 
-export const usersColumns: Column<ColumnType>[] = [
+export const userColumns: Column<ColumnType>[] = [
   {
     title: "First Name",
     key: "first_name",

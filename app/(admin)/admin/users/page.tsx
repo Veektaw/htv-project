@@ -5,19 +5,19 @@ import SubHeader from "@/app/_components/admin/users/sub-header";
 import Loader from "@/app/_components/shared/loader";
 import AllUsers from "@/app/_components/admin/users/all-users";
 
-export const metadata: Metadata = {
-  title: "Users",
-};
-
 type PageParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
+};
+
+export const metadata: Metadata = {
+  title: "Users",
 };
 
 export default async function page({ searchParams }: PageParams) {
   const { search, page, role } = await searchParams;
 
   return (
-    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 pt-10 pb-6">
+    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6">
       <Header type="Admin">
         <SubHeader />
       </Header>

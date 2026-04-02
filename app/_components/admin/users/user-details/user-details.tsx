@@ -45,6 +45,7 @@ import {
   InputGroupText,
 } from "@/app/_components/ui/input-group";
 import { Input } from "@/app/_components/ui/input";
+import { Checkbox } from "@/app/_components/ui/checkbox";
 import { Button } from "@/app/_components/ui/button";
 import { Spinner } from "@/app/_components/ui/spinner";
 import useUpdateUserDetails, {
@@ -56,10 +57,8 @@ import Image from "next/image";
 import ActivateUserModal from "@/app/_components/admin/users/modals/activate-user";
 import plus from "@/public/svgs/plus.svg";
 import minus from "@/public/svgs/minus.svg";
-import { Checkbox } from "@/app/_components/ui/checkbox";
 
 export default function UserDetails({ user }: { user: User }) {
-  console.log({ user });
   const {
     form,
     onSubmit,
