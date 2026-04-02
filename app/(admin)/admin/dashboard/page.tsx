@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default async function page() {
   return (
-    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 pt-10 pb-6 shadow-[0px_9px_20px_0px_#101E730F]">
+    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6 shadow-[0px_9px_20px_0px_#101E730F]">
       <Header type="Admin">
         <SubHeader />
       </Header>

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function page() {
   return (
-    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 pt-10 pb-6">
+    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6">
       <Header type="Admin">
         <SubHeader />
       </Header>
