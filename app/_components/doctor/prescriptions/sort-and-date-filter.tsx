@@ -22,7 +22,7 @@ import useSetParam from "@/hooks/use-set-param";
 import Image from "next/image";
 import calendarIcon from "@/public/svgs/calendar.svg";
 
-const platforms = ["NordLeaf", "Prio One", "SoLean"];
+const platforms = ["All", "NordLeaf", "Prio One", "SoLean"];
 
 export default function SortAndDateFilter() {
   const usePlatformFilterValues = useSetParam("platform");
