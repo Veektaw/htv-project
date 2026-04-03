@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { usePrescriptions } from "./contexts/prescriptions-provider";
 import { format } from "date-fns";
 import { ChevronDownIcon } from "lucide-react";
 import {
@@ -23,8 +22,9 @@ import useSetParam from "@/hooks/use-set-param";
 import Image from "next/image";
 import calendarIcon from "@/public/svgs/calendar.svg";
 
+const platforms = ["NordLeaf", "Prio One", "SoLean"];
+
 export default function SortAndDateFilter() {
-  const { user } = usePrescriptions();
   const usePlatformFilterValues = useSetParam("platform");
   const { value, handleSetParam, isPending } = usePlatformFilterValues;
 
@@ -77,7 +77,7 @@ export default function SortAndDateFilter() {
 
           <SelectContent>
             <SelectGroup>
-              {user!.all_platforms.map((platform) => (
+              {platforms.map((platform) => (
                 <SelectItem
                   key={platform}
                   value={platform}
