@@ -1,19 +1,16 @@
 import { getAllPrescriptionsApi } from "@/services/apis/prescriptions.api";
-import { User } from "@/types/auth";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
-import PrescriptionsProvider from "./contexts/prescriptions-provider";
+import PrescriptionsProvider from "@/app/_components/doctor/prescriptions/contexts/prescriptions-provider";
+import SortAndDateFilter from "@/app/_components/doctor/prescriptions/sort-and-date-filter";
 import TableWrapper from "./table/table-wrapper";
-import SortAndDateFilter from "./sort-and-date-filter";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
 
 type DoctorPrescriptionsProps = {
   searchParamsValues: { [key: string]: string | undefined };
-  user: User | undefined;
 };
 
 export default async function DoctorPrescriptions({
   searchParamsValues,
-  user,
 }: DoctorPrescriptionsProps) {
   const { page, platform, start_date, end_date } = searchParamsValues;
   const res = await getAllPrescriptionsApi({
@@ -42,7 +39,7 @@ export default async function DoctorPrescriptions({
 
   if (platform && total === 0) {
     return (
-      <PrescriptionsProvider user={user} data={res.body}>
+      <PrescriptionsProvider data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
           <SortAndDateFilter />
 
@@ -61,7 +58,7 @@ export default async function DoctorPrescriptions({
 
   if (total === 0) {
     return (
-      <PrescriptionsProvider user={user} data={res.body}>
+      <PrescriptionsProvider data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
           <SortAndDateFilter />
 
@@ -80,7 +77,7 @@ export default async function DoctorPrescriptions({
   }
 
   return (
-    <PrescriptionsProvider user={user} data={res.body}>
+    <PrescriptionsProvider data={res.body}>
       <section className="space-y-4">
         <SortAndDateFilter />
         <TableWrapper />

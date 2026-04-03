@@ -1,15 +1,15 @@
 import { ReactNode } from "react";
 import { Column } from "@/app/_components/shared/table-component/table-component";
 import { Prescription } from "@/types/prescriptions";
-import { format } from "date-fns";
+import { formatPrescriptionDate } from "@/lib/utils";
 
 type ColumnType = Prescription & { actions?: ReactNode };
 
 export const prescriptionColumns: Column<ColumnType>[] = [
   {
     title: "Date",
-    key: "created_at",
-    render: (value) => format(new Date(value as string), "do 'of' MMMM, y"),
+    key: "period_month",
+    render: (value) => formatPrescriptionDate(value as string),
   },
   {
     title: "Platform",

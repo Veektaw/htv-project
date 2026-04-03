@@ -1,6 +1,6 @@
 "use client";
 
-import { usePrescriptions } from "../contexts/prescriptions-provider";
+import { usePrescriptions } from "@/app/_components/doctor/prescriptions/contexts/prescriptions-provider";
 import { prescriptionColumns } from "./columns";
 import TableComponent from "@/app/_components/shared/table-component/table-component";
 
