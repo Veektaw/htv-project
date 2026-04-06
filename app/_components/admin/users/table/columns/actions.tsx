@@ -16,11 +16,11 @@ export default function Actions({ user }: { user: User }) {
           </Link>
         </li>
 
-        <li>
+        {/* <li>
           <button className="rounded-base hover:bg-Geraldine size-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
             Edit
           </button>
-        </li>
+        </li> */}
 
         <li>
           <ActivateUserModal user={user}>

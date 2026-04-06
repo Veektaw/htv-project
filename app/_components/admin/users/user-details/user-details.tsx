@@ -1,28 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { languages, nameTitles } from "@/lib/constants";
+import {
+  brandPartners as brandPartnerOptions,
+  languages,
+  nameTitles,
+  platforms as platformOptions,
+} from "@/lib/constants";
 import { User } from "@/types/auth";
-import { cn } from "@/lib/utils";
-import { Check, ChevronDown, Plus } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/app/_components/ui/accordion";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/app/_components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "@/app/_components/ui/command";
+
 import {
   Select,
   SelectContent,
@@ -59,6 +51,8 @@ import plus from "@/public/svgs/plus.svg";
 import minus from "@/public/svgs/minus.svg";
 
 export default function UserDetails({ user }: { user: User }) {
+  const [canEdit, setCanEdit] = useState(false);
+
   const {
     form,
     onSubmit,
@@ -67,6 +61,7 @@ export default function UserDetails({ user }: { user: User }) {
     commissionFieldsArrayValues,
   } = useUpdateUserDetails({
     user,
+    setCanEdit,
   });
   const { isSubmitting } = formState;
 
@@ -82,37 +77,6 @@ export default function UserDetails({ user }: { user: User }) {
     remove: removeCommission,
   } = commissionFieldsArrayValues;
 
-  // platforms state management
-  const [openPlatforms, setOpenPlatforms] = useState<Record<string, boolean>>(
-    {},
-  );
-  const [platformOptions, setPlatformOptions] = useState(user.all_platforms);
-  const [newPlatform, setNewPlatform] = useState("");
-
-  // brand partners state management
-  const [openPartners, setOpenPartners] = useState<Record<string, boolean>>({});
-  const [openPartners2, setOpenPartners2] = useState<Record<string, boolean>>(
-    {},
-  );
-  const [brandPartnerOptions, setBrandPartnerOptions] = useState(
-    user.all_brand_partners,
-  );
-  const [newBrandPartner, setNewBrandPartner] = useState("");
-
-  const handleAddItem = () => {
-    if (!newPlatform.trim()) return;
-
-    setPlatformOptions((prev) => [...prev, newPlatform]);
-    setNewPlatform("");
-  };
-
-  const handleAddPartnerItem = () => {
-    if (!newBrandPartner.trim()) return;
-
-    setBrandPartnerOptions((prev) => [...prev, newBrandPartner]);
-    setNewBrandPartner("");
-  };
-
   return (
     <form onSubmit={onSubmit}>
       <FieldGroup className="flex h-full flex-col gap-10">
@@ -121,11 +85,18 @@ export default function UserDetails({ user }: { user: User }) {
 
           <div className="flex flex-wrap items-center gap-2.5">
             <Button
+              type={canEdit ? "submit" : "button"}
               disabled={isSubmitting}
+              onClick={(e) => {
+                if (!canEdit) {
+                  e.preventDefault();
+                  setCanEdit(true);
+                }
+              }}
               variant="outline"
               className="inline-flex h-12 w-44 items-center justify-center rounded-[24px] border border-black px-6 text-sm font-semibold text-black"
             >
-              Edit Profile{" "}
+              {canEdit ? "Save Changes" : "Edit Profile"}
               {isSubmitting && <Spinner data-icon="inline-start" />}
             </Button>
 
@@ -141,7 +112,7 @@ export default function UserDetails({ user }: { user: User }) {
           <Accordion
             type="multiple"
             defaultValue={["item-1"]}
-            className="space-y-5"
+            className="space-y-5 overflow-hidden"
           >
             <AccordionItem value="item-1" className="space-y-3 border-none">
               <AccordionTrigger
@@ -169,11 +140,12 @@ export default function UserDetails({ user }: { user: User }) {
                               name={field.name}
                               value={field.value}
                               onValueChange={field.onChange}
+                              disabled={!canEdit}
                             >
                               <SelectTrigger
                                 id={field.name}
                                 aria-invalid={fieldState.invalid}
-                                className="min-w-full"
+                                className="border-GreyChateau min-w-full"
                               >
                                 <SelectValue placeholder="Title" />
                               </SelectTrigger>
@@ -207,6 +179,8 @@ export default function UserDetails({ user }: { user: User }) {
                               id={field.name}
                               aria-invalid={fieldState.invalid}
                               placeholder="First name"
+                              className="border-GreyChateau"
+                              disabled={!canEdit}
                             />
                             {fieldState.invalid && (
                               <FieldError errors={[fieldState.error]} />
@@ -234,6 +208,8 @@ export default function UserDetails({ user }: { user: User }) {
                             id={field.name}
                             aria-invalid={fieldState.invalid}
                             placeholder="Last name"
+                            className="border-GreyChateau"
+                            disabled={!canEdit}
                           />
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -260,6 +236,8 @@ export default function UserDetails({ user }: { user: User }) {
                             aria-invalid={fieldState.invalid}
                             type="email"
                             placeholder="Email address"
+                            className="border-GreyChateau"
+                            disabled={!canEdit}
                           />
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -283,6 +261,8 @@ export default function UserDetails({ user }: { user: User }) {
                             id={field.name}
                             aria-invalid={fieldState.invalid}
                             placeholder="Phone"
+                            className="border-GreyChateau"
+                            disabled={!canEdit}
                           />
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
@@ -306,11 +286,12 @@ export default function UserDetails({ user }: { user: User }) {
                             name={field.name}
                             value={field.value}
                             onValueChange={field.onChange}
+                            disabled={!canEdit}
                           >
                             <SelectTrigger
                               id={field.name}
                               aria-invalid={fieldState.invalid}
-                              className="min-w-full"
+                              className="border-GreyChateau min-w-full"
                             >
                               <SelectValue placeholder="Click to select role" />
                             </SelectTrigger>
@@ -342,11 +323,12 @@ export default function UserDetails({ user }: { user: User }) {
                             name={field.name}
                             value={field.value}
                             onValueChange={field.onChange}
+                            disabled={!canEdit}
                           >
                             <SelectTrigger
                               id={field.name}
                               aria-invalid={fieldState.invalid}
-                              className="min-w-full"
+                              className="border-GreyChateau min-w-full"
                             >
                               <SelectValue placeholder="Click to select language preference" />
                             </SelectTrigger>
@@ -389,215 +371,90 @@ export default function UserDetails({ user }: { user: User }) {
                     <div key={field.id} className="flex justify-between gap-3">
                       <div className="border-GreyCloud rounded-xls grid flex-1 gap-2 border px-5.5 py-6 lg:grid-cols-2">
                         {/* Platform Selection */}
-                        <div className="space-y-1">
-                          <p className="text-BluishGrey text-xs">Platform</p>
+                        <Controller
+                          control={form.control}
+                          name={`platforms.${index}.platform`}
+                          render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                              <FieldLabel htmlFor={field.name}>
+                                Platform
+                              </FieldLabel>
 
-                          <Controller
-                            control={form.control}
-                            name={`platforms.${index}.platform`}
-                            render={({ field }) => (
-                              <Popover
-                                open={openPlatforms[field.name] ?? false}
-                                onOpenChange={(value) =>
-                                  setOpenPlatforms((prev) => ({
-                                    ...prev,
-                                    [field.name]: value,
-                                  }))
-                                }
+                              <Select
+                                name={field.name}
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                disabled={!canEdit}
                               >
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    className="rounded-base border-GreyChateau w-full justify-between border"
-                                  >
-                                    {field.value ? (
-                                      <span className="capitalize">
-                                        {field.value}
-                                      </span>
-                                    ) : (
-                                      "Select Platform here"
-                                    )}
-                                    <ChevronDown className="text-OsloGrey size-4.5" />
-                                  </Button>
-                                </PopoverTrigger>
+                                <SelectTrigger
+                                  id={field.name}
+                                  aria-invalid={fieldState.invalid}
+                                  className="border-GreyChateau min-w-full"
+                                >
+                                  <SelectValue placeholder="Select Platform here" />
+                                </SelectTrigger>
+                                <SelectContent position="item-aligned">
+                                  {platformOptions.map((item, index) => (
+                                    <SelectItem
+                                      key={index}
+                                      value={item}
+                                      className="text-xs capitalize"
+                                    >
+                                      {item}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
 
-                                <PopoverContent className="rounded-base w-full min-w-100 p-0 px-4 py-2 shadow-[2px_4px_10px_0px_#00000040]">
-                                  <Command>
-                                    <CommandList>
-                                      <CommandGroup>
-                                        {platformOptions.length > 0 ? (
-                                          platformOptions.map(
-                                            (platform, optionIndex) => (
-                                              <CommandItem
-                                                key={optionIndex}
-                                                onSelect={() => {
-                                                  field.onChange(platform);
-                                                  setOpenPlatforms((prev) => ({
-                                                    ...prev,
-                                                    [field.name]: false,
-                                                  }));
-                                                }}
-                                                className={cn(
-                                                  "data-[selected=true]:bg-PortlandOrnage text-CloudyGrey cursor-pointer rounded-lg! px-3 py-1 text-xs capitalize data-[selected=true]:text-white",
-                                                  field.value === platform
-                                                    ? "font-semibold"
-                                                    : "font-medium",
-                                                )}
-                                              >
-                                                {platform}
-                                                <Check
-                                                  className={cn(
-                                                    "ml-auto size-4",
-                                                    field.value === platform
-                                                      ? "text-white opacity-100"
-                                                      : "opacity-0",
-                                                  )}
-                                                />
-                                              </CommandItem>
-                                            ),
-                                          )
-                                        ) : (
-                                          <CommandEmpty>
-                                            No platform added yet
-                                          </CommandEmpty>
-                                        )}
-
-                                        <CommandItem className="mt-2 flex-col items-start gap-y-2 px-3 py-2">
-                                          <button
-                                            type="button"
-                                            onClick={handleAddItem}
-                                            className="flex items-center gap-1"
-                                          >
-                                            <Plus className="text-CloudyGrey size-4" />
-                                            <span className="text-CloudyGrey text-xs font-medium">
-                                              Create New
-                                            </span>
-                                          </button>
-
-                                          <Input
-                                            value={newPlatform}
-                                            onChange={(e) =>
-                                              setNewPlatform(e.target.value)
-                                            }
-                                            className="border-OsloGrey h-8 rounded-xs"
-                                          />
-                                        </CommandItem>
-                                      </CommandGroup>
-                                    </CommandList>
-                                  </Command>
-                                </PopoverContent>
-                              </Popover>
-                            )}
-                          />
-                        </div>
+                              {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                              )}
+                            </Field>
+                          )}
+                        />
 
                         {/* Brand Partner Selection */}
-                        <div className="space-y-1">
-                          <p className="text-BluishGrey text-xs">
-                            Brand Partner
-                          </p>
+                        <Controller
+                          control={form.control}
+                          name={`platforms.${index}.brand_partner`}
+                          render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                              <FieldLabel htmlFor={field.name}>
+                                Brand Partner
+                              </FieldLabel>
 
-                          <Controller
-                            control={form.control}
-                            name={`platforms.${index}.brand_partner`}
-                            render={({ field }) => (
-                              <Popover
-                                open={openPartners[field.name] ?? false}
-                                onOpenChange={(value) =>
-                                  setOpenPartners((prev) => ({
-                                    ...prev,
-                                    [field.name]: value,
-                                  }))
-                                }
+                              <Select
+                                name={field.name}
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                disabled={!canEdit}
                               >
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    className="rounded-base border-GreyChateau w-full justify-between border"
-                                  >
-                                    {field.value ? (
-                                      <span className="capitalize">
-                                        {field.value}
-                                      </span>
-                                    ) : (
-                                      "Select Brand Partner here"
-                                    )}
+                                <SelectTrigger
+                                  id={field.name}
+                                  aria-invalid={fieldState.invalid}
+                                  className="border-GreyChateau min-w-full"
+                                >
+                                  <SelectValue placeholder="Select Brand Partner here" />
+                                </SelectTrigger>
+                                <SelectContent position="item-aligned">
+                                  {brandPartnerOptions.map((item, index) => (
+                                    <SelectItem
+                                      key={index}
+                                      value={item}
+                                      className="text-xs capitalize"
+                                    >
+                                      {item}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
 
-                                    <ChevronDown className="text-OsloGrey size-4.5" />
-                                  </Button>
-                                </PopoverTrigger>
-
-                                <PopoverContent className="rounded-base w-full min-w-100 p-0 px-4 py-2 shadow-[2px_4px_10px_0px_#00000040]">
-                                  <Command>
-                                    <CommandList>
-                                      <CommandGroup>
-                                        {brandPartnerOptions.length > 0 ? (
-                                          brandPartnerOptions.map(
-                                            (partner, optionIndex) => (
-                                              <CommandItem
-                                                key={optionIndex}
-                                                onSelect={() => {
-                                                  field.onChange(partner);
-                                                  setOpenPartners((prev) => ({
-                                                    ...prev,
-                                                    [field.name]: false,
-                                                  }));
-                                                }}
-                                                className={cn(
-                                                  "data-[selected=true]:bg-PortlandOrnage text-CloudyGrey cursor-pointer rounded-lg! px-3 py-1 text-xs capitalize data-[selected=true]:text-white",
-                                                  field.value === partner
-                                                    ? "font-semibold"
-                                                    : "font-medium",
-                                                )}
-                                              >
-                                                {partner}
-                                                <Check
-                                                  className={cn(
-                                                    "ml-auto size-4",
-                                                    field.value === partner
-                                                      ? "text-white opacity-100"
-                                                      : "opacity-0",
-                                                  )}
-                                                />
-                                              </CommandItem>
-                                            ),
-                                          )
-                                        ) : (
-                                          <CommandEmpty>
-                                            No brand partner added yet
-                                          </CommandEmpty>
-                                        )}
-
-                                        <CommandItem className="mt-2 flex-col items-start gap-y-2 px-3 py-2">
-                                          <button
-                                            type="button"
-                                            onClick={handleAddPartnerItem}
-                                            className="flex items-center gap-1"
-                                          >
-                                            <Plus className="text-CloudyGrey size-4" />
-                                            <span className="text-CloudyGrey text-xs font-medium">
-                                              Create New
-                                            </span>
-                                          </button>
-
-                                          <Input
-                                            value={newBrandPartner}
-                                            onChange={(e) =>
-                                              setNewBrandPartner(e.target.value)
-                                            }
-                                            className="border-OsloGrey h-8 rounded-xs"
-                                          />
-                                        </CommandItem>
-                                      </CommandGroup>
-                                    </CommandList>
-                                  </Command>
-                                </PopoverContent>
-                              </Popover>
-                            )}
-                          />
-                        </div>
+                              {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                              )}
+                            </Field>
+                          )}
+                        />
 
                         <Controller
                           name={`platforms.${index}.external_user_id`}
@@ -616,6 +473,8 @@ export default function UserDetails({ user }: { user: User }) {
                                   id={field.name}
                                   aria-invalid={fieldState.invalid}
                                   placeholder="Enter User ID here"
+                                  className="border-GreyChateau"
+                                  disabled={!canEdit}
                                 />
                                 {fieldState.invalid && (
                                   <FieldError errors={[fieldState.error]} />
@@ -660,155 +519,91 @@ export default function UserDetails({ user }: { user: User }) {
                     <div key={field.id} className="flex justify-between gap-3">
                       <div className="border-GreyCloud rounded-xls grid flex-1 gap-x-2 gap-y-3 border px-5.5 py-6 lg:grid-cols-2">
                         {/* Brand Partner selection */}
-                        <div className="space-y-1">
-                          <p className="text-BluishGrey text-xs">
-                            Brand Partner
-                          </p>
+                        <Controller
+                          control={form.control}
+                          name={`commissions.${index}.platform`}
+                          render={({ field, fieldState }) => (
+                            <Field data-invalid={fieldState.invalid}>
+                              <FieldLabel htmlFor={field.name}>
+                                Brand Partner
+                              </FieldLabel>
 
-                          <Controller
-                            control={form.control}
-                            name={`commissions.${index}.platform`}
-                            render={({ field }) => (
-                              <Popover
-                                open={openPartners2[field.name] ?? false}
-                                onOpenChange={(value) =>
-                                  setOpenPartners2((prev) => ({
-                                    ...prev,
-                                    [field.name]: value,
-                                  }))
-                                }
+                              <Select
+                                name={field.name}
+                                value={field.value}
+                                onValueChange={field.onChange}
+                                disabled={!canEdit}
                               >
-                                <PopoverTrigger asChild>
-                                  <Button
-                                    variant="outline"
-                                    role="combobox"
-                                    className="rounded-base border-GreyChateau w-full justify-between border"
-                                  >
-                                    {field.value ? (
-                                      <span className="capitalize">
-                                        {field.value}
-                                      </span>
-                                    ) : (
-                                      "Select Platform here"
-                                    )}
-                                    <ChevronDown className="text-OsloGrey size-4.5" />
-                                  </Button>
-                                </PopoverTrigger>
+                                <SelectTrigger
+                                  id={field.name}
+                                  aria-invalid={fieldState.invalid}
+                                  className="border-GreyChateau min-w-full"
+                                >
+                                  <SelectValue placeholder="Select Brand Partner here" />
+                                </SelectTrigger>
+                                <SelectContent position="item-aligned">
+                                  {brandPartnerOptions.map((item, index) => (
+                                    <SelectItem
+                                      key={index}
+                                      value={item}
+                                      className="text-xs capitalize"
+                                    >
+                                      {item}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
 
-                                <PopoverContent className="rounded-base w-full min-w-100 p-0 px-4 py-2 shadow-[2px_4px_10px_0px_#00000040]">
-                                  <Command>
-                                    <CommandList>
-                                      <CommandGroup>
-                                        {brandPartnerOptions.length > 0 ? (
-                                          brandPartnerOptions.map(
-                                            (partner, optionIndex) => (
-                                              <CommandItem
-                                                key={optionIndex}
-                                                onSelect={() => {
-                                                  field.onChange(partner);
-                                                  setOpenPartners2((prev) => ({
-                                                    ...prev,
-                                                    [field.name]: false,
-                                                  }));
-                                                }}
-                                                className={cn(
-                                                  "data-[selected=true]:bg-PortlandOrnage text-CloudyGrey cursor-pointer rounded-lg! px-3 py-1 text-xs capitalize data-[selected=true]:text-white",
-                                                  field.value === partner
-                                                    ? "font-semibold"
-                                                    : "font-medium",
-                                                )}
-                                              >
-                                                {partner}
-                                                <Check
-                                                  className={cn(
-                                                    "ml-auto size-4",
-                                                    field.value === partner
-                                                      ? "text-white opacity-100"
-                                                      : "opacity-0",
-                                                  )}
-                                                />
-                                              </CommandItem>
-                                            ),
-                                          )
-                                        ) : (
-                                          <CommandEmpty>
-                                            No brand partner added yet
-                                          </CommandEmpty>
-                                        )}
-
-                                        <CommandItem className="mt-2 flex-col items-start gap-y-2 px-3 py-2">
-                                          <button
-                                            type="button"
-                                            onClick={handleAddPartnerItem}
-                                            className="flex items-center gap-1"
-                                          >
-                                            <Plus className="text-CloudyGrey size-4" />
-                                            <span className="text-CloudyGrey text-xs font-medium">
-                                              Create New
-                                            </span>
-                                          </button>
-
-                                          <Input
-                                            value={newBrandPartner}
-                                            onChange={(e) =>
-                                              setNewBrandPartner(e.target.value)
-                                            }
-                                            className="border-OsloGrey h-8 rounded-xs"
-                                          />
-                                        </CommandItem>
-                                      </CommandGroup>
-                                    </CommandList>
-                                  </Command>
-                                </PopoverContent>
-                              </Popover>
-                            )}
-                          />
-                        </div>
+                              {fieldState.invalid && (
+                                <FieldError errors={[fieldState.error]} />
+                              )}
+                            </Field>
+                          )}
+                        />
 
                         {/* Amount Per Prescription */}
-                        <div className="space-y-1">
-                          <Controller
-                            control={form.control}
-                            name={`commissions.${index}.amount_per_prescription`}
-                            render={({ field, fieldState }) => {
-                              return (
-                                <Field data-invalid={fieldState.invalid}>
-                                  <FieldLabel htmlFor={field.name}>
-                                    Amount Per Prescription
-                                  </FieldLabel>
+                        <Controller
+                          control={form.control}
+                          name={`commissions.${index}.amount_per_prescription`}
+                          render={({ field, fieldState }) => {
+                            return (
+                              <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor={field.name}>
+                                  Amount Per Prescription
+                                </FieldLabel>
 
-                                  <InputGroup className="border-GreyChateau py-2.5 text-black">
-                                    <InputGroupAddon>
-                                      <InputGroupText className="font-normal text-black">
-                                        EUR:
-                                      </InputGroupText>
-                                    </InputGroupAddon>
-                                    <InputGroupInput
-                                      {...field}
-                                      onChange={(e) => {
-                                        const value = e.target.value;
+                                <InputGroup className="border-GreyChateau py-2.5 text-black">
+                                  <InputGroupAddon>
+                                    <InputGroupText className="font-normal text-black">
+                                      EUR:
+                                    </InputGroupText>
+                                  </InputGroupAddon>
+                                  <InputGroupInput
+                                    {...field}
+                                    onChange={(e) => {
+                                      const value = e.target.value;
 
-                                        // Allow only numbers and at most two decimal places
-                                        if (/^\d*\.?\d{0,2}$/.test(value)) {
-                                          field.onChange(value);
-                                        }
-                                      }}
-                                      inputMode="numeric"
-                                      id={field.name}
-                                      aria-invalid={fieldState.invalid}
-                                      placeholder="00"
-                                      className="border-GreyChateau border placeholder:text-black"
-                                    />
-                                  </InputGroup>
+                                      // Allow only numbers and at most two decimal places
+                                      if (/^\d*\.?\d{0,2}$/.test(value)) {
+                                        field.onChange(value);
+                                      }
+                                    }}
+                                    inputMode="numeric"
+                                    id={field.name}
+                                    aria-invalid={fieldState.invalid}
+                                    placeholder="00"
+                                    className="border-GreyChateau border placeholder:text-black"
+                                    disabled={!canEdit}
+                                  />
+                                </InputGroup>
 
-                                  {fieldState.invalid && (
-                                    <FieldError errors={[fieldState.error]} />
-                                  )}
-                                </Field>
-                              );
-                            }}
-                          />
-                        </div>
+                                {fieldState.invalid && (
+                                  <FieldError errors={[fieldState.error]} />
+                                )}
+                              </Field>
+                            );
+                          }}
+                        />
 
                         {/* Commission Options */}
                         <FieldGroup
@@ -831,6 +626,7 @@ export default function UserDetails({ user }: { user: User }) {
                                         className="gap-2 px-3 py-1"
                                       >
                                         <Checkbox
+                                          disabled={!canEdit}
                                           id={`form-rhf-checkbox-${index}-${commissionOption.id}`}
                                           name={field.name}
                                           aria-invalid={fieldState.invalid}

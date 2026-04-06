@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -67,7 +68,13 @@ export const commissionOptions: CommissionOption[] = [
   },
 ];
 
-export default function useUpdateUserDetails({ user }: { user: User }) {
+export default function useUpdateUserDetails({
+  user,
+  setCanEdit,
+}: {
+  user: User;
+  setCanEdit: Dispatch<SetStateAction<boolean>>;
+}) {
   const { refresh } = useRouter();
 
   const form = useForm<UpdateUserDetailsSchemaType>({
@@ -117,32 +124,74 @@ export default function useUpdateUserDetails({ user }: { user: User }) {
   });
 
   const onSubmit = async (data: UpdateUserDetailsSchemaType) => {
-    const formattedData = {
-      ...data,
-      commissions: data.commissions.map((commission) => ({
-        ...commission,
-        amount_per_prescription: Number.isNaN(
-          parseFloat(commission.amount_per_prescription),
-        )
-          ? 0
-          : parseFloat(commission.amount_per_prescription),
-      })),
-    };
+    let formattedData = {};
 
-    // console.log({ data, formattedData });
-    try {
-      const res = await updateUserAction(user.id, formattedData);
+    if (
+      (data.platforms.length === 1 && data.platforms[0].platform === "") ||
+      (data.commissions.length === 1 && data.commissions[0].platform === "")
+    ) {
+      if (data.platforms[0].platform === "") {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { platforms: _, ...rest } = data;
 
-      if (!res.error) {
-        refresh();
-        reset(data);
-        showToast(res.message);
-        reset();
-      } else {
-        showToast(res.message, "error");
+        formattedData = {
+          ...rest,
+        };
       }
-    } catch {
-      showToast("Something went wrong", "error");
+
+      if (data.commissions[0].platform === "") {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { commissions: _, ...rest } = data;
+
+        formattedData = {
+          ...rest,
+        };
+      }
+
+      try {
+        const res = await updateUserAction(user.id, formattedData);
+
+        if (!res.error) {
+          refresh();
+          setCanEdit(false);
+          reset(data);
+          showToast(res.message);
+          reset();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch {
+        showToast("Something went wrong", "error");
+      }
+    } else {
+      formattedData = {
+        ...data,
+        commissions: data.commissions.map((commission) => ({
+          ...commission,
+          amount_per_prescription: Number.isNaN(
+            parseFloat(commission.amount_per_prescription!),
+          )
+            ? 0
+            : parseFloat(commission.amount_per_prescription!),
+        })),
+      };
+
+      try {
+        const res = await updateUserAction(user.id, formattedData);
+
+        if (!res.error) {
+          refresh();
+          setCanEdit(false);
+
+          reset(data);
+          showToast(res.message);
+          reset();
+        } else {
+          showToast(res.message, "error");
+        }
+      } catch {
+        showToast("Something went wrong", "error");
+      }
     }
   };
 
