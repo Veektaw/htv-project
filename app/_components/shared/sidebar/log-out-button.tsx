@@ -12,7 +12,7 @@ export default function LogOutButton() {
     <LogOutModal>
       <button
         className={cn(
-          "hover:bg-PortlandOrnage text-OsloGrey mx-auto flex w-full items-center p-4 text-sm font-bold transition-all duration-300 hover:text-white",
+          "hover:bg-PortlandOrange text-OsloGrey mx-auto flex w-full items-center p-4 text-sm font-bold transition-all duration-300 hover:text-white",
           openSidebar
             ? "h-12.5 gap-3 rounded-[24px] hover:rounded-[24px]"
             : "rounded-xls hover:rounded-xls size-12.5 justify-center",

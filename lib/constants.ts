@@ -10,3 +10,6 @@ export const languages = [
     type: "de",
   },
 ];
+
+export const platforms = ["Adyen", "Shopify", "Rxscale"];
+export const brandPartners = ["NordLeaf", "Prio One", "SoLean"];

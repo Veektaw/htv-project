@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
+import { brandPartners } from "@/lib/constants";
 import { ChevronDownIcon } from "lucide-react";
 import {
   Select,
@@ -22,7 +23,7 @@ import useSetParam from "@/hooks/use-set-param";
 import Image from "next/image";
 import calendarIcon from "@/public/svgs/calendar.svg";
 
-const platforms = ["All", "NordLeaf", "Prio One", "SoLean"];
+const partners = ["All", ...brandPartners];
 
 export default function SortAndDateFilter() {
   const usePlatformFilterValues = useSetParam("platform");
@@ -65,25 +66,25 @@ export default function SortAndDateFilter() {
   return (
     <div className="border-GreyCloud rounded-base flex w-fit gap-8 border px-5 py-4">
       <div className="space-y-1">
-        <p className="text-xs font-medium text-black">Sort By Platform</p>
+        <p className="text-xs font-medium text-black">Sort By Partner</p>
 
         <Select value={value} onValueChange={handleSetParam}>
           <SelectTrigger
             data-platformfilterpending={isPending}
             className="h-7! w-47.75 rounded-[24px] border-black px-4 py-1.5 text-xs capitalize data-placeholder:text-black"
           >
-            <SelectValue placeholder="Platform" />
+            <SelectValue placeholder="Partner" />
           </SelectTrigger>
 
           <SelectContent>
             <SelectGroup>
-              {platforms.map((platform) => (
+              {partners.map((partner, index) => (
                 <SelectItem
-                  key={platform}
-                  value={platform}
+                  key={index}
+                  value={partner}
                   className="text-xs capitalize"
                 >
-                  {platform}
+                  {partners}
                 </SelectItem>
               ))}
             </SelectGroup>

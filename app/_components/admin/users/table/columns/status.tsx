@@ -11,7 +11,7 @@ export default function UserStatus({
         "w-32 rounded-xl px-4 py-1.5 text-center text-xs font-semibold",
         !deactivatedStatus
           ? "text-GreenHaze bg-KellyGreen/10"
-          : "bg-PortlandOrnage/10 text-PortlandOrnage",
+          : "bg-PortlandOrange/10 text-PortlandOrange",
       )}
     >
       {!deactivatedStatus ? "Activated" : "Deactivated"}
