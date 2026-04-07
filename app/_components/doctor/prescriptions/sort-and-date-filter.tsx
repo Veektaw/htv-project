@@ -84,7 +84,7 @@ export default function SortAndDateFilter() {
                   value={partner}
                   className="text-xs capitalize"
                 >
-                  {partners}
+                  {partner}
                 </SelectItem>
               ))}
             </SelectGroup>
