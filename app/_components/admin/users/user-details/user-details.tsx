@@ -489,8 +489,10 @@ export default function UserDetails({ user }: { user: User }) {
                       <menu className="flex flex-col gap-y-1">
                         {index === 0 && (
                           <button
+                            disabled={!canEdit}
                             type="button"
                             onClick={() => appendPlatform(defaultPlatformValue)}
+                            className="disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <Image src={plus} alt="plus icon" />
                           </button>
@@ -498,8 +500,10 @@ export default function UserDetails({ user }: { user: User }) {
 
                         {index > 0 && (
                           <button
+                            disabled={!canEdit}
                             type="button"
                             onClick={() => removePlatform(index)}
+                            className="disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <Image src={minus} alt="minus icon" />
                           </button>
@@ -706,10 +710,12 @@ export default function UserDetails({ user }: { user: User }) {
                       <menu className="flex flex-col gap-y-1">
                         {index === 0 && (
                           <button
+                            disabled={!canEdit}
                             type="button"
                             onClick={() =>
                               appendCommission(defaultCommissionValue)
                             }
+                            className="disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <Image src={plus} alt="plus icon" />
                           </button>
@@ -717,8 +723,10 @@ export default function UserDetails({ user }: { user: User }) {
 
                         {index > 0 && (
                           <button
+                            disabled={!canEdit}
                             type="button"
                             onClick={() => removeCommission(index)}
+                            className="disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <Image src={minus} alt="minus icon" />
                           </button>
