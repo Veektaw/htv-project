@@ -105,8 +105,10 @@ export type SignInResponse = {
   creator_info: null;
 };
 
+export type UserSessionData = Omit<User, "platforms" | "commissions">;
+
 export type UserDataAndAccessToken = {
-  user: User;
+  user: UserSessionData;
   accessToken: string;
 };
 

@@ -106,29 +106,26 @@ export default async function DoctorPrescriptions({
   if (total === 0) {
     return (
       <PrescriptionsProvider data={res.body}>
-        <section className="flex size-full flex-col gap-y-4">
-          <SortAndDateFilter />
-
-          <Empty className="flex size-full flex-1 items-center justify-center p-2">
-            <EmptyContent>
-              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-                No prescriptions yet
-              </p>
-            </EmptyContent>
-          </Empty>
-
-          <TablePaginationWrapper />
-        </section>
+        <Empty className="flex size-full items-center justify-center p-2">
+          <EmptyContent>
+            <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+              No prescriptions yet
+            </p>
+          </EmptyContent>
+        </Empty>
       </PrescriptionsProvider>
     );
   }
 
   return (
     <PrescriptionsProvider data={res.body}>
-      <section className="space-y-4">
+      <section className="flex h-full flex-col gap-y-4">
         <SortAndDateFilter />
-        <TableWrapper />
-        <TablePaginationWrapper />
+        <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">
+          <TableWrapper />
+
+          <TablePaginationWrapper />
+        </section>
       </section>
     </PrescriptionsProvider>
   );

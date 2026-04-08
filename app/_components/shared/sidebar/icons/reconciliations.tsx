@@ -1,4 +1,4 @@
-export default function ReconciliationIcon() {
+export default function ReconciliationsIcon() {
   return (
     <svg
       width="16"
