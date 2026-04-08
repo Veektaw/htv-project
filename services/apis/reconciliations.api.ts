@@ -16,7 +16,7 @@ export const getDoctorReconciliationsApi = ({
   };
 
   if (limit) params.limit = limit;
-  if (platform) params.platform = platform;
+  if (platform && platform.toLowerCase() !== "all") params.platform = platform;
   if (start_date) params.start_date = start_date;
   if (end_date) params.end_date = end_date;
 
@@ -39,7 +39,7 @@ export const getAllReconciliationsApi = ({
   };
 
   if (limit) params.limit = limit;
-  if (platform) params.platform = platform;
+  if (platform && platform.toLowerCase() !== "all") params.platform = platform;
   if (start_date) params.start_date = start_date;
   if (end_date) params.end_date = end_date;
   if (search) params.keyword = search;
