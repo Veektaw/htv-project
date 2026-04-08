@@ -2,13 +2,13 @@
 
 import { createContext, ReactNode, use } from "react";
 import {
-  GetDoctorReconciliation,
+  GetDoctorReconciliations,
   Reconciliation,
 } from "@/types/reconciliation";
 import useSetParam from "@/hooks/use-set-param";
 import usePagination from "@/hooks/use-pagination";
 
-type ReconciliationContextType = {
+type ReconciliationsContextType = {
   reconciliations: Reconciliation[];
   useSearchValues: ReturnType<typeof useSetParam>;
   useRoleFilterValues: ReturnType<typeof useSetParam>;
@@ -16,15 +16,15 @@ type ReconciliationContextType = {
   isPending: boolean;
 };
 
-const ReconciliationContext = createContext<ReconciliationContextType>(
-  {} as ReconciliationContextType,
+const ReconciliationsContext = createContext<ReconciliationsContextType>(
+  {} as ReconciliationsContextType,
 );
 
-export default function ReconciliationProvider({
+export default function ReconciliationsProvider({
   data,
   children,
 }: {
-  data: GetDoctorReconciliation;
+  data: GetDoctorReconciliations;
   children: ReactNode;
 }) {
   const { reconciliations, total, page, limit, total_page } = data;
@@ -44,7 +44,7 @@ export default function ReconciliationProvider({
     useRoleFilterValues.isPending ||
     pagination.isPending;
 
-  const value: ReconciliationContextType = {
+  const value: ReconciliationsContextType = {
     reconciliations,
     pagination,
     useSearchValues,
@@ -53,16 +53,16 @@ export default function ReconciliationProvider({
   };
 
   return (
-    <ReconciliationContext value={value}>{children}</ReconciliationContext>
+    <ReconciliationsContext value={value}>{children}</ReconciliationsContext>
   );
 }
 
-export function useReconciliation() {
-  const context = use(ReconciliationContext);
+export function useReconciliations() {
+  const context = use(ReconciliationsContext);
 
   if (context === undefined) {
     throw new Error(
-      "useReconciliation must be used within a ReconciliationProvider",
+      "useReconciliations must be used within a ReconciliationsProvider",
     );
   }
 
