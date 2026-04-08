@@ -1,12 +1,13 @@
 import { User } from "./auth";
 import { Pagination } from "./users";
 
-export type GetDoctorReconciliationParams = {
+export type GetDoctorReconciliationsParams = {
   page?: string;
   limit?: string;
   platform?: string;
   start_date?: string;
   end_date?: string;
+  search?: string;
 };
 
 export type ReconciliationStatus = "pending";
@@ -25,6 +26,6 @@ export type Reconciliation = {
   updated_at: string;
 };
 
-export type GetDoctorReconciliation = Pagination & {
+export type GetDoctorReconciliations = Pagination & {
   reconciliations: Reconciliation[];
 };

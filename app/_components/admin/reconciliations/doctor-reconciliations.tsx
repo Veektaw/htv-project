@@ -1,24 +1,25 @@
-import { getDoctorReconciliationApi } from "@/services/apis/reconciliation.api";
+import { getAllReconciliationsApi } from "@/services/apis/reconciliations.api";
 import { format } from "date-fns";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
-import ReconciliationProvider from "./contexts/reconciliation-provider";
-import SortAndDateFilter from "../prescriptions/sort-and-date-filter";
+import ReconciliationsProvider from "../../doctor/reconciliations/contexts/reconciliations-provider";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
+import SearchWrapper from "./search-wrapper";
 
 type DoctorPrescriptionsProps = {
   searchParamsValues: { [key: string]: string | undefined };
 };
 
-export default async function DoctorReconciliation({
+export default async function DoctorReconciliations({
   searchParamsValues,
 }: DoctorPrescriptionsProps) {
-  const { page, platform, start_date, end_date } = searchParamsValues;
-  const res = await getDoctorReconciliationApi({
+  const { page, platform, start_date, end_date, search } = searchParamsValues;
+  const res = await getAllReconciliationsApi({
     page,
     platform,
     start_date,
     end_date,
+    search,
   });
 
   if (!res.ok) {
@@ -40,9 +41,10 @@ export default async function DoctorReconciliation({
 
   if (platform && start_date && end_date && total === 0) {
     return (
-      <ReconciliationProvider data={res.body}>
+      <ReconciliationsProvider data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
-          <SortAndDateFilter />
+          {/* <SortAndDateFilter /> */}
+          <SearchWrapper />
 
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
@@ -58,15 +60,16 @@ export default async function DoctorReconciliation({
             </EmptyContent>
           </Empty>
         </section>
-      </ReconciliationProvider>
+      </ReconciliationsProvider>
     );
   }
 
   if (start_date && end_date && total === 0) {
     return (
-      <ReconciliationProvider data={res.body}>
+      <ReconciliationsProvider data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
-          <SortAndDateFilter />
+          {/* <SortAndDateFilter /> */}
+          <SearchWrapper />
 
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
@@ -80,15 +83,16 @@ export default async function DoctorReconciliation({
             </EmptyContent>
           </Empty>
         </section>
-      </ReconciliationProvider>
+      </ReconciliationsProvider>
     );
   }
 
   if (platform && total === 0) {
     return (
-      <ReconciliationProvider data={res.body}>
+      <ReconciliationsProvider data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
-          <SortAndDateFilter />
+          {/* <SortAndDateFilter /> */}
+          <SearchWrapper />
 
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
@@ -99,13 +103,13 @@ export default async function DoctorReconciliation({
             </EmptyContent>
           </Empty>
         </section>
-      </ReconciliationProvider>
+      </ReconciliationsProvider>
     );
   }
 
   if (total === 0) {
     return (
-      <ReconciliationProvider data={res.body}>
+      <ReconciliationsProvider data={res.body}>
         <Empty className="flex size-full items-center justify-center p-2">
           <EmptyContent>
             <p className="text-MistBlue w-full max-w-84 text-center text-sm">
@@ -113,20 +117,21 @@ export default async function DoctorReconciliation({
             </p>
           </EmptyContent>
         </Empty>
-      </ReconciliationProvider>
+      </ReconciliationsProvider>
     );
   }
 
   return (
-    <ReconciliationProvider data={res.body}>
+    <ReconciliationsProvider data={res.body}>
       <section className="flex h-full flex-col gap-y-4">
-        <SortAndDateFilter />
+        {/* <SortAndDateFilter /> */}
+        <SearchWrapper />
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">
           <TableWrapper />
 
           <TablePaginationWrapper />
         </section>
       </section>
-    </ReconciliationProvider>
+    </ReconciliationsProvider>
   );
 }

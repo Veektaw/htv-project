@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import Header from "@/app/_components/shared/header/header";
 import SubHeader from "@/app/_components/doctor/reconciliations/sub-header";
 import Loader from "@/app/_components/shared/loader";
-import DoctorReconciliations from "@/app/_components/doctor/reconciliations/doctor-reconciliations";
+import DoctorReconciliations from "@/app/_components/admin/reconciliations/doctor-reconciliations";
 
 type PageParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -18,7 +18,7 @@ export default async function page({ searchParams }: PageParams) {
 
   return (
     <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6">
-      <Header type="Doctor">
+      <Header type="Admin">
         <SubHeader />
       </Header>
 
