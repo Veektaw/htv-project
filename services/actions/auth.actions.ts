@@ -30,7 +30,10 @@ export const signInAction = async (data: SignInPayload) => {
     user,
   } = response.body;
 
-  await setCookie({ user, accessToken, refreshToken });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { platforms, commissions, ...rest } = user;
+
+  await setCookie({ user: rest, accessToken, refreshToken });
 
   return {
     error: false,

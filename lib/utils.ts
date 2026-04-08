@@ -27,7 +27,7 @@ export function debouncer<T>(func: (val: T) => void, delay: number) {
 export function formatPrescriptionDate(dateString: string) {
   const date = parse(dateString, "yyyy-MM", new Date());
 
-  const formattedDate = format(date, "MMMM yyyy");
+  const formattedDate = format(date, "MMMM, yyyy");
 
   return formattedDate;
 }

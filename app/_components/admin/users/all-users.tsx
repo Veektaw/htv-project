@@ -51,20 +51,14 @@ export default async function AllUsers({ search, page, role }: AllUsersProps) {
   if (total === 0) {
     return (
       <UsersProvider data={res.body}>
-        <section className="flex size-full flex-col gap-y-4">
-          <SearchWrapper />
-
-          <Empty className="flex size-full flex-1 items-center justify-center p-2">
-            <EmptyContent>
-              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-                No users have been created yet. <br /> Click the “Create New
-                User” button to add a new user.
-              </p>
-            </EmptyContent>
-          </Empty>
-
-          <TablePaginationWrapper />
-        </section>
+        <Empty className="flex size-full items-center justify-center p-2">
+          <EmptyContent>
+            <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+              No users have been created yet. <br /> Click the “Create New User”
+              button to add a new user.
+            </p>
+          </EmptyContent>
+        </Empty>
       </UsersProvider>
     );
   }

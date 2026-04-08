@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} text-RangoonGreen text-sm antialiased`}
+        className={`${inter.className} text-RangoonGreen overflow-clip text-sm antialiased`}
       >
         <TooltipProvider>{children}</TooltipProvider>
         <Toaster position="top-right" className="font-inter!" />

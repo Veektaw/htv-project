@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SignJWT, jwtVerify } from "jose";
-import { EncryptData, User, UserSession } from "@/types/auth";
+import { EncryptData, UserSession, UserSessionData } from "@/types/auth";
 
 const USER_SESSION_KEY = "session";
 // const ACCESS_TOKEN = "access_token";
@@ -36,7 +36,7 @@ export async function decrypt<T>(input: string): Promise<T | null> {
 }
 
 export async function setCookie(data: {
-  user: User;
+  user: UserSessionData;
   accessToken: string;
   refreshToken: string;
 }) {
@@ -162,7 +162,7 @@ export async function logout() {
   cookieStore.set(REFRESH_TOKEN, "", { expires: new Date(0) });
 }
 
-export async function getUser(): Promise<User | undefined> {
+export async function getUser(): Promise<UserSessionData | undefined> {
   const session = await getUserSession();
 
   if (!session?.data) {
