@@ -237,7 +237,7 @@ export default function UserDetails({ user }: { user: User }) {
                             type="email"
                             placeholder="Email address"
                             className="border-GreyChateau"
-                            disabled={!canEdit}
+                            disabled={true}
                           />
                           {fieldState.invalid && (
                             <FieldError errors={[fieldState.error]} />
