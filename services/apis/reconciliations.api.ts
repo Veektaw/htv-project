@@ -2,7 +2,9 @@ import { Api } from "./api";
 import {
   GetDoctorReconciliations,
   GetDoctorReconciliationsParams,
-} from "@/types/reconciliation";
+  Reconciliation,
+  UpdateReconciliationPayload,
+} from "@/types/reconciliations";
 
 export const getDoctorReconciliationsApi = ({
   page = "1",
@@ -48,4 +50,15 @@ export const getAllReconciliationsApi = ({
   const url = `/admin/reconciliation/${queryString ? `?${queryString}` : ""}`;
 
   return Api.get<GetDoctorReconciliations>(url, true);
+};
+
+export const updateReconciliationApi = (
+  id: string,
+  body: UpdateReconciliationPayload,
+) => {
+  return Api.put<UpdateReconciliationPayload, Reconciliation>(
+    `/admin/reconciliation/${id}/`,
+    body,
+    true,
+  );
 };

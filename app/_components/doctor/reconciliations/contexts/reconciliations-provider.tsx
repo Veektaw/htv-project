@@ -4,7 +4,7 @@ import { createContext, ReactNode, use } from "react";
 import {
   GetDoctorReconciliations,
   Reconciliation,
-} from "@/types/reconciliation";
+} from "@/types/reconciliations";
 import useSetParam from "@/hooks/use-set-param";
 import usePagination from "@/hooks/use-pagination";
 

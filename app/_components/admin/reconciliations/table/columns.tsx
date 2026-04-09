@@ -1,7 +1,8 @@
 import { ReactNode } from "react";
 import { Column } from "@/app/_components/shared/table-component/table-component";
-import { Reconciliation } from "@/types/reconciliation";
+import { Reconciliation, ReconciliationStatus } from "@/types/reconciliations";
 import { formatPrescriptionDate } from "@/lib/utils";
+import Status from "@/app/_components/doctor/reconciliations/table/columns/status";
 import MenuActions from "@/app/_components/shared/menu-actions";
 import Actions from "./columns/actions";
 
@@ -55,15 +56,16 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Status",
     key: "status",
-    render: (value) => <span className="capitalize">{value as string}</span>,
+    render: (value) => <Status value={value as ReconciliationStatus} />,
   },
   {
     title: "",
     key: "actions",
-    render: () => (
-      <MenuActions>
-        <Actions />
-      </MenuActions>
-    ),
+    render: (_, record) =>
+      record.status !== "completed" && (
+        <MenuActions>
+          <Actions reconciliation={record} />
+        </MenuActions>
+      ),
   },
 ];
