@@ -10,7 +10,7 @@ export type GetDoctorReconciliationsParams = {
   search?: string;
 };
 
-export type ReconciliationStatus = "pending";
+export type ReconciliationStatus = "pending" | "approved" | "completed";
 
 export type Reconciliation = {
   id: string;
@@ -29,3 +29,5 @@ export type Reconciliation = {
 export type GetDoctorReconciliations = Pagination & {
   reconciliations: Reconciliation[];
 };
+
+export type UpdateReconciliationPayload = { action_type: string };
