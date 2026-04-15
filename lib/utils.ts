@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
-import { format, parse } from "date-fns";
+import { format, parse, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -30,4 +30,10 @@ export function formatPrescriptionDate(dateString: string) {
   const formattedDate = format(date, "MMMM, yyyy");
 
   return formattedDate;
+}
+
+export function formatInvoiceCreatedAtDate(dateString: string) {
+  const formatted = format(parseISO(dateString), "dd MMMM, yyyy");
+
+  return formatted;
 }
