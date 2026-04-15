@@ -6,11 +6,11 @@ import { redirect } from "next/navigation";
 import { SignJWT, jwtVerify } from "jose";
 import { EncryptData, UserSession, UserSessionData } from "@/types/auth";
 
-const USER_SESSION_KEY = "session";
+export const USER_SESSION_KEY = "session";
 // const ACCESS_TOKEN = "access_token";
-const REFRESH_TOKEN = "refresh_token";
+export const REFRESH_TOKEN = "refresh_token";
 
-const EXPIRY_TIME = 7200;
+const EXPIRY_TIME = 900;
 
 const secretKey = process.env.SECRET_KEY!;
 
