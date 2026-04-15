@@ -21,6 +21,7 @@ export default function useLogin() {
   const onSubmit = async (data: LoginSchemaType) => {
     try {
       const res = await signInAction(data);
+      console.log("Login response:", res); // Debug log to check the response
 
       if (!res.error) {
         if (res.mustChangePassword) {

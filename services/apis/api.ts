@@ -1,8 +1,8 @@
 import { AuthorizationHeader, OptionsType, ResponseType } from "@/types/api";
 import { getUserSession } from "../auth";
 
-export class Api {
-  static baseUrl = process.env.BASE_URL!;
+export class Api {// Debug log to check the base URL
+  static baseUrl = process.env.BASE_URL;
 
   private static async getToken() {
     const userSession = await getUserSession();
