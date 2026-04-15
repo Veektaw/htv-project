@@ -7,7 +7,7 @@ import {
   SignInResponse,
 } from "@/types/auth";
 
-export const signInApi = (body: SignInPayload) => {
+export const signInApi = (body: SignInPayload) => {// Debug log to check the payload
   return Api.post<SignInPayload, SignInResponse>("/auth/login/", body);
 };
 
