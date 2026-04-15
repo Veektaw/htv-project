@@ -61,9 +61,13 @@ export const getInvoicesApi = ({ page = "1", limit, doctor_id }: GetInvoicesPara
 
 export const createPaymentApi = (data: CreatePaymentParams) => {
   const { doctor_id, ...payload } = data;
-  return Api.post<typeof payload, GetAdminPayments>(`/admin/payments/${doctor_id}`, payload, true);
+  return Api.post<typeof payload, GetAdminPayments>(
+    `/admin/payments/${doctor_id}/`,
+    payload,
+    true
+  );
 };
 
 export const deletePaymentApi = ({ payment_id }: DeletePaymentParams) => {
-  return Api.post<null, { message: string }>(`/admin/payments/${payment_id}`, null, true);
+  return Api.delete<null, { message: string }>(`/admin/payments/${payment_id}/`, null, true);
 };

@@ -53,6 +53,7 @@ export const getAdminPaymentsAction = async (params: {
   const response = await getAdminPaymentsApi(params);
 
   if (!response.ok) {
+    console.log("Failed to fetch admin payments:", response.body.message);
     return {
       error: true,
       message: response.body.message,

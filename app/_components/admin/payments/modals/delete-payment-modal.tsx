@@ -11,7 +11,7 @@ import {
 } from "@/app/_components/ui/dialog";
 import { Button } from "@/app/_components/ui/button";
 import { deletePaymentAction } from "@/services/actions/payments.actions";
-// import { toast } from "@/lib/toast";
+import { showToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { Trash2 } from "lucide-react";
 
@@ -29,14 +29,14 @@ export default function DeletePaymentModal({ paymentId }: DeletePaymentModalProp
     try {
       const result = await deletePaymentAction(paymentId);
       if (result.error) {
-        // toast.error(result.message);
+        showToast(result.message, "error");
       } else {
-        // toast.success(result.message);
+        showToast(result.message, "success");
         setOpen(false);
         router.refresh();
       }
     } catch {
-    //   toast.error("An error occurred while deleting the payment");
+      showToast("An error occurred while deleting the payment", "error");
     } finally {
       setIsLoading(false);
     }

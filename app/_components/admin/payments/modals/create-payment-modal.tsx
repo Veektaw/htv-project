@@ -5,12 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { format } from "date-fns";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/app/_components/ui/dialog";
+import { showToast } from "@/lib/toast";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
 import {
@@ -37,7 +32,7 @@ const createPaymentSchema = z.object({
   doctor_id: z.string().min(1, "Doctor is required"),
   invoice_id: z.string().min(1, "Invoice is required"),
   source: z.string().min(1, "Source is required"),
-  amount_paid: z.number().min(0, "Amount paid must be positive"),
+  amount_paid: z.coerce.number().min(0, "Amount paid must be positive"),
   description: z.string().min(1, "Description is required"),
   payment_date: z.string().min(1, "Payment date is required"),
   payment_ref: z.string().min(1, "Payment reference is required"),
@@ -66,29 +61,26 @@ export default function CreatePaymentModal() {
     resolver: zodResolver(createPaymentSchema),
     defaultValues: {
       payment_date: format(new Date(), "yyyy-MM-dd"),
+      amount_paid: 0,
     },
   });
 
   const selectedDoctorId = watch("doctor_id");
 
   useEffect(() => {
+    if (!open) return;
     const fetchDoctors = async () => {
       setLoadingDoctors(true);
       try {
         const result = await getDoctorsAction();
-        if (!result.error) {
-          setDoctors(result.doctors);
-        }
+        if (!result.error) setDoctors(result.doctors);
       } catch (error) {
         console.error("Failed to fetch doctors:", error);
       } finally {
         setLoadingDoctors(false);
       }
     };
-
-    if (open) {
-      fetchDoctors();
-    }
+    fetchDoctors();
   }, [open]);
 
   useEffect(() => {
@@ -100,39 +92,41 @@ export default function CreatePaymentModal() {
       setLoadingInvoices(true);
       try {
         const result = await getInvoicesAction(selectedDoctorId);
-        if (!result.error) {
-          setInvoices(result.invoices);
-        }
+        if (!result.error) setInvoices(result.invoices);
       } catch (error) {
+        showToast("Failed to fetch invoices for the selected doctor", "error");
         console.error("Failed to fetch invoices:", error);
       } finally {
         setLoadingInvoices(false);
       }
     };
-
     fetchInvoices();
   }, [selectedDoctorId]);
+
+  const handleClose = () => {
+    setOpen(false);
+    reset();
+  };
 
   const onSubmit = async (data: CreatePaymentForm) => {
     setIsLoading(true);
     try {
       const selectedInvoice = invoices.find((inv) => inv.id === data.invoice_id);
       if (selectedInvoice && selectedInvoice.user_id !== data.doctor_id) {
-        console.error("Selected invoice does not belong to the selected doctor");
+        showToast("Selected invoice does not belong to the selected doctor", "error");
         return;
       }
 
       const result = await createPaymentAction(data);
       if (result.error) {
-        // toast.error(result.message);
+        showToast(result.message, "error");
       } else {
-        // toast.success(result.message);
-        setOpen(false);
-        reset();
+        showToast(result.message, "success");
+        handleClose();
         router.refresh();
       }
     } catch {
-      // toast.error("An error occurred while creating the payment");
+      showToast("An error occurred while creating the payment", "error");
     } finally {
       setIsLoading(false);
     }
@@ -142,7 +136,7 @@ export default function CreatePaymentModal() {
   const selectedInvoice = invoices.find((inv) => inv.id === watch("invoice_id"));
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <>
       <Button onClick={() => setOpen(true)}>Create Payment</Button>
 
       {open && (
@@ -152,7 +146,8 @@ export default function CreatePaymentModal() {
             <div className="flex items-center justify-between px-8 pt-7 pb-4">
               <h2 className="text-xl font-semibold text-gray-900">Create Payment</h2>
               <button
-                onClick={() => setOpen(false)}
+                type="button"
+                onClick={handleClose}
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <X size={20} />
@@ -162,12 +157,11 @@ export default function CreatePaymentModal() {
             {/* Doctor name */}
             {selectedDoctor && (
               <div className="px-8 pb-2 text-right text-sm font-semibold text-gray-800">
-             {selectedDoctor.full_name}
+                {selectedDoctor.full_name}
               </div>
             )}
 
             <form onSubmit={handleSubmit(onSubmit)}>
-              {/* Info Card */}
               <div className="mx-8 mb-6 border border-gray-200 rounded-xl p-6 space-y-5">
                 {/* Row 1: User ID + Date */}
                 <div className="grid grid-cols-2 gap-6">
@@ -203,6 +197,7 @@ export default function CreatePaymentModal() {
                     <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                       <PopoverTrigger asChild>
                         <Button
+                          type="button"
                           variant="outline"
                           className={cn(
                             "h-11 w-full justify-start text-left font-normal rounded-lg border-gray-200 bg-white text-sm text-gray-800 focus:ring-2 focus:ring-black",
@@ -220,7 +215,11 @@ export default function CreatePaymentModal() {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
-                          selected={watch("payment_date") ? new Date(watch("payment_date")) : undefined}
+                          selected={
+                            watch("payment_date")
+                              ? new Date(watch("payment_date"))
+                              : undefined
+                          }
                           onSelect={(date) => {
                             if (date) {
                               setValue("payment_date", format(date, "yyyy-MM-dd"));
@@ -287,10 +286,10 @@ export default function CreatePaymentModal() {
                   </div>
                 </div>
 
-                {/* Row 3: Payment Date + Source */}
+                {/* Row 3: Description + Amount + Source */}
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1.5">Payment Date</label>
+                    <label className="block text-xs text-gray-500 mb-1.5">Description</label>
                     <Input
                       {...register("description")}
                       placeholder="Enter description"
@@ -298,18 +297,6 @@ export default function CreatePaymentModal() {
                     />
                     {errors.description && (
                       <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>
-                    )}
-                  </div>
-                   <div>
-                    <label className="block text-xs text-gray-500 mb-1.5">Amount</label>
-                    <Input
-                        type="number"
-                      {...register("amount_paid", { valueAsNumber: true })}
-                      placeholder="Enter amount"
-                      className="h-11 rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-black"
-                    />
-                    {errors.amount_paid && (
-                      <p className="text-xs text-red-500 mt-1">{errors.amount_paid.message}</p>
                     )}
                   </div>
                   <div>
@@ -325,80 +312,60 @@ export default function CreatePaymentModal() {
                   </div>
                 </div>
 
-                {/* Divider */}
                 <hr className="border-gray-200" />
 
-                {/* Line Items Table - Only show when invoice is selected */}
+                {/* Line Items Table */}
                 {selectedInvoice && (
-                <div>
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="bg-gray-50">
-                        <th className="text-left text-xs font-medium text-gray-600 px-4 py-3 rounded-tl-lg w-12">S/N</th>
-                        <th className="text-left text-xs font-medium text-gray-600 px-4 py-3">Platform</th>
-                        <th className="text-left text-xs font-medium text-gray-600 px-4 py-3">Description</th>
-                        <th className="text-right text-xs font-medium text-gray-600 px-4 py-3 rounded-tr-lg">Amount ($)</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr className="border-b border-gray-100 last:border-0">
-                        <td className="px-4 py-4 text-gray-500 text-xs align-top pt-5">
-                          01
-                        </td>
-                        <td className="px-4 py-4 align-top">
-                          <input
-                            type="text"
-                            placeholder="Platform"
-                            value={selectedInvoice?.platform || ""}
-                            disabled={!!selectedInvoice}
-                            className="w-full text-sm text-gray-700 focus:outline-none disabled:text-gray-500 bg-transparent"
-                          />
-                        </td>
-                        <td className="px-4 py-4 align-top">
-                          <input
-                            type="text"
-                            placeholder="Description"
-                            value={selectedInvoice?.notes || ""}
-                            disabled={!!selectedInvoice}
-                            className="w-full text-sm text-gray-700 focus:outline-none disabled:text-gray-500 bg-transparent"
-                          />
-                        </td>
-                        <td className="px-4 py-4 align-top text-right">
-                          <input
-                            type="number"
-                            placeholder="Amount"
-                            value={selectedInvoice?.amount || ""}
-                            disabled={!!selectedInvoice}
-                            className="w-full text-sm text-gray-700 focus:outline-none disabled:text-gray-500 bg-transparent text-right"
-                          />
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+                  <div>
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="bg-gray-50">
+                          <th className="text-left text-xs font-medium text-gray-600 px-4 py-3 rounded-tl-lg w-12">S/N</th>
+                          <th className="text-left text-xs font-medium text-gray-600 px-4 py-3">Platform</th>
+                          <th className="text-left text-xs font-medium text-gray-600 px-4 py-3">Description</th>
+                          <th className="text-right text-xs font-medium text-gray-600 px-4 py-3 rounded-tr-lg">Amount ($)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr className="border-b border-gray-100 last:border-0">
+                          <td className="px-4 py-4 text-gray-500 text-xs align-top pt-5">01</td>
+                          <td className="px-4 py-4 align-top">
+                            <input
+                              type="text"
+                              value={selectedInvoice?.platform || ""}
+                              disabled
+                              className="w-full text-sm text-gray-700 focus:outline-none disabled:text-gray-500 bg-transparent"
+                            />
+                          </td>
+                          <td className="px-4 py-4 align-top">
+                            <input
+                              type="text"
+                              value={selectedInvoice?.notes || ""}
+                              disabled
+                              className="w-full text-sm text-gray-700 focus:outline-none disabled:text-gray-500 bg-transparent"
+                            />
+                          </td>
+                          <td className="px-4 py-4 align-top text-right">
+                            <input
+                              type="number"
+                              value={selectedInvoice?.amount || ""}
+                              disabled
+                              className="w-full text-sm text-gray-700 focus:outline-none disabled:text-gray-500 bg-transparent text-right"
+                            />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 )}
 
                 {/* Totals */}
                 <div className="flex justify-end">
                   <div className="w-72 space-y-2">
-                      <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Sum Total ($)</span>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        {...register("amount_paid", { valueAsNumber: true })}
-                        placeholder="0.00"
-                        className="w-32 h-8 text-right text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-black"
-                      />
-                    </div>
-                    {errors.amount_paid && (
-                      <p className="text-xs text-red-500 text-right">{errors.amount_paid.message}</p>
-                    )}
                     <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Gross Total ($)</span>
+                      <span className="text-sm text-gray-600">Amount Paid ($)</span>
                       <Input
                         type="number"
-                        step="0.01"
                         {...register("amount_paid", { valueAsNumber: true })}
                         placeholder="0.00"
                         className="w-32 h-8 text-right text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-black"
@@ -416,7 +383,7 @@ export default function CreatePaymentModal() {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => setOpen(false)}
+                  onClick={handleClose}
                   className="rounded-full px-8 h-11 border-gray-300 text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
@@ -433,6 +400,6 @@ export default function CreatePaymentModal() {
           </div>
         </div>
       )}
-    </Dialog>
+    </>
   );
 }
