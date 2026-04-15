@@ -12,15 +12,22 @@ export type GetDoctorInvoicesParams = {
   status?: string;
 };
 
-export type InvoiceStatus = "Paid" | "Under review" | "Dispute Invoice";
+export type InvoiceStatus = "under_review" | "approved" | "paid" | "rejected";
 
 export type Invoice = {
   id: string;
-  doctor_id: string;
+  user_id: string;
   user: User;
+  period_month: string;
   platform: string;
-  outstanding: number;
+  file_url: string | null;
   status: InvoiceStatus;
+  amount: number;
+  submitted_at: string | null;
+  notes: string;
+  reviewed_by: string | null;
+  reconciliation_id: string;
+  invoice_ref: string;
   created_at: string;
   updated_at: string;
 };

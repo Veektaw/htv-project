@@ -19,3 +19,22 @@ export const getDoctorInvoicesApi = ({
 
   return Api.get<GetDoctorInvoices>(url, true);
 };
+
+export const getAllInvoicesApi = ({
+  page = "1",
+  limit = "10",
+  status,
+}: GetDoctorInvoicesParams) => {
+  const params: Record<string, string> = {
+    page,
+    limit,
+  };
+
+  if (status) params.status = status;
+
+  const queryString = new URLSearchParams(params).toString();
+
+  const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;
+
+  return Api.get<GetDoctorInvoices>(url, true);
+};

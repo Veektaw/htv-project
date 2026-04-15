@@ -35,7 +35,7 @@ export default function TableComponent<T extends Record<string, any>>(
     <>
       <Table
         className={cn(
-          "min-w-200 text-sm font-medium group-has-data-[datefilterpending=true]:animate-pulse group-has-data-[paginationpending=true]:animate-pulse group-has-data-[platformfilterpending=true]:animate-pulse group-has-data-[rolefilterpending=true]:animate-pulse group-has-data-[searchpending=true]:animate-pulse",
+          "min-w-200 text-sm font-medium group-has-data-[datefilterpending=true]:animate-pulse group-has-data-[paginationpending=true]:animate-pulse group-has-data-[platformfilterpending=true]:animate-pulse group-has-data-[rolefilterpending=true]:animate-pulse group-has-data-[searchpending=true]:animate-pulse group-has-data-[statusfilterpending=true]:animate-pulse",
           className,
         )}
       >

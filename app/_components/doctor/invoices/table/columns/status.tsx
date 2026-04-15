@@ -6,10 +6,10 @@ export default function Status({ value }: { value: InvoiceStatus }) {
     <span
       className={cn(
         "capitalize",
-        value === "Paid"
+        value === "paid"
           ? "text-KellyGreen"
-          : value === "Dispute Invoice"
-            ? "text-[#FF513B]"
+          : value === "rejected"
+            ? "text-PortlandOrange"
             : "text-yellow-500",
       )}
     >
