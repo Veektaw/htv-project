@@ -12,6 +12,22 @@ export type GetDoctorInvoicesParams = {
   status?: string;
 };
 
+export type CreateManualInvoicePayload = {
+  userId: string;
+  invoiceId: string;
+  dateTime: string;
+};
+
+export type CreateManualInvoiceApiPayload = {
+  user_id: string;
+  invoice_id: string;
+  date_time: string;
+};
+
+export type CreateManualInvoiceResponse = {
+  message: string;
+};
+
 export type InvoiceStatus = "Paid" | "Under review" | "Dispute Invoice";
 
 export type Invoice = {

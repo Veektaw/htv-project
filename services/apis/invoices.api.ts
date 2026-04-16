@@ -1,5 +1,10 @@
 import { Api } from "./api";
-import { GetDoctorInvoices, GetDoctorInvoicesParams } from "@/types/invoices";
+import {
+  CreateManualInvoiceApiPayload,
+  CreateManualInvoiceResponse,
+  GetDoctorInvoices,
+  GetDoctorInvoicesParams,
+} from "@/types/invoices";
 
 export const getDoctorInvoicesApi = ({
   page = "1",
@@ -18,4 +23,14 @@ export const getDoctorInvoicesApi = ({
   const url = `/doctor/invoices/${queryString ? `?${queryString}` : ""}`;
 
   return Api.get<GetDoctorInvoices>(url, true);
+};
+
+export const createManualInvoiceApi = (
+  body: CreateManualInvoiceApiPayload,
+) => {
+  return Api.post<CreateManualInvoiceApiPayload, CreateManualInvoiceResponse>(
+    "/doctor/invoices/",
+    body,
+    true,
+  );
 };
