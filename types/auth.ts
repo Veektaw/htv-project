@@ -134,3 +134,9 @@ export type ResetPasswordPayload = {
   password: string;
   confirm_password: string;
 };
+
+export type RefreshTokensResponse = {
+  access_token: string;
+  refresh_token: string;
+  token_type: "bearer";
+};

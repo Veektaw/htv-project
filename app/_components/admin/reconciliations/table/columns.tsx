@@ -54,6 +54,14 @@ export const reconciliationColumns: Column<ColumnType>[] = [
     render: () => "--",
   },
   {
+    title: "Manual Outstanding",
+    key: "manual_outstanding",
+    // render: (value) =>
+    //   `€${(value as number).toLocaleString("en-US", {
+    //     maximumFractionDigits: 2,
+    //   })}`,
+  },
+  {
     title: "Status",
     key: "status",
     render: (value) => <Status value={value as ReconciliationStatus} />,
