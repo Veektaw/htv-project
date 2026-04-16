@@ -28,12 +28,12 @@ export const InvoiceColumns: Column<ColumnType>[] = [
     key: "payment_date",
     render: (value) => value as string,
   },
-  {
+ {
     title: "",
     key: "actions",
-    render: () => (
+    render: (_, record) => (
       <MenuActions>
-        <Actions />
+        <Actions currentStatus={record.status} />
       </MenuActions>
     ),
   },
