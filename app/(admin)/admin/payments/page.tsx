@@ -1,9 +1,10 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import Header from "@/app/_components/shared/header/header";
 import SubHeader from "@/app/_components/admin/payments/sub-header";
-import { Suspense } from "react";
 import Loader from "@/app/_components/shared/loader";
-import AdminPayments from "@/app/_components/admin/payments/admin-payments";
+import AdminPayments from "@/app/_components/admin/payments/payments";
+
 type PageParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
@@ -20,9 +21,9 @@ export default async function page({ searchParams }: PageParams) {
       </Header>
 
       <section className="flex-1 overflow-y-auto rounded-sm bg-white px-7 py-5.5 shadow-[0px_9px_20px_0px_#101E730F]">
-         <Suspense fallback={<Loader text="Getting payments..." />}>
-                  <AdminPayments searchParamsValues={searchParamsValues} />
-                </Suspense>
+        <Suspense fallback={<Loader text="Getting payments..." />}>
+          <AdminPayments searchParamsValues={searchParamsValues} />
+        </Suspense>
       </section>
     </section>
   );

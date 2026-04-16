@@ -1,7 +1,7 @@
 import { getAllInvoicesApi } from "@/services/apis/invoices.api";
-import { invoicesColumns } from "../invoices/table/columns";
+import { invoicesColumns } from "./table/columns";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
-import TableComponent from "../../shared/table-component/table-component";
+import TableComponent from "../../../shared/table-component/table-component";
 
 type InvoicesProps = {
   searchParamsValues: { [key: string]: string | undefined };

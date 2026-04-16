@@ -4,9 +4,10 @@ import arrowUp from "@/public/svgs/green-arrow-up.svg";
 type CardProps = {
   text: string;
   value: number;
+  percentage: string;
 };
 
-export default function Card({ text, value }: CardProps) {
+export default function Card({ text, value, percentage }: CardProps) {
   return (
     <div className="border-Iron flex min-h-37 gap-4 rounded-lg border px-4 py-6">
       <span className="bg-DarkJungleGreen w-0.75 rounded-md"></span>
@@ -20,7 +21,7 @@ export default function Card({ text, value }: CardProps) {
           <p className="text-DarkJungleGreen text-2xl font-black">{value}</p>
 
           <div className="flex items-center gap-0.5">
-            <p className="text-DeepSea text-sm font-black">+68%</p>
+            <p className="text-DeepSea text-sm font-black">{percentage}</p>
             <Image src={arrowUp} alt="green arrow up" />
           </div>
         </div>

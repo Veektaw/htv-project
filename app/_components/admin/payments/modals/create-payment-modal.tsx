@@ -15,7 +15,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/_components/ui/select";
-import { Popover, PopoverContent, PopoverTrigger } from "@/app/_components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/app/_components/ui/popover";
 import { Calendar } from "@/app/_components/ui/calendar";
 import {
   createPaymentAction,
@@ -32,7 +36,7 @@ const createPaymentSchema = z.object({
   doctor_id: z.string().min(1, "Doctor is required"),
   invoice_id: z.string().min(1, "Invoice is required"),
   source: z.string().min(1, "Source is required"),
-  amount_paid: z.coerce.number().min(0, "Amount paid must be positive"),
+  amount_paid: z.string().min(0, "Amount paid must be positive"),
   description: z.string().min(1, "Description is required"),
   payment_date: z.string().min(1, "Payment date is required"),
   payment_ref: z.string().min(1, "Payment reference is required"),
@@ -61,7 +65,7 @@ export default function CreatePaymentModal() {
     resolver: zodResolver(createPaymentSchema),
     defaultValues: {
       payment_date: format(new Date(), "yyyy-MM-dd"),
-      amount_paid: 0,
+      amount_paid: "0",
     },
   });
 
@@ -111,13 +115,24 @@ export default function CreatePaymentModal() {
   const onSubmit = async (data: CreatePaymentForm) => {
     setIsLoading(true);
     try {
-      const selectedInvoice = invoices.find((inv) => inv.id === data.invoice_id);
+      const selectedInvoice = invoices.find(
+        (inv) => inv.id === data.invoice_id,
+      );
       if (selectedInvoice && selectedInvoice.user_id !== data.doctor_id) {
-        showToast("Selected invoice does not belong to the selected doctor", "error");
+        showToast(
+          "Selected invoice does not belong to the selected doctor",
+          "error",
+        );
         return;
       }
 
-      const result = await createPaymentAction(data);
+      const formattedData = {
+        ...data,
+        amount_paid: Number(data.amount_paid),
+      };
+
+      const result = await createPaymentAction(formattedData);
+
       if (result.error) {
         showToast(result.message, "error");
       } else {
@@ -133,22 +148,33 @@ export default function CreatePaymentModal() {
   };
 
   const selectedDoctor = doctors.find((d) => d.id === selectedDoctorId);
-  const selectedInvoice = invoices.find((inv) => inv.id === watch("invoice_id"));
+  const selectedInvoice = invoices.find(
+    (inv) => inv.id === watch("invoice_id"),
+  );
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Create Payment</Button>
+      <Button
+        type="button"
+        variant="secondary"
+        className="h-9 px-13"
+        onClick={() => setOpen(true)}
+      >
+        Create Payment
+      </Button>
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
+          <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
             {/* Header */}
             <div className="flex items-center justify-between px-8 pt-7 pb-4">
-              <h2 className="text-xl font-semibold text-gray-900">Create Payment</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                Create Payment
+              </h2>
               <button
                 type="button"
                 onClick={handleClose}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 transition-colors hover:text-gray-600"
               >
                 <X size={20} />
               </button>
@@ -162,11 +188,13 @@ export default function CreatePaymentModal() {
             )}
 
             <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="mx-8 mb-6 border border-gray-200 rounded-xl p-6 space-y-5">
+              <div className="mx-8 mb-6 space-y-5 rounded-xl border border-gray-200 p-6">
                 {/* Row 1: User ID + Date */}
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1.5">User ID</label>
+                    <label className="mb-1.5 block text-xs text-gray-500">
+                      User ID
+                    </label>
                     <Select
                       value={watch("doctor_id")}
                       onValueChange={(value) => {
@@ -176,7 +204,7 @@ export default function CreatePaymentModal() {
                     >
                       <SelectTrigger
                         disabled={loadingDoctors}
-                        className="h-11 rounded-lg border-gray-200 bg-white text-sm text-gray-800 focus:ring-2 focus:ring-black"
+                        className="h-11! w-full rounded-lg border-gray-200 bg-white text-sm text-gray-800 focus:ring-2 focus:ring-black"
                       >
                         <SelectValue placeholder="Select a doctor" />
                       </SelectTrigger>
@@ -189,19 +217,23 @@ export default function CreatePaymentModal() {
                       </SelectContent>
                     </Select>
                     {errors.doctor_id && (
-                      <p className="text-xs text-red-500 mt-1">{errors.doctor_id.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.doctor_id.message}
+                      </p>
                     )}
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1.5">Date</label>
+                    <label className="mb-1.5 block text-xs text-gray-500">
+                      Date
+                    </label>
                     <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                       <PopoverTrigger asChild>
                         <Button
                           type="button"
                           variant="outline"
                           className={cn(
-                            "h-11 w-full justify-start text-left font-normal rounded-lg border-gray-200 bg-white text-sm text-gray-800 focus:ring-2 focus:ring-black",
-                            !watch("payment_date") && "text-muted-foreground"
+                            "h-11 w-full justify-start rounded-lg border border-gray-200 bg-white text-left text-sm font-normal text-gray-800 focus:ring-2 focus:ring-black",
+                            !watch("payment_date") && "text-muted-foreground",
                           )}
                         >
                           <CalendarIcon className="mr-2 h-4 w-4" />
@@ -222,7 +254,10 @@ export default function CreatePaymentModal() {
                           }
                           onSelect={(date) => {
                             if (date) {
-                              setValue("payment_date", format(date, "yyyy-MM-dd"));
+                              setValue(
+                                "payment_date",
+                                format(date, "yyyy-MM-dd"),
+                              );
                               setCalendarOpen(false);
                             }
                           }}
@@ -231,7 +266,9 @@ export default function CreatePaymentModal() {
                       </PopoverContent>
                     </Popover>
                     {errors.payment_date && (
-                      <p className="text-xs text-red-500 mt-1">{errors.payment_date.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.payment_date.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -239,49 +276,66 @@ export default function CreatePaymentModal() {
                 {/* Row 2: Invoice ID + Payment REF */}
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1.5">Invoice ID</label>
-                    {!selectedDoctorId ? (
-                      <div className="h-11 flex items-center px-3 rounded-lg border border-gray-200 text-sm text-gray-400">
-                        Select a doctor first
-                      </div>
-                    ) : loadingInvoices ? (
-                      <div className="h-11 flex items-center px-3 rounded-lg border border-gray-200 text-sm text-gray-400">
-                        Loading invoices...
-                      </div>
-                    ) : invoices.length === 0 ? (
-                      <div className="h-11 flex items-center px-3 rounded-lg border border-gray-200 text-sm text-gray-400">
-                        No invoices for this doctor
-                      </div>
-                    ) : (
-                      <Select
-                        value={watch("invoice_id")}
-                        onValueChange={(value) => setValue("invoice_id", value)}
+                    <label className="mb-1.5 block text-xs text-gray-500">
+                      Invoice ID
+                    </label>
+                    <Select
+                      value={watch("invoice_id")}
+                      onValueChange={(value) => setValue("invoice_id", value)}
+                      disabled={!selectedDoctorId}
+                    >
+                      <SelectTrigger
+                        title={
+                          !selectedDoctorId ? "Select a doctor" : undefined
+                        }
+                        className="h-11! w-full rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-black"
                       >
-                        <SelectTrigger className="h-11 rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-black">
-                          <SelectValue placeholder="Select an invoice" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {invoices.map((invoice) => (
+                        <SelectValue placeholder="Select an invoice" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {loadingInvoices ? (
+                          <SelectItem
+                            value="no value"
+                            className="flex h-11 items-center rounded-lg border border-gray-200 px-3 text-sm text-gray-400"
+                          >
+                            Loading invoices...
+                          </SelectItem>
+                        ) : invoices.length === 0 ? (
+                          <SelectItem
+                            value="no value"
+                            className="flex h-11 items-center rounded-lg border border-gray-200 px-3 text-sm text-gray-400"
+                          >
+                            No invoices for this doctor
+                          </SelectItem>
+                        ) : (
+                          invoices.map((invoice) => (
                             <SelectItem key={invoice.id} value={invoice.id}>
                               {invoice.invoice_ref}
                             </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    )}
+                          ))
+                        )}
+                      </SelectContent>
+                    </Select>
+
                     {errors.invoice_id && (
-                      <p className="text-xs text-red-500 mt-1">{errors.invoice_id.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.invoice_id.message}
+                      </p>
                     )}
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1.5">Payment REF</label>
+                    <label className="mb-1.5 block text-xs text-gray-500">
+                      Payment REF
+                    </label>
                     <Input
                       {...register("payment_ref")}
                       placeholder="Enter payment reference"
                       className="h-11 rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-black"
                     />
                     {errors.payment_ref && (
-                      <p className="text-xs text-red-500 mt-1">{errors.payment_ref.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.payment_ref.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -289,25 +343,33 @@ export default function CreatePaymentModal() {
                 {/* Row 3: Description + Amount + Source */}
                 <div className="grid grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1.5">Description</label>
+                    <label className="mb-1.5 block text-xs text-gray-500">
+                      Description
+                    </label>
                     <Input
                       {...register("description")}
                       placeholder="Enter description"
                       className="h-11 rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-black"
                     />
                     {errors.description && (
-                      <p className="text-xs text-red-500 mt-1">{errors.description.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.description.message}
+                      </p>
                     )}
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1.5">Source</label>
+                    <label className="mb-1.5 block text-xs text-gray-500">
+                      Source
+                    </label>
                     <Input
                       {...register("source")}
                       placeholder="Enter payment source"
                       className="h-11 rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-black"
                     />
                     {errors.source && (
-                      <p className="text-xs text-red-500 mt-1">{errors.source.message}</p>
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.source.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -320,21 +382,31 @@ export default function CreatePaymentModal() {
                     <table className="w-full text-sm">
                       <thead>
                         <tr className="bg-gray-50">
-                          <th className="text-left text-xs font-medium text-gray-600 px-4 py-3 rounded-tl-lg w-12">S/N</th>
-                          <th className="text-left text-xs font-medium text-gray-600 px-4 py-3">Platform</th>
-                          <th className="text-left text-xs font-medium text-gray-600 px-4 py-3">Description</th>
-                          <th className="text-right text-xs font-medium text-gray-600 px-4 py-3 rounded-tr-lg">Amount ($)</th>
+                          <th className="w-12 rounded-tl-lg px-4 py-3 text-left text-xs font-medium text-gray-600">
+                            S/N
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">
+                            Platform
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-600">
+                            Description
+                          </th>
+                          <th className="rounded-tr-lg px-4 py-3 text-right text-xs font-medium text-gray-600">
+                            Amount ($)
+                          </th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr className="border-b border-gray-100 last:border-0">
-                          <td className="px-4 py-4 text-gray-500 text-xs align-top pt-5">01</td>
+                          <td className="px-4 py-4 pt-5 align-top text-xs text-gray-500">
+                            01
+                          </td>
                           <td className="px-4 py-4 align-top">
                             <input
                               type="text"
                               value={selectedInvoice?.platform || ""}
                               disabled
-                              className="w-full text-sm text-gray-700 focus:outline-none disabled:text-gray-500 bg-transparent"
+                              className="w-full bg-transparent text-sm text-gray-700 focus:outline-none disabled:text-gray-500"
                             />
                           </td>
                           <td className="px-4 py-4 align-top">
@@ -342,15 +414,15 @@ export default function CreatePaymentModal() {
                               type="text"
                               value={selectedInvoice?.notes || ""}
                               disabled
-                              className="w-full text-sm text-gray-700 focus:outline-none disabled:text-gray-500 bg-transparent"
+                              className="w-full bg-transparent text-sm text-gray-700 focus:outline-none disabled:text-gray-500"
                             />
                           </td>
-                          <td className="px-4 py-4 align-top text-right">
+                          <td className="px-4 py-4 text-right align-top">
                             <input
                               type="number"
                               value={selectedInvoice?.amount || ""}
                               disabled
-                              className="w-full text-sm text-gray-700 focus:outline-none disabled:text-gray-500 bg-transparent text-right"
+                              className="w-full bg-transparent text-right text-sm text-gray-700 focus:outline-none disabled:text-gray-500"
                             />
                           </td>
                         </tr>
@@ -362,17 +434,21 @@ export default function CreatePaymentModal() {
                 {/* Totals */}
                 <div className="flex justify-end">
                   <div className="w-72 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-gray-600">Amount Paid ($)</span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">
+                        Amount Paid ($)
+                      </span>
                       <Input
                         type="number"
                         {...register("amount_paid", { valueAsNumber: true })}
                         placeholder="0.00"
-                        className="w-32 h-8 text-right text-sm border-gray-200 rounded-lg focus:ring-2 focus:ring-black"
+                        className="h-8 w-32 rounded-lg border-gray-200 text-right text-sm focus:ring-2 focus:ring-black"
                       />
                     </div>
                     {errors.amount_paid && (
-                      <p className="text-xs text-red-500 text-right">{errors.amount_paid.message}</p>
+                      <p className="text-right text-xs text-red-500">
+                        {errors.amount_paid.message}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -384,14 +460,14 @@ export default function CreatePaymentModal() {
                   type="button"
                   variant="outline"
                   onClick={handleClose}
-                  className="rounded-full px-8 h-11 border-gray-300 text-gray-700 hover:bg-gray-50"
+                  className="h-11 rounded-full border-gray-300 px-8 text-gray-700 hover:bg-gray-50"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="rounded-full px-8 h-11 bg-gray-900 hover:bg-black text-white"
+                  className="h-11 rounded-full bg-gray-900 px-8 text-white hover:bg-black"
                 >
                   {isLoading ? "Submitting..." : "Submit"}
                 </Button>

@@ -14,7 +14,6 @@ export const getUsersApi = ({ search, page = "1", role }: GetUsersParams) => {
   };
 
   if (search) params.keyword = search;
-
   if (role) params.role = role;
 
   const queryString = new URLSearchParams(params).toString();

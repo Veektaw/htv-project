@@ -2,7 +2,7 @@ import { getAdminPaymentsApi } from "@/services/apis/payments.api";
 import { format } from "date-fns";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import PaymentsProvider from "./contexts/payments-provider";
-import SortAndDateFilter from "@/app/_components/doctor/prescriptions/sort-and-date-filter";
+import SearchWrapper from "./search-wrapper";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
 
@@ -42,7 +42,7 @@ export default async function AdminPayments({
     return (
       <PaymentsProvider data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
-          <SortAndDateFilter />
+          {/* <SortAndDateFilter /> */}
 
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
@@ -66,7 +66,7 @@ export default async function AdminPayments({
     return (
       <PaymentsProvider data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
-          <SortAndDateFilter />
+          {/* <SortAndDateFilter /> */}
 
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
@@ -88,7 +88,7 @@ export default async function AdminPayments({
     return (
       <PaymentsProvider data={res.body}>
         <section className="flex size-full flex-col gap-y-4">
-          <SortAndDateFilter />
+          {/* <SortAndDateFilter /> */}
 
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
@@ -120,7 +120,8 @@ export default async function AdminPayments({
   return (
     <PaymentsProvider data={res.body}>
       <section className="flex h-full flex-col gap-y-4">
-        {/* <SortAndDateFilter /> */}
+        <SearchWrapper />
+
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">
           <TableWrapper />
 

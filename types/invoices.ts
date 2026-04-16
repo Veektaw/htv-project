@@ -1,4 +1,7 @@
 import { User } from "./auth";
+import { Pagination } from "./users";
+
+export type InvoiceStatus = "under_review" | "approved" | "paid" | "rejected";
 
 export type Invoice = {
   id: string;
@@ -22,6 +25,7 @@ export type GetInvoicesParams = {
   page?: string;
   limit?: string;
   doctor_id?: string;
+  search?: string;
 };
 
 export type GetInvoicesResponse = {
@@ -30,4 +34,19 @@ export type GetInvoicesResponse = {
   page: number;
   limit: number;
   total_page: number;
+};
+
+export type GetDoctorInvoicesParams = {
+  page?: string;
+  limit?: string;
+  user_id?: string;
+  platform?: string;
+  start_date?: string;
+  end_date?: string;
+  search?: string;
+  status?: string;
+};
+
+export type GetDoctorInvoices = Pagination & {
+  invoices: Invoice[];
 };

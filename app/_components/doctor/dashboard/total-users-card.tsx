@@ -13,7 +13,7 @@ export default async function TotalUsersCard() {
 
   return (
     <Suspense fallback={<CardLoader />}>
-      <Card text="Total Users" value={total} />
+      <Card text="Total Users" value={total} percentage="+0%" />
     </Suspense>
   );
 }

@@ -5,13 +5,11 @@ import {
   formatInvoiceCreatedAtDate,
   formatPrescriptionDate,
 } from "@/lib/utils";
-import Status from "./columns/status";
-import MenuActions from "@/app/_components/shared/menu-actions";
-import Actions from "./columns/actions";
+import Status from "../../../invoices/table/columns/status";
 
 type ColumnType = Invoice & { actions?: ReactNode };
 
-export const invoiceColumns: Column<ColumnType>[] = [
+export const invoicesColumns: Column<ColumnType>[] = [
   {
     title: "Name",
     key: "full_name",
@@ -44,14 +42,5 @@ export const invoiceColumns: Column<ColumnType>[] = [
     title: "Date Created",
     key: "created_at",
     render: (value) => formatInvoiceCreatedAtDate(value as string),
-  },
-  {
-    title: "",
-    key: "actions",
-    render: () => (
-      <MenuActions>
-        <Actions />
-      </MenuActions>
-    ),
   },
 ];

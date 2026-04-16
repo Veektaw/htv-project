@@ -1,6 +1,7 @@
-import { getAdminInvoicesAction } from "@/services/actions/invoices.actions";
+import { getAdminInvoicesApi } from "@/services/apis/invoices.api";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import InvoicesProvider from "./contexts/invoices-provider";
+import SearchWrapper from "./search-wrapper";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
 
@@ -11,29 +12,50 @@ type AdminInvoicesProps = {
 export default async function AdminInvoices({
   searchParamsValues,
 }: AdminInvoicesProps) {
-  const { page, doctor_id } = searchParamsValues;
-  const result = await getAdminInvoicesAction({
+  const { page, doctor_id, search } = searchParamsValues;
+
+  const result = await getAdminInvoicesApi({
     page,
     doctor_id,
+    search,
   });
 
-  if (result.error) {
+  if (!result.ok) {
     return (
       <div className="flex size-full items-center justify-center p-2">
         <div className="w-full max-w-150.25">
           <p className="text-center text-sm font-medium text-black">
-            {result.message || "Error getting invoices"}
+            {result.body.message || "Error getting invoices"}
           </p>
         </div>
       </div>
     );
   }
 
-  const total = result.data.invoices.length;
+  const total = result.body.invoices.length;
+
+  if (search && total === 0) {
+    return (
+      <InvoicesProvider data={result.body}>
+        <section className="flex size-full flex-col gap-y-4">
+          <SearchWrapper />
+
+          <Empty className="flex flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No invoices found for{" "}
+                <span className="font-medium">&quot;{search}&quot;</span>
+              </p>
+            </EmptyContent>
+          </Empty>
+        </section>
+      </InvoicesProvider>
+    );
+  }
 
   if (total === 0) {
     return (
-      <InvoicesProvider data={result.data}>
+      <InvoicesProvider data={result.body}>
         <Empty className="flex size-full items-center justify-center p-2">
           <EmptyContent>
             <p className="text-MistBlue w-full max-w-84 text-center text-sm">
@@ -46,8 +68,9 @@ export default async function AdminInvoices({
   }
 
   return (
-    <InvoicesProvider data={result.data}>
+    <InvoicesProvider data={result.body}>
       <section className="flex h-full flex-col gap-y-4">
+        <SearchWrapper />
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">
           <TableWrapper />
           <TablePaginationWrapper />

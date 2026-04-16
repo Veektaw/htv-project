@@ -6,7 +6,7 @@ import Loader from "@/app/_components/shared/loader";
 import Card from "@/app/_components/shared/dashboard/card";
 import TotalUsersCard from "@/app/_components/admin/dashboard/total-users-card";
 import FilterButton from "@/app/_components/admin/dashboard/filter-button";
-import RecentInvoices from "@/app/_components/admin/dashboard/recent-invoices";
+import RecentInvoices from "@/app/_components/admin/dashboard/recent-invoices/recent-invoices";
 
 type PageParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -26,9 +26,9 @@ export default async function page({ searchParams }: PageParams) {
       </Header>
 
       <section className="flex flex-1 flex-col gap-y-6 overflow-y-auto rounded-sm bg-white px-8 py-8.5">
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid gap-6 md:grid-cols-2">
           <TotalUsersCard />
-          <Card text="Outstanding Invoices" value={0} />
+          <Card text="Outstanding Invoices" value={0} percentage="+0%" />
         </div>
 
         <div className="border-Iron flex-1 space-y-8 rounded-lg border px-4 py-6">
