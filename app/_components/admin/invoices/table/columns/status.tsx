@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { InvoiceStatus } from "@/types/invoices";
 
-const statuses: Record<InvoiceStatus, string> = {
+export const statuses: Record<InvoiceStatus, string> = {
   under_review: "Under Review",
   approved: "Approved",
   paid: "Paid",

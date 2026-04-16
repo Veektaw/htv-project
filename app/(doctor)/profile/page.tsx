@@ -12,7 +12,7 @@ export default async function page() {
 
   return (
     <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6">
-      <Header type="Admin">
+      <Header type="Doctor">
         <p className="py-2 text-base font-bold">Settings</p>
       </Header>
 

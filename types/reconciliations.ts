@@ -21,7 +21,6 @@ export type Reconciliation = {
   gross_amount: number;
   adyen_paid: number;
   outstanding: number;
-  manual_outstanding: number;
   status: ReconciliationStatus;
   created_at: string;
   updated_at: string;
