@@ -4,6 +4,7 @@ import {
   GetInvoicesParams,
   GetDoctorInvoices,
   GetDoctorInvoicesParams,
+  Invoice,
 } from "@/types/invoices";
 
 export const getAdminInvoicesApi = ({
@@ -61,4 +62,8 @@ export const getAllInvoicesApi = ({
   const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;
 
   return Api.get<GetDoctorInvoices>(url, true);
+};
+
+export const updateInvoiceStatusApi = (invoiceId: string, status: string) => {
+  return Api.put<Invoice>(`/admin/invoices/${invoiceId}/`, { status }, true);
 };
