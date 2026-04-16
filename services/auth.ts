@@ -4,7 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { SignJWT, jwtVerify } from "jose";
-import { EncryptData, UserSession, UserSessionData } from "@/types/auth";
+import {
+  EncryptData,
+  RefreshTokensResponse,
+  UserSession,
+  UserSessionData,
+} from "@/types/auth";
 
 export const USER_SESSION_KEY = "session";
 // const ACCESS_TOKEN = "access_token";
@@ -15,6 +20,8 @@ const EXPIRY_TIME = 900;
 const secretKey = process.env.SECRET_KEY!;
 
 const key = new TextEncoder().encode(secretKey);
+
+const isProductionEnv = process.env.NODE_ENV === "production";
 
 export async function encrypt(payload: EncryptData) {
   return await new SignJWT(payload)
@@ -48,13 +55,13 @@ export async function setCookie(data: {
   cookieStore.set(USER_SESSION_KEY, session, {
     expires,
     httpOnly: true,
-    secure: true,
+    secure: isProductionEnv,
     sameSite: "strict",
   });
 
   cookieStore.set(REFRESH_TOKEN, data.refreshToken, {
     httpOnly: true,
-    secure: true,
+    secure: isProductionEnv,
     sameSite: "strict",
     maxAge: 7 * 24 * 60 * 60, // 7 days
     // path: "/api/auth/refresh", // scope it, optional but good practice
@@ -76,6 +83,58 @@ export async function getRefreshToken(): Promise<string | null> {
   return cookieStore.get(REFRESH_TOKEN)?.value ?? null;
 }
 
+async function attemptRefresh({
+  req,
+  refreshToken,
+  userSession,
+}: {
+  req: NextRequest;
+  refreshToken: string;
+  userSession: UserSession;
+}) {
+  try {
+    const res = await fetch(`${process.env.BASE_URL}/auth/refresh-token/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refresh_token: refreshToken }),
+    });
+
+    if (!res.ok) {
+      const response = NextResponse.redirect(new URL("/sign-in", req.url));
+      response.cookies.delete(USER_SESSION_KEY);
+      response.cookies.delete(REFRESH_TOKEN);
+      return response;
+    }
+
+    const { access_token, refresh_token } =
+      (await res.json()) as RefreshTokensResponse;
+
+    // Encrypt new session
+    const expires = new Date(Date.now() + EXPIRY_TIME * 1000);
+    const session = await encrypt({
+      data: { user: userSession.data.user, accessToken: access_token },
+      expires,
+    });
+
+    // Set new cookies directly on the response
+    const response = NextResponse.next();
+    response.cookies.set(USER_SESSION_KEY, session, {
+      httpOnly: true,
+      expires,
+    });
+    response.cookies.set(REFRESH_TOKEN, refresh_token, {
+      httpOnly: true,
+      secure: isProductionEnv,
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60,
+    });
+
+    return response;
+  } catch {
+    return NextResponse.redirect(new URL("/sign-in", req.url));
+  }
+}
+
 export async function updateSession(request: NextRequest) {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get(USER_SESSION_KEY)?.value;
@@ -89,6 +148,9 @@ export async function updateSession(request: NextRequest) {
   const isSignIn = path === "/sign-in";
 
   console.log({ path });
+  console.log({
+    time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
+  });
 
   // No session — redirect to sign in
   if ((!refreshToken || !userSession) && !isSignIn) {
