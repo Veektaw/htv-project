@@ -33,7 +33,7 @@ export const reconciliationColumns: Column<ColumnType>[] = [
       })}`,
   },
   {
-    title: "Ayden Paid",
+    title: "Adyen Paid",
     key: "adyen_paid",
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
@@ -56,10 +56,7 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Manual Outstanding",
     key: "manual_outstanding",
-    // render: (value) =>
-    //   `€${(value as number).toLocaleString("en-US", {
-    //     maximumFractionDigits: 2,
-    //   })}`,
+    render: () => "--",
   },
   {
     title: "Status",

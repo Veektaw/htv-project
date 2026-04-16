@@ -27,7 +27,7 @@ export default function useUpdateUserProfile({
       last_name: user.last_name,
       title: user.title ? user.title : "",
       phone: user.phone ? user.phone : "",
-      company_name: user.company_name,
+      company_name: user.company_name ? user.company_name : "",
     },
   });
   const { register, handleSubmit, formState, reset } = form;
