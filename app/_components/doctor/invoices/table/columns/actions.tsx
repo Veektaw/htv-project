@@ -3,11 +3,9 @@ import { PopoverContent } from "@/app/_components/ui/popover";
 import { ChevronRight } from "lucide-react";
 
 const STATUS_OPTIONS = [
-  "Pending",
-  "In Progress",
-  "Completed",
-  "Cancelled",
-  "On Hold",
+  "Paid",
+  "Under Review",
+  "Dispute Invoice",
 ];
 
 interface ActionsProps {
@@ -20,12 +18,12 @@ export default function Actions({ currentStatus }: ActionsProps) {
   return (
     <PopoverContent className="rounded-base w-45 cursor-pointer p-2">
       <ul className="text-CloudyGrey text-xs font-semibold">
-        <li className="rounded-base hover:bg-Geraldine inline-block size-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
+        <li className="rounded-base hover:bg-Geraldine block w-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
           View
         </li>
 
         {/* Update Status with nested dropdown */}
-        <li className="rounded-base size-full text-left">
+        <li className="rounded-base block w-full text-left">
           <button
             className="hover:bg-Geraldine flex w-full items-center justify-between rounded px-3 py-1 transition-colors duration-300 hover:text-white"
             onClick={() => setShowStatusDropdown((prev) => !prev)}
@@ -70,16 +68,16 @@ export default function Actions({ currentStatus }: ActionsProps) {
           )}
         </li>
 
-        <li className="rounded-base hover:bg-Geraldine inline-block size-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
+        <li className="rounded-base hover:bg-Geraldine block w-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
           Add Comment
         </li>
-        <li className="rounded-base hover:bg-Geraldine inline-block size-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
+        <li className="rounded-base hover:bg-Geraldine block w-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
           View Comment
         </li>
-        <li className="rounded-base inline-block size-full cursor-not-allowed px-3 py-1 text-left opacity-40">
+        <li className="rounded-base block w-full cursor-not-allowed px-3 py-1 text-left opacity-40">
           View Receipt
         </li>
-        <li className="rounded-base inline-block size-full cursor-not-allowed px-3 py-1 text-left opacity-40">
+        <li className="rounded-base block w-full cursor-not-allowed px-3 py-1 text-left opacity-40">
           Upload Receipt
         </li>
       </ul>
