@@ -86,6 +86,7 @@ export default function useUpdateUserDetails({
       title: user.title ? user.title : "",
       phone: user.phone ? user.phone : "",
       role: user.role,
+      address: user.address ? user.address : "",
       language_pref: user.language_pref,
       platforms:
         user.platforms.length > 0
@@ -93,6 +94,7 @@ export default function useUpdateUserDetails({
               platform: platform.platform,
               brand_partner: platform.brand_partner,
               external_user_id: platform.external_user_id,
+              platform_account_recipient_email: platform.platform_account_recipient_email,
             }))
           : [defaultPlatformValue],
       commissions: user.commissions.length

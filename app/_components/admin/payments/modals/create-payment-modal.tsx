@@ -419,7 +419,7 @@ export default function CreatePaymentModal() {
                           </td>
                           <td className="px-4 py-4 text-right align-top">
                             <input
-                              type="number"
+                              type="text"
                               value={selectedInvoice?.amount || ""}
                               disabled
                               className="w-full bg-transparent text-right text-sm text-gray-700 focus:outline-none disabled:text-gray-500"

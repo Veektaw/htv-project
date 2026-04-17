@@ -7,7 +7,10 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
+  DialogFooter,
 } from "@/app/_components/ui/dialog";
+import { Button } from "@/app/_components/ui/button";
+import { Textarea } from "@/app/_components/ui/textarea";
 import { Invoice } from "@/types/invoices";
 import { updateInvoiceStatus } from "@/services/actions/invoices.actions";
 import { showSuccessToast, showErrorToast } from "@/lib/toast";
@@ -15,14 +18,21 @@ import { useInvoices } from "../../contexts/invoices-provider";
 
 const STATUS_OPTIONS = [
   "Paid",
-  "Under Review",
+  "Approve",
   "Dispute Invoice",
 ];
 
 const STATUS_MAP = {
   "Paid": "paid",
-  "Under Review": "under_review",
-  "Dispute Invoice": "rejected",
+  "Approve": "approve",
+  "Dispute Invoice": "dispute",
+};
+
+const STATUS_DISPLAY_MAP = {
+  "paid": "Paid",
+  "approved": "Approve",
+  "under_review": "Under Review",
+  "rejected": "Dispute Invoice",
 };
 
 interface ActionsProps {
@@ -32,20 +42,39 @@ interface ActionsProps {
 export default function Actions({ invoice }: ActionsProps) {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
+  const [disputeMessage, setDisputeMessage] = useState("");
   const { updateInvoice } = useInvoices();
 
-  const handleStatusUpdate = async (status: string) => {
+  const handleStatusSelect = (status: string) => {
+    if (status === "Dispute Invoice") {
+      setIsDisputeModalOpen(true);
+    } else {
+      handleStatusUpdate(status);
+    }
+    setShowStatusDropdown(false);
+  };
+
+  const handleStatusUpdate = async (status: string, disputeMessage?: string) => {
     try {
-      const apiStatus = STATUS_MAP[status as keyof typeof STATUS_MAP];
-      const result = await updateInvoiceStatus(invoice.id, apiStatus);
+      const actionType = STATUS_MAP[status as keyof typeof STATUS_MAP];
+      const result = await updateInvoiceStatus(invoice.id, actionType, disputeMessage);
       if (result.success) {
-        // Update the local state with the new status
-        updateInvoice({ ...invoice, status: apiStatus });
+        const updatedInvoice = result.data || {
+          ...invoice,
+          status:
+            actionType === "paid" ? "paid" :
+            actionType === "approve" ? "approved" :
+            actionType === "dispute" ? "rejected" :
+            invoice.status,
+        };
+        updateInvoice(updatedInvoice);
         showSuccessToast(`Invoice status updated to ${status}`);
+        setIsDisputeModalOpen(false);
+        setDisputeMessage("");
       } else {
         showErrorToast(result.error || "Failed to update invoice status");
       }
-      setShowStatusDropdown(false);
     } catch (error) {
       showErrorToast("Failed to update invoice status");
       console.error("Error updating status:", error);
@@ -82,7 +111,7 @@ export default function Actions({ invoice }: ActionsProps) {
               <ul className="bg-CloudyGrey/5 border-CloudyGrey/20 mt-1 rounded border">
                 {STATUS_OPTIONS.map((status) => {
                   const isCurrentStatus =
-                    status === invoice.status;
+                    status === (STATUS_DISPLAY_MAP[invoice.status as keyof typeof STATUS_DISPLAY_MAP] || invoice.status);
 
                   return (
                     <li
@@ -94,7 +123,7 @@ export default function Actions({ invoice }: ActionsProps) {
                       }`}
                       onClick={() => {
                         if (isCurrentStatus) return;
-                        handleStatusUpdate(status);
+                        handleStatusSelect(status);
                       }}
                     >
                       {status}
@@ -167,6 +196,45 @@ export default function Actions({ invoice }: ActionsProps) {
               </div>
             )}
           </div>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isDisputeModalOpen} onOpenChange={setIsDisputeModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Dispute Invoice</DialogTitle>
+            <DialogDescription>
+              Please provide a reason for disputing this invoice.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mb-2">Dispute Message</label>
+              <Textarea
+                value={disputeMessage}
+                onChange={(e) => setDisputeMessage(e.target.value)}
+                placeholder="Enter the reason for disputing this invoice..."
+                rows={4}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setIsDisputeModalOpen(false);
+                setDisputeMessage("");
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => handleStatusUpdate("Dispute Invoice", disputeMessage)}
+              disabled={!disputeMessage.trim()}
+            >
+              Submit Dispute
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>

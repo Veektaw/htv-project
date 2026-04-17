@@ -64,6 +64,12 @@ export const getAllInvoicesApi = ({
   return Api.get<GetDoctorInvoices>(url, true);
 };
 
-export const updateInvoiceStatusApi = (invoiceId: string, status: string) => {
-  return Api.put<Invoice>(`/admin/invoices/${invoiceId}/`, { status }, true);
+export const updateInvoiceStatusApi = (invoiceId: string, actionType: string, disputeMessage?: string) => {
+  const payload: { action_type: string; dispute_message?: string } = {
+    action_type: actionType,
+  };
+  if (disputeMessage) {
+    payload.dispute_message = disputeMessage;
+  }
+  return Api.put<typeof payload, Invoice>(`/admin/invoices/${invoiceId}/`, payload, true);
 };

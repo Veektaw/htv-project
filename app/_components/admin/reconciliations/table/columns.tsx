@@ -41,25 +41,26 @@ export const reconciliationColumns: Column<ColumnType>[] = [
       })}`,
   },
   {
+    title: "Manual Paid",
+    key: "manual_paid",
+    // render: (value) =>
+    //   `€${(value as number).toLocaleString("en-US", {
+    //     maximumFractionDigits: 2,
+    //   })}`,
+  },
+ 
+  {
+    title: "Date paid",
+    key: "date_paid",
+    render: () => "--",
+  },
+   {
     title: "Outstanding",
     key: "outstanding",
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
         maximumFractionDigits: 2,
       })}`,
-  },
-  {
-    title: "Date paid",
-    key: "date_paid",
-    render: () => "--",
-  },
-  {
-    title: "Manual Outstanding",
-    key: "manual_outstanding",
-    // render: (value) =>
-    //   `€${(value as number).toLocaleString("en-US", {
-    //     maximumFractionDigits: 2,
-    //   })}`,
   },
   {
     title: "Status",

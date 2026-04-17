@@ -3,7 +3,7 @@ import { InvoiceStatus } from "@/types/invoices";
 
 const statuses: Record<InvoiceStatus, string> = {
   under_review: "Under Review",
-  approved: "Approved",
+  approved: "Approve",
   paid: "Paid",
   rejected: "Disputed",
 };
