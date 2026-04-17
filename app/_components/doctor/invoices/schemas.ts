@@ -1,9 +1,14 @@
 import z from "zod";
 
 export const manualInvoiceFormSchema = z.object({
-  userId: z.string().nonempty("User ID is required"),
-  invoiceId: z.string().nonempty("Invoice ID is required"),
-  dateTime: z.string().nonempty("Date/time is required"),
+  name: z.string().optional(),
+  address: z.string().optional(),
+  invoiceId: z.string().optional(),
+  dateTime: z.string().optional(),
+  platform: z.string(),
+  amount: z.number(),
+  adyenPaid: z.string().optional(),
+  period_month: z.string(),
 });
 
 export type ManualInvoiceSchemaType = z.infer<typeof manualInvoiceFormSchema>;

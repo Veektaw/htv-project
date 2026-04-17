@@ -6,11 +6,7 @@ import { CreateManualInvoicePayload } from "@/types/invoices";
 export const createManualInvoiceAction = async (
   data: CreateManualInvoicePayload,
 ) => {
-  const response = await createManualInvoiceApi({
-    user_id: data.userId,
-    invoice_id: data.invoiceId,
-    date_time: data.dateTime,
-  });
+  const response = await createManualInvoiceApi(data);
 
   if (!response.ok) {
     return {

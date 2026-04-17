@@ -8,6 +8,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/app/_components/ui/field";
+import { Reconciliation } from "@/types/reconciliations";
 
 import { Input } from "@/app/_components/ui/input";
 import { Button } from "@/app/_components/ui/button";
@@ -29,6 +30,8 @@ import {
   TableRow,
 } from "@/app/_components/ui/table";
 import { Calendar } from "@/app/_components/ui/calendar";
+import { showToast } from "@/lib/toast";
+import { createManualInvoiceAction } from "@/services/actions/invoices.actions";
 import useManualInvoice from "./hooks/use-manual-invoice";
 
 type InvoiceRow = {
@@ -40,17 +43,88 @@ type InvoiceRow = {
   periodTo?: Date;
 };
 
-export default function ManualInvoiceForm() {
-  const { form, onSubmit, formState } = useManualInvoice();
-  const [rows, setRows] = useState<InvoiceRow[]>([
-    {
-      id: 1,
-      platform: "",
-      totalPrescriptions: "",
-      amount: "",
-      periodFrom: undefined,
-      periodTo: undefined,
-    },
+const initialRow: InvoiceRow = {
+  id: 1,
+  platform: "",
+  totalPrescriptions: "",
+  amount: "",
+  periodFrom: undefined,
+  periodTo: undefined,
+};
+
+const getPeriodDates = (periodMonth?: string) => {
+  if (!periodMonth) return { periodFrom: undefined, periodTo: undefined };
+  const [year, month] = periodMonth.split("-").map(Number);
+  if (!year || !month) return { periodFrom: undefined, periodTo: undefined };
+
+  const periodFrom = new Date(year, month - 1, 1);
+  const periodTo = new Date(year, month, 0);
+
+  return { periodFrom, periodTo };
+};
+
+const formatToDateTimeLocal = (dateTime?: string) => {
+  if (!dateTime) return "";
+  const date = new Date(dateTime);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const tzOffset = date.getTimezoneOffset();
+  const localDate = new Date(date.getTime() - tzOffset * 60000);
+
+  return localDate.toISOString().slice(0, 16);
+};
+
+const getInitialInvoiceRow = (
+  reconciliation?: Pick<
+    Reconciliation,
+    "platform" | "gross_amount" | "period_month"
+  >,
+) => ({
+  id: 1,
+  platform: reconciliation?.platform ?? "",
+  totalPrescriptions: "",
+  amount:
+    reconciliation?.gross_amount !== undefined
+      ? String(reconciliation.gross_amount)
+      : "",
+  ...getPeriodDates(reconciliation?.period_month),
+});
+
+const getUserName = (reconciliation?: Reconciliation) => {
+  if (!reconciliation?.user) return "";
+  return (
+    reconciliation.user.full_name ||
+    [reconciliation.user.first_name, reconciliation.user.last_name]
+      .filter(Boolean)
+      .join(" ")
+  );
+};
+
+export default function ManualInvoiceForm({
+  reconciliation,
+}: {
+  reconciliation?: Reconciliation;
+}) {
+  const defaultValues = {
+    name: getUserName(reconciliation),
+    address: "",
+    invoiceId: "",
+    dateTime: formatToDateTimeLocal(reconciliation?.created_at),
+    platform: reconciliation?.platform ?? "",
+    amount: reconciliation?.gross_amount ?? 0,
+    adyenPaid:
+      reconciliation?.adyen_paid !== undefined
+        ? String(reconciliation.adyen_paid)
+        : "",
+    period_month: reconciliation?.period_month ?? "",
+  };
+
+  const { form, formState, reset, refresh } = useManualInvoice({
+    defaultValues,
+  });
+  const { handleSubmit, control, watch } = form;
+  const [rows, setRows] = useState<InvoiceRow[]>(() => [
+    getInitialInvoiceRow(reconciliation),
   ]);
 
   const updateRow = (
@@ -86,6 +160,12 @@ export default function ManualInvoiceForm() {
       maximumFractionDigits: 2,
     }).format(value);
 
+  const getPeriodMonth = (row: InvoiceRow) => {
+    const date = row.periodFrom ?? row.periodTo;
+    if (!date) return "";
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  };
+
   const sumTotal = rows.reduce((total, row) => {
     const amount = Number(row.amount.replace(/,/g, ""));
     const prescriptions = Number(row.totalPrescriptions.replace(/,/g, ""));
@@ -98,22 +178,76 @@ export default function ManualInvoiceForm() {
     return total + rowTotal;
   }, 0);
 
-  const grossTotal = sumTotal;
+  const adyenPaid = Number(
+    (watch("adyenPaid") ?? "").toString().replace(/,/g, ""),
+  );
+  const grossTotal = sumTotal - (Number.isFinite(adyenPaid) ? adyenPaid : 0);
+
+  const handleFormSubmit = async () => {
+    const row = rows[0];
+    const period_month = getPeriodMonth(row);
+
+    if (!period_month) {
+      showToast("Please select a period month.", "error");
+      return;
+    }
+
+    if (!row.platform) {
+      showToast("Please enter a platform.", "error");
+      return;
+    }
+
+    const payload = {
+      period_month,
+      platform: row.platform,
+      amount: sumTotal,
+    };
+
+    try {
+      const res = await createManualInvoiceAction(payload);
+
+      if (!res.error) {
+        refresh();
+        showToast(res.message);
+        reset();
+        setRows([initialRow]);
+      } else {
+        showToast(res.message, "error");
+      }
+    } catch {
+      showToast("Something went wrong", "error");
+    }
+  };
 
   return (
-    <form onSubmit={onSubmit} className="space-y-9.5">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-9.5">
       <FieldGroup className="grid grid-cols-2 gap-y-6 sm:grid-cols-2 sm:gap-x-10.5">
         <Controller
-          name="userId"
+          name="name"
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>User ID</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Name</FieldLabel>
               <Input
                 {...field}
                 id={field.name}
                 aria-invalid={fieldState.invalid}
-                placeholder="Enter the user identification number"
+              />
+              {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
+            </Field>
+          )}
+        />
+
+        <Controller
+          name="address"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Field data-invalid={fieldState.invalid}>
+              <FieldLabel htmlFor={field.name}>Address</FieldLabel>
+              <Input
+                {...field}
+                id={field.name}
+                aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
             </Field>
@@ -214,9 +348,23 @@ export default function ManualInvoiceForm() {
                             onSelect={(date) =>
                               updateRow(row.id, "periodFrom", date)
                             }
-                            defaultMonth={row.periodFrom ?? undefined}
-                            endMonth={new Date()}
-                            disabled={(date) => date > new Date()}
+                            defaultMonth={row.periodTo ?? undefined}
+                            fromMonth={
+                              row.periodTo
+                                ? new Date(
+                                    row.periodTo.getFullYear(),
+                                    row.periodTo.getMonth(),
+                                  )
+                                : undefined
+                            }
+                            toMonth={
+                              row.periodTo
+                                ? new Date(
+                                    row.periodTo.getFullYear(),
+                                    row.periodTo.getMonth(),
+                                  )
+                                : undefined
+                            }
                             className="w-full"
                           />
                         </PopoverContent>
@@ -250,9 +398,23 @@ export default function ManualInvoiceForm() {
                             onSelect={(date) =>
                               updateRow(row.id, "periodTo", date)
                             }
-                            defaultMonth={row.periodTo ?? undefined}
-                            endMonth={new Date()}
-                            disabled={(date) => date > new Date()}
+                            defaultMonth={row.periodFrom ?? undefined}
+                            fromMonth={
+                              row.periodFrom
+                                ? new Date(
+                                    row.periodFrom.getFullYear(),
+                                    row.periodFrom.getMonth(),
+                                  )
+                                : undefined
+                            }
+                            toMonth={
+                              row.periodFrom
+                                ? new Date(
+                                    row.periodFrom.getFullYear(),
+                                    row.periodFrom.getMonth(),
+                                  )
+                                : undefined
+                            }
                             className="w-full"
                           />
                         </PopoverContent>
@@ -309,6 +471,20 @@ export default function ManualInvoiceForm() {
           <span className="font-semibold text-black">
             {formatCurrency(sumTotal)}
           </span>
+        </div>
+        <div className="mt-3 flex items-center justify-between text-sm">
+          <span className="text-muted-foreground">Adyen paid</span>
+          <Controller
+            name="adyenPaid"
+            control={form.control}
+            render={({ field }) => (
+              <Input
+                {...field}
+                placeholder="NGN"
+                className="h-9 w-32 text-xs"
+              />
+            )}
+          />
         </div>
         <div className="mt-3 flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Gross total</span>

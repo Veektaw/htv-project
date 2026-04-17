@@ -13,15 +13,15 @@ export type GetDoctorInvoicesParams = {
 };
 
 export type CreateManualInvoicePayload = {
-  userId: string;
-  invoiceId: string;
-  dateTime: string;
+  period_month: string;
+  platform: string;
+  amount: number;
 };
 
 export type CreateManualInvoiceApiPayload = {
-  user_id: string;
-  invoice_id: string;
-  date_time: string;
+  period_month: string;
+  platform: string;
+  amount: number;
 };
 
 export type CreateManualInvoiceResponse = {

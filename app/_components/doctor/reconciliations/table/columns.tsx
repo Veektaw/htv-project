@@ -56,9 +56,9 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "",
     key: "actions",
-    render: () => (
+    render: (_value, record) => (
       <MenuActions>
-        <Actions />
+        <Actions reconciliation={record} />
       </MenuActions>
     ),
   },
