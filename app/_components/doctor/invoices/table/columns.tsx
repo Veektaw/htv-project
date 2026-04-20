@@ -9,13 +9,13 @@ type ColumnType = Invoice & { actions?: ReactNode };
 
 export const InvoiceColumns: Column<ColumnType>[] = [
   {
-    title: "Invoice ID",
-    key: "invoice_id",
+    title: "Invoice Ref",
+    key: "invoice_ref",
     render: (value) => value as string,
   },
   {
     title: "Date created",
-    key: "created_at",
+    key: "updated_at",
     render: (value) => value as string,
   },
   {
@@ -25,7 +25,7 @@ export const InvoiceColumns: Column<ColumnType>[] = [
   },
   {
     title: "Payment Date",
-    key: "payment_date",
+    key: "created_at",
     render: (value) => value as string,
   },
   {

@@ -154,9 +154,9 @@ export default function ManualInvoiceForm({
       : "";
 
   const formatCurrency = (value: number) =>
-    new Intl.NumberFormat("en-NG", {
+    new Intl.NumberFormat("en-IE", {
       style: "currency",
-      currency: "NGN",
+      currency: "EUR",
       maximumFractionDigits: 2,
     }).format(value);
 
@@ -259,7 +259,7 @@ export default function ManualInvoiceForm({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <FieldLabel htmlFor={field.name}>Invoice Id</FieldLabel>
+              <FieldLabel htmlFor={field.name}>Bill to address</FieldLabel>
               <Input
                 {...field}
                 id={field.name}
@@ -480,8 +480,8 @@ export default function ManualInvoiceForm({
             render={({ field }) => (
               <Input
                 {...field}
-                placeholder="NGN"
-                className="h-9 w-32 text-xs"
+                placeholder="EUR"
+                className="h-9 w-32 text-right! text-xs placeholder:text-right!"
               />
             )}
           />
