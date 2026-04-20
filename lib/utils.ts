@@ -39,3 +39,11 @@ export function formatDate(dateString: string) {
 
   return formattedDate;
 }
+
+export function formatInvoiceCreatedAtDate(dateString: string) {
+  if (!dateString) return "--";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "--";
+
+  return format(date, "dd MMMM, yyyy");
+}

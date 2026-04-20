@@ -81,3 +81,11 @@ export type UpdateUserDetailsPayload = {
     cancelled_prescriptions: boolean;
   }[];
 };
+
+export type UpdateUserProfilePayload = {
+  first_name: string;
+  last_name: string;
+  company_name: string;
+  phone: string;
+  title: string;
+};

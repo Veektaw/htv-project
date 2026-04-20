@@ -1,8 +1,11 @@
-import { AuthorizationHeader, OptionsType, ResponseType } from "@/types/api";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { getUserSession } from "../auth";
+import { AuthorizationHeader, OptionsType, ResponseType } from "@/types/api";
 
 export class Api {
   static baseUrl = process.env.BASE_URL!;
+  static API_BASE_URL = process.env.APP_URL!;
 
   private static async getToken() {
     const userSession = await getUserSession();
@@ -70,6 +73,7 @@ export class Api {
 
   private static async handleResponse<R>(
     response: Response,
+    retryCallback: (overrideToken?: string) => Promise<Response>,
   ): Promise<ResponseType<R>> {
     if (response.ok) {
       return {
@@ -77,6 +81,39 @@ export class Api {
         status: response.status,
         body: (await response.json()) as R,
       };
+    } else if (
+      response.status === 401 &&
+      !response.url.includes("/auth/login/")
+    ) {
+      console.log({ response });
+
+      const cookieStore = await cookies();
+      const allCookies = cookieStore
+        .getAll()
+        .map((c) => `${c.name}=${c.value}`)
+        .join("; ");
+
+      const refreshed = await fetch(`${this.API_BASE_URL}/api/auth/refresh`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: allCookies,
+        },
+      });
+
+      if (!refreshed.ok) {
+        console.log("/api/auth/logout");
+
+        redirect("/api/auth/logout");
+      }
+
+      const refreshedResponse = await refreshed.json();
+
+      console.log({ refreshedResponse });
+
+      // Retry the original request — headers will pick up new session automatically
+      const retryResponse = await retryCallback(refreshedResponse.accessToken);
+      return this.handleResponse<R>(retryResponse, retryCallback);
     } else {
       let errorMessage =
         response.status === 502 ? "Bad Gateway" : "An error occurred";
@@ -149,14 +186,21 @@ export class Api {
 
     // console.log({ url: baseUrl + options.url, method: options.method });
 
-    try {
-      const response = await fetch(baseUrl + options.url, {
+    const makeRequest = (overrideToken?: string) => {
+      const finalHeaders = overrideToken
+        ? { ...headers, Authorization: `Bearer ${overrideToken}` }
+        : headers;
+
+      return fetch(baseUrl + options.url, {
         method: options.method,
-        headers,
+        headers: finalHeaders,
         body,
       });
+    };
 
-      return this.handleResponse<R>(response);
+    try {
+      const response = await makeRequest();
+      return this.handleResponse<R>(response, makeRequest);
     } catch (error) {
       return this.handleError<R>(error);
     }

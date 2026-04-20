@@ -4,6 +4,7 @@ import {
   CreateManualInvoiceResponse,
   GetDoctorInvoices,
   GetDoctorInvoicesParams,
+  GetInvoicesParams,
 } from "@/types/invoices";
 
 export const getDoctorInvoicesApi = ({
@@ -25,9 +26,26 @@ export const getDoctorInvoicesApi = ({
   return Api.get<GetDoctorInvoices>(url, true);
 };
 
-export const createManualInvoiceApi = (
-  body: CreateManualInvoiceApiPayload,
-) => {
+export const getAllInvoicesApi = ({
+  page = "1",
+  limit = "10",
+  search,
+}: GetInvoicesParams) => {
+  const params: Record<string, string> = {
+    page,
+    limit,
+  };
+
+  if (search) params.search = search;
+
+  const queryString = new URLSearchParams(params).toString();
+
+  const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;
+
+  return Api.get<GetDoctorInvoices>(url, true);
+};
+
+export const createManualInvoiceApi = (body: CreateManualInvoiceApiPayload) => {
   return Api.post<CreateManualInvoiceApiPayload, CreateManualInvoiceResponse>(
     "/doctor/invoices/",
     body,
