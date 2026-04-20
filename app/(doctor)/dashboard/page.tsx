@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: "Dashboard",
 };
 
-export default async function page() {
+export default function page() {
   return (
     <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6 shadow-[0px_9px_20px_0px_#101E730F]">
       <Header type="Doctor">

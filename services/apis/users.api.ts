@@ -8,6 +8,7 @@ import {
   UpdateUserDetailsPayload,
   UpdateUserProfilePayload,
 } from "@/types/users";
+import { ApiEnhanced } from "../api-enhanced";
 
 export const getUsersApi = ({ search, page = "1", role }: GetUsersParams) => {
   const params: Record<string, string> = {
@@ -20,7 +21,7 @@ export const getUsersApi = ({ search, page = "1", role }: GetUsersParams) => {
   const queryString = new URLSearchParams(params).toString();
   const url = `/admin/users/${queryString ? `?${queryString}` : ""}`;
 
-  return Api.get<GetUsersResponse>(url, true);
+  return ApiEnhanced.get<GetUsersResponse>(url, true);
 };
 
 export const createUserApi = (body: CreateUserPayload) => {
