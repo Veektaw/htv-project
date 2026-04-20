@@ -4,6 +4,7 @@ import { Invoice, InvoiceStatus } from "@/types/invoices";
 import Status from "./columns/status";
 import MenuActions from "@/app/_components/shared/menu-actions";
 import Actions from "./columns/actions";
+import { formatDate } from "@/lib/utils";
 
 type ColumnType = Invoice & { actions?: ReactNode };
 
@@ -16,7 +17,7 @@ export const InvoiceColumns: Column<ColumnType>[] = [
   {
     title: "Date created",
     key: "updated_at",
-    render: (value) => value as string,
+    render: (value) => formatDate(value as string),
   },
   {
     title: "Status",
@@ -26,7 +27,7 @@ export const InvoiceColumns: Column<ColumnType>[] = [
   {
     title: "Payment Date",
     key: "created_at",
-    render: (value) => value as string,
+    render: (value) => formatDate(value as string),
   },
   {
     title: "",
