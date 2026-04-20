@@ -8,6 +8,7 @@ import AdminPayments from "@/app/_components/admin/payments/payments";
 type PageParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
 };
+
 export const metadata: Metadata = {
   title: "Payments",
 };

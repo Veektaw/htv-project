@@ -1,7 +1,9 @@
 import { getAllInvoicesApi } from "@/services/apis/invoices.api";
 import { invoicesColumns } from "./table/columns";
+import { statuses } from "../../invoices/table/columns/status";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import TableComponent from "../../../shared/table-component/table-component";
+import { InvoiceStatus } from "@/types/invoices";
 
 type InvoicesProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -38,7 +40,9 @@ export default async function RecentInvoices({
           <EmptyContent>
             <p className="text-MistBlue w-full max-w-84 text-center text-sm">
               No invoices found for{" "}
-              <span className="font-medium">&quot;{status}&quot;</span>
+              <span className="font-medium">
+                &quot;{statuses[status as InvoiceStatus]}&quot;
+              </span>
             </p>
           </EmptyContent>
         </Empty>

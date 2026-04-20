@@ -81,7 +81,10 @@ export class Api {
         status: response.status,
         body: (await response.json()) as R,
       };
-    } else if (response.status === 401) {
+    } else if (
+      response.status === 401 &&
+      !response.url.includes("/auth/login/")
+    ) {
       console.log({ response });
 
       const cookieStore = await cookies();

@@ -36,7 +36,7 @@ export default async function DoctorReconciliations({
     );
   }
 
-  // console.log({ res: res.body });
+  console.log({ res: res.body.reconciliations });
 
   const total = res.body.reconciliations.length;
 
