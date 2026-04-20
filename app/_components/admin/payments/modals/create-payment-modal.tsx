@@ -440,7 +440,7 @@ export default function CreatePaymentModal() {
                       </span>
                       <Input
                         type="number"
-                        {...register("amount_paid", { valueAsNumber: true })}
+                        {...register("amount_paid", { valueAsNumber: false })}
                         placeholder="0.00"
                         className="h-8 w-32 rounded-lg border-gray-200 text-right text-sm focus:ring-2 focus:ring-black"
                       />

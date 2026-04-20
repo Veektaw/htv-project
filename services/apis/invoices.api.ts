@@ -73,3 +73,15 @@ export const updateInvoiceStatusApi = (invoiceId: string, actionType: string, di
   }
   return Api.put<typeof payload, Invoice>(`/admin/invoices/${invoiceId}/`, payload, true);
 };
+
+export const addInvoiceCommentApi = (invoiceId: string, message: string) => {
+  const payload = {
+    message,
+    invoice_id: invoiceId,
+  };
+  return Api.post<typeof payload, any>(`/admin/invoices/${invoiceId}/comments/`, payload, true);
+};
+
+export const getInvoiceCommentsApi = (invoiceId: string) => {
+  return Api.get<any>(`/admin/invoices/${invoiceId}/comments/`, true);
+};
