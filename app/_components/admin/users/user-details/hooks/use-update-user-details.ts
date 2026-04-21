@@ -94,7 +94,8 @@ export default function useUpdateUserDetails({
               platform: platform.platform,
               brand_partner: platform.brand_partner,
               external_user_id: platform.external_user_id,
-              platform_account_recipient_email: platform.platform_account_recipient_email,
+              platform_account_recipient_email:
+                platform.platform_account_recipient_email ?? "",
             }))
           : [defaultPlatformValue],
       commissions: user.commissions.length
@@ -150,6 +151,11 @@ export default function useUpdateUserDetails({
         };
       }
 
+      formattedData = {
+        ...formattedData,
+        address: user.role === "admin" ? data.address : null,
+      };
+
       try {
         const res = await updateUserAction(user.id, formattedData);
 
@@ -168,6 +174,7 @@ export default function useUpdateUserDetails({
     } else {
       formattedData = {
         ...data,
+        address: user.role === "admin" ? data.address : null,
         commissions: data.commissions.map((commission) => ({
           ...commission,
           amount_per_prescription: Number.isNaN(

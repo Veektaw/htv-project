@@ -1,12 +1,18 @@
 "use server";
 
-import { CreateUserPayload, UpdateUserDetailsPayload } from "@/types/users";
+import {
+  CreateUserPayload,
+  UpdateUserDetailsPayload,
+  UpdateUserProfilePayload,
+} from "@/types/users";
 import {
   activateUserApi,
   createUserApi,
   deactivateUserApi,
   updateUserApi,
+  updateUserProfileApi,
 } from "../apis/users.api";
+import { getRefreshToken, getUserSession, setCookie } from "../auth";
 
 export const createUserAction = async (data: CreateUserPayload) => {
   const response = await createUserApi(data);
@@ -64,12 +70,43 @@ export const updateUserAction = async (
 ) => {
   const response = await updateUserApi(userId, data);
 
+  if (!response.ok) {
+    return {
+      error: true,
+      message: response.body.message,
+    };
+  }
+
+  return {
+    error: false,
+    message: response.body.message,
+  };
+};
+
+export const updateUserProfileAction = async (
+  data: Partial<UpdateUserProfilePayload>,
+) => {
+  const response = await updateUserProfileApi(data);
 
   if (!response.ok) {
     return {
       error: true,
       message: response.body.message,
     };
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { platforms, commissions, ...rest } = response.body.user;
+
+  const userSession = await getUserSession();
+  const refreshToken = await getRefreshToken();
+
+  if (userSession && refreshToken) {
+    await setCookie({
+      user: rest,
+      accessToken: userSession.data.accessToken,
+      refreshToken,
+    });
   }
 
   return {

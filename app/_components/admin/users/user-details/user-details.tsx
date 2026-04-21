@@ -349,13 +349,15 @@ export default function UserDetails({ user }: { user: User }) {
                     }}
                   />
                 </div>
-                 <Controller
+
+                {user.role === "admin" && (
+                  <Controller
                     name="address"
                     control={form.control}
                     render={({ field, fieldState }) => {
                       return (
                         <Field data-invalid={fieldState.invalid}>
-                          <FieldLabel htmlFor={field.address}>
+                          <FieldLabel htmlFor={field.name}>
                             Residential Address
                           </FieldLabel>
                           <Input
@@ -373,6 +375,7 @@ export default function UserDetails({ user }: { user: User }) {
                       );
                     }}
                   />
+                )}
               </AccordionContent>
             </AccordionItem>
 
@@ -480,6 +483,7 @@ export default function UserDetails({ user }: { user: User }) {
                           )}
                         />
 
+                        {/* External User ID */}
                         <Controller
                           name={`platforms.${index}.external_user_id`}
                           control={form.control}
@@ -507,31 +511,32 @@ export default function UserDetails({ user }: { user: User }) {
                             );
                           }}
                         />
-                   <Controller
-                    name={`platforms.${index}.platform_account_recipient_email`}
-                    control={form.control}
-                    render={({ field, fieldState }) => {
-                      return (
-                        <Field data-invalid={fieldState.invalid}>
-                          <FieldLabel htmlFor={field.name}>
-                            Platform Email
-                          </FieldLabel>
-                          <Input
-                            {...field}
-                            id={field.name}
-                            aria-invalid={fieldState.invalid}
-                            type="email"
-                            placeholder="Email address"
-                            className="border-GreyChateau"
-                            disabled={true}
-                          />
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      );
-                    }}
-                  />
+
+                        {/* Platform Recipient Email */}
+                        <Controller
+                          name={`platforms.${index}.platform_account_recipient_email`}
+                          control={form.control}
+                          render={({ field, fieldState }) => {
+                            return (
+                              <Field data-invalid={fieldState.invalid}>
+                                <FieldLabel htmlFor={field.name}>
+                                  Platform Email
+                                </FieldLabel>
+                                <Input
+                                  {...field}
+                                  id={field.name}
+                                  aria-invalid={fieldState.invalid}
+                                  type="email"
+                                  placeholder="Email address"
+                                  className="border-GreyChateau"
+                                />
+                                {fieldState.invalid && (
+                                  <FieldError errors={[fieldState.error]} />
+                                )}
+                              </Field>
+                            );
+                          }}
+                        />
                       </div>
 
                       {/* Add and remove buttons */}

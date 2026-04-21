@@ -345,6 +345,7 @@ export default function Actions({ invoice }: ActionsProps) {
                 onChange={(e) => setCommentMessage(e.target.value)}
                 placeholder="Enter your comment..."
                 rows={20}
+                cols={50}
                 className="resize-none"
               />
             </div>
