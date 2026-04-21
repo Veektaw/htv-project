@@ -6,6 +6,7 @@ export const statuses: Record<InvoiceStatus, string> = {
   approved: "Approve",
   paid: "Paid",
   rejected: "Disputed",
+  disputed: "Disputed",
 };
 
 export default function Status({ value }: { value: InvoiceStatus }) {
@@ -17,6 +18,7 @@ export default function Status({ value }: { value: InvoiceStatus }) {
         value === "approved" && "text-GreenHaze bg-GreenHaze/10",
         value === "paid" && "text-GreenHaze bg-GreenHaze/10",
         value === "rejected" && "text-PortlandOrange bg-PortlandOrange/10",
+        value === "disputed" && "text-PortlandOrange bg-PortlandOrange/10",
       )}
     >
       {statuses[value]}

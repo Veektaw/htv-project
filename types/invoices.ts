@@ -1,7 +1,12 @@
 import { User } from "./auth";
 import { Pagination } from "./users";
 
-export type InvoiceStatus = "under_review" | "approved" | "paid" | "disputed";
+export type InvoiceStatus =
+  | "under_review"
+  | "approved"
+  | "paid"
+  | "disputed"
+  | "rejected";
 
 export type Invoice = {
   id: string;

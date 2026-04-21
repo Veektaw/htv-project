@@ -33,6 +33,7 @@ export type Platform = {
   external_user_id: string;
   created_at: string;
   updated_at: string;
+  platform_account_recipient_email: string | null;
 };
 
 export type Commission = {
@@ -59,6 +60,7 @@ export type User = {
   company_name: string;
   title: string | null;
   phone: string | null;
+  address: string | null;
   role: Roles;
   status: Status;
   must_change_password: boolean;
