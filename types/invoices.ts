@@ -26,6 +26,7 @@ export type GetInvoicesParams = {
   limit?: string;
   doctor_id?: string;
   search?: string;
+  status?: string;
 };
 
 export type GetInvoicesResponse = {
