@@ -14,10 +14,10 @@ export type GetAdminPayments = {
   doctor_id: string;
   user: User;
   platform: string;
-  period_month: string;
-  prescription_count: number;
-  rate_per_prescription: number;
-  gross_amount: number;
+  amount_paid: number;
+  invoice_ref: string;
+  payment_date: string | null;
+  payment_type: string | null;
   batch_id: string;
   created_at: string;
   updated_at: string;

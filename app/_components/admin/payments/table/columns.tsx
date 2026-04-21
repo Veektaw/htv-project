@@ -8,9 +8,14 @@ type ColumnType = GetAdminPayments & { actions?: ReactNode };
 
 export const paymentColumns: Column<ColumnType>[] = [
   {
-    title: "Doctor",
+    title: "Name",
     key: "doctor",
     render: (_, record) => record.user.full_name,
+  },
+  {
+    title: "Log Date",
+    key: "created_at",
+    render: (_, record) => format(new Date(record.created_at), "dd/MM/yyyy"),
   },
   {
     title: "Platform",
@@ -18,35 +23,35 @@ export const paymentColumns: Column<ColumnType>[] = [
     render: (_, record) => record.platform,
   },
   {
-    title: "Period Month",
-    key: "period_month",
-    render: (_, record) => record.period_month,
+    title: "Amount",
+    key: "amount",
+    render: (_, record) =>
+      `${record.amount_paid.toLocaleString("en-US", { style: "currency", currency: "EUR" })}`,
   },
   {
-    title: "Prescription Count",
-    key: "prescription_count",
-    render: (_, record) => record.prescription_count,
+    title: "Invoice Ref",
+    key: "invoice_ref",
+    render: (_, record) => record.invoice_ref,
   },
   {
-    title: "Rate per Prescription",
-    key: "rate_per_prescription",
-    render: (_, record) => `₦${record.rate_per_prescription}`,
+    title: "Payment Date",
+    key: "payment_date",
+    render: (_, record) =>
+      record.payment_date
+        ? format(new Date(record.payment_date), "dd/MM/yyyy")
+        : "N/A",
   },
   {
-    title: "Gross Amount",
-    key: "gross_amount",
-    render: (_, record) => `₦${record.gross_amount}`,
+    title: "Payment Method",
+    key: "payment_method",
+    render: (_, record) => record.payment_type || "N/A",
   },
   {
     title: "Batch ID",
     key: "batch_id",
-    render: (_, record) => record.batch_id,
+    render: (_, record) => record.batch_id || "N/A",
   },
-  {
-    title: "Created At",
-    key: "created_at",
-    render: (_, record) => format(new Date(record.created_at), "dd/MM/yyyy"),
-  },
+
   {
     title: "Actions",
     key: "actions",
