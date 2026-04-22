@@ -11,12 +11,14 @@ export const createUserFormSchema = z.object({
   role: z.enum(ROLES, {
     message: "Role is required",
   }),
+  address: z.string(),
 });
 
 const platformItemSchema = z.object({
   platform: z.string().optional(),
   brand_partner: z.string().optional(),
   external_user_id: z.string().optional(),
+  platform_account_recipient_email: z.string().optional(),
 });
 
 const commissionItemSchema = z.object({
@@ -37,6 +39,7 @@ export const updateUserDetailsFormSchema = z.object({
   first_name: z.string().nonempty("First name is required"),
   last_name: z.string().nonempty("Last name is required"),
   phone: z.string(),
+  address: z.string(),
   role: z.enum(ROLES, {
     message: "Role is required",
   }),
@@ -46,7 +49,10 @@ export const updateUserDetailsFormSchema = z.object({
 
     platforms.forEach((item, index) => {
       const hasAnyValue =
-        item.platform || item.brand_partner || item.external_user_id;
+        item.platform ||
+        item.brand_partner ||
+        item.external_user_id ||
+        item.platform_account_recipient_email;
 
       // ✅ CASE 1: Only 1 row
       if (!isMultiple) {
@@ -77,6 +83,14 @@ export const updateUserDetailsFormSchema = z.object({
           });
         }
 
+        if (!item.platform_account_recipient_email) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Recipient email is required",
+            path: [index, "platform_account_recipient_email"],
+          });
+        }
+
         return;
       }
 
@@ -102,6 +116,14 @@ export const updateUserDetailsFormSchema = z.object({
           code: z.ZodIssueCode.custom,
           message: "User ID is required",
           path: [index, "external_user_id"],
+        });
+      }
+
+      if (!item.platform_account_recipient_email) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Recipient email is required",
+          path: [index, "platform_account_recipient_email"],
         });
       }
     });

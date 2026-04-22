@@ -32,8 +32,18 @@ export function formatPrescriptionDate(dateString: string) {
   return formattedDate;
 }
 
-export function formatInvoiceCreatedAtDate(dateString: string) {
-  const formatted = format(parseISO(dateString), "dd MMMM, yyyy");
+export function formatDate(dateString: string) {
+  const date = parseISO(dateString);
 
-  return formatted;
+  const formattedDate = format(date, "dd MMMM yyyy");
+
+  return formattedDate;
+}
+
+export function formatInvoiceCreatedAtDate(dateString: string) {
+  if (!dateString) return "--";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "--";
+
+  return format(date, "dd MMMM, yyyy");
 }

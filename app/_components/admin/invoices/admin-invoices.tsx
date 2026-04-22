@@ -1,4 +1,4 @@
-import { getAdminInvoicesApi } from "@/services/apis/invoices.api";
+import { getAllInvoicesApi } from "@/services/apis/invoices.api";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import InvoicesProvider from "./contexts/invoices-provider";
 import SearchWrapper from "./search-wrapper";
@@ -12,11 +12,10 @@ type AdminInvoicesProps = {
 export default async function AdminInvoices({
   searchParamsValues,
 }: AdminInvoicesProps) {
-  const { page, doctor_id, search } = searchParamsValues;
+  const { page, search } = searchParamsValues;
 
-  const result = await getAdminInvoicesApi({
+  const result = await getAllInvoicesApi({
     page,
-    doctor_id,
     search,
   });
 
