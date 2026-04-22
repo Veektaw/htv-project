@@ -52,6 +52,7 @@ export const getInvoicesApi = ({ page = "1", limit, doctor_id }: GetInvoicesPara
 
   if (limit) params.limit = limit;
   if (doctor_id) params.doctor_id = doctor_id;
+  // if (invoice_id) params.invoice_id = invoice_id;
 
   const queryString = new URLSearchParams(params).toString();
   const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;

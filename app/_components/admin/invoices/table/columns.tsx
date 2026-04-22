@@ -48,9 +48,9 @@ export const invoiceColumns: Column<ColumnType>[] = [
   {
     title: "",
     key: "actions",
-    render: () => (
+    render: (_, record) => (
       <MenuActions>
-        <Actions />
+        <Actions invoice={record} />
       </MenuActions>
     ),
   },

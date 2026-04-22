@@ -29,12 +29,12 @@ export const InvoiceColumns: Column<ColumnType>[] = [
     key: "created_at",
     render: (value) => formatDate(value as string),
   },
-  {
+ {
     title: "",
     key: "actions",
-    render: () => (
+    render: (_, record) => (
       <MenuActions>
-        <Actions />
+        <Actions currentStatus={record.status} />
       </MenuActions>
     ),
   },

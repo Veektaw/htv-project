@@ -24,6 +24,7 @@ export type CreateUserPayload = {
   title: string;
   phone: string;
   role: Roles;
+  address: string;
 };
 
 export type CreateUserResponse = {
@@ -68,6 +69,7 @@ export type UpdateUserDetailsPayload = {
     platform: string;
     brand_partner: string;
     external_user_id: string;
+    platform_account_recipient_email: string;
   }[];
   commissions: {
     platform: string;

@@ -27,7 +27,7 @@ export const prescriptionColumns: Column<ColumnType>[] = [
     render: (value) => value as string,
   },
   {
-    title: "Prescription(s) Signed",
+    title: "Prescriptions",
     key: "prescription_count",
     render: (value) => value as string,
   },

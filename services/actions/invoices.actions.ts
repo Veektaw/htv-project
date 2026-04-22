@@ -20,3 +20,47 @@ export const createManualInvoiceAction = async (
     message: response.body.message,
   };
 };
+import { updateInvoiceStatusApi, addInvoiceCommentApi, getInvoiceCommentsApi } from "../apis/invoices.api";
+
+export async function updateInvoiceStatus(invoiceId: string, actionType: string, disputeMessage?: string) {
+  try {
+    const result = await updateInvoiceStatusApi(invoiceId, actionType, disputeMessage);
+    if (result.ok) {
+      return { success: true, data: result.body };
+    } else {
+      return { success: false, error: result.body.message || "Failed to update invoice status" };
+    }
+  } catch (error) {
+    console.error("Error updating invoice status:", error);
+    return { success: false, error: "Failed to update invoice status" };
+
+  }
+}
+
+export async function addInvoiceComment(invoiceId: string, message: string) {
+  try {
+    const result = await addInvoiceCommentApi(invoiceId, message);
+    if (result.ok) {
+      return { success: true, data: result.body };
+    } else {
+      return { success: false, error: result.body.message || "Failed to add comment" };
+    }
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    return { success: false, error: "Failed to add comment" };
+  }
+}
+
+export async function getInvoiceComments(invoiceId: string) {
+  try {
+    const result = await getInvoiceCommentsApi(invoiceId);
+    if (result.ok) {
+      return { success: true, data: result.body };
+    } else {
+      return { success: false, error: result.body.message || "Failed to load comments" };
+    }
+  } catch (error) {
+    console.error("Error loading invoice comments:", error);
+    return { success: false, error: "Failed to load comments" };
+  }
+}
