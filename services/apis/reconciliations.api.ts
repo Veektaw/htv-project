@@ -64,13 +64,17 @@ export const updateReconciliationApi = (
 };
 
 export const addReconciliationCommentApi = (reconciliationId: string, message: string) => {
-  const payload = {
-    message,
-    reconciliation_id: reconciliationId,
-  };
-  return Api.post<typeof payload, any>(`/admin/reconciliations/${reconciliationId}/comments/`, payload, true);
+  const payload = { message, reconciliation_id: reconciliationId };
+  return Api.post(
+    `/admin/reconciliation/${reconciliationId}/comments/`, // ← singular
+    payload,
+    true
+  );
 };
 
 export const getReconciliationCommentsApi = (reconciliationId: string) => {
-  return Api.get<any>(`/admin/reconciliations/${reconciliationId}/comments/`, true);
+  return Api.get(
+    `/admin/reconciliation/${reconciliationId}/comments/`, // ← singular
+    true
+  );
 };
