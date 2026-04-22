@@ -220,8 +220,8 @@ export default function ManualInvoiceForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-9.5">
-      <FieldGroup className="grid grid-cols-2 gap-y-6 sm:grid-cols-2 sm:gap-x-10.5">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+      <FieldGroup className="grid grid-cols-2 gap-y-4 sm:grid-cols-2 sm:gap-x-10.5">
         <Controller
           name="name"
           control={form.control}
@@ -274,7 +274,7 @@ export default function ManualInvoiceForm({
           name="dateTime"
           control={form.control}
           render={({ field, fieldState }) => (
-            <Field data-invalid={fieldState.invalid} className="sm:col-span-2">
+            <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Date/Time</FieldLabel>
               <Input
                 {...field}
