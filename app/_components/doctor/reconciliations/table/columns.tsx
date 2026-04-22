@@ -28,12 +28,22 @@ export const reconciliationColumns: Column<ColumnType>[] = [
       })}`,
   },
   {
-    title: "Ayden Paid",
+    title: "Adyen Paid",
     key: "adyen_paid",
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
         maximumFractionDigits: 2,
       })}`,
+  },
+  {
+    title: "Manual Paid",
+    key: "manual_paid",
+    render: () => "€0.00",
+  },
+  {
+    title: "Date paid",
+    key: "date_paid",
+    render: () => "--",
   },
   {
     title: "Outstanding",
@@ -44,11 +54,6 @@ export const reconciliationColumns: Column<ColumnType>[] = [
       })}`,
   },
   {
-    title: "Date paid",
-    key: "date_paid",
-    render: () => "--",
-  },
-  {
     title: "Status",
     key: "status",
     render: (value) => <Status value={value as ReconciliationStatus} />,
@@ -56,9 +61,9 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "",
     key: "actions",
-    render: () => (
+    render: (_value, record) => (
       <MenuActions>
-        <Actions />
+        <Actions reconciliation={record} />
       </MenuActions>
     ),
   },
