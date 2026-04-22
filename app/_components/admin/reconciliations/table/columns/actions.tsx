@@ -59,9 +59,9 @@ export default function Actions({
             </li>
           )}
           <li>
-            <UpdateStatusModal type="complete" reconciliation={reconciliation}>
+            <UpdateStatusModal type="void" reconciliation={reconciliation}>
               <button className="rounded-base hover:bg-Geraldine size-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
-                Complete
+                Void
               </button>
             </UpdateStatusModal>
           </li>
@@ -74,12 +74,12 @@ export default function Actions({
             </button>
           </li>
           <li>
-            <button
+            {/* <button
               onClick={() => setIsViewCommentsModalOpen(true)}
               className="rounded-base hover:bg-Geraldine size-full px-3 py-1 text-left transition-colors duration-300 hover:text-white"
             >
               View Comment
-            </button>
+            </button> */}
           </li>
         </ul>
       </PopoverContent>

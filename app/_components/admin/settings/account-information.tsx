@@ -21,6 +21,7 @@ import { Spinner } from "@/app/_components/ui/spinner";
 import { nameTitles } from "@/lib/constants";
 import { UserSessionData } from "@/types/auth";
 import useUpdateUserProfile from "./hooks/use-update-user-profile";
+// import { AccordionContent, AccordionItem } from "../../ui/accordion";
 
 export default function AccountInformation({
   user,

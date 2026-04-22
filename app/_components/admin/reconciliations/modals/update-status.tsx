@@ -22,7 +22,7 @@ export default function UpdateStatusModal({
   reconciliation,
   children,
 }: {
-  type: "approve" | "complete";
+  type: "approve" | "complete" | "void";
   reconciliation: Reconciliation;
   children: ReactNode;
 }) {
@@ -65,7 +65,8 @@ export default function UpdateStatusModal({
       >
         <DialogHeader className="sm:text-center">
           <DialogTitle className="text-Gunmetal mx-auto max-w-100.25 text-2xl font-bold">
-            Are you sure you want to {isApproveType ? "approve" : "complete"}{" "}
+            Are you sure you want to{" "}
+            {isApproveType ? "approve" : type === "void" ? "void" : "complete"}{" "}
             this reconciliation?
           </DialogTitle>
         </DialogHeader>
@@ -81,7 +82,11 @@ export default function UpdateStatusModal({
               className="h-12 w-38 min-w-fit"
               disabled={isPending}
             >
-              {isApproveType ? "Approve" : "Complete"}{" "}
+              {isApproveType
+                ? "Approve"
+                : type === "void"
+                  ? "Void"
+                  : "Complete"}{" "}
               {isPending && <Spinner data-icon="inline-start" />}
             </Button>
           </form>
