@@ -68,6 +68,8 @@ export const addInvoiceCommentApi = (invoiceId: string, message: string) => {
     message,
     invoice_id: invoiceId,
   };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return Api.post<typeof payload, any>(
     `/admin/invoices/${invoiceId}/comments/`,
     payload,
@@ -76,5 +78,6 @@ export const addInvoiceCommentApi = (invoiceId: string, message: string) => {
 };
 
 export const getInvoiceCommentsApi = (invoiceId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return Api.get<any>(`/admin/invoices/${invoiceId}/comments/`, true);
 };

@@ -6,6 +6,7 @@ export const statuses: Record<InvoiceStatus, string> = {
   approved: "Approved",
   paid: "Paid",
   rejected: "Disputed",
+  disputed: "Disputed",
 };
 
 export default function Status({ value }: { value: InvoiceStatus }) {

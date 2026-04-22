@@ -12,11 +12,10 @@ type AdminInvoicesProps = {
 export default async function AdminInvoices({
   searchParamsValues,
 }: AdminInvoicesProps) {
-  const { page, doctor_id, search } = searchParamsValues;
+  const { page, search } = searchParamsValues;
 
   const result = await getAllInvoicesApi({
     page,
-    doctor_id,
     search,
   });
 
