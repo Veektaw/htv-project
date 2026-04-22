@@ -15,7 +15,7 @@ export type Invoice = {
   period_month: string;
   platform: string;
   file_url: string | null;
-  status: string;
+  status: InvoiceStatus;
   amount: number;
   submitted_at: string | null;
   notes: string;
@@ -32,6 +32,7 @@ export type GetInvoicesParams = {
   doctor_id?: string;
   invoice_id?: string;
   search?: string;
+  status?: string;
 };
 
 export type GetInvoicesResponse = {
@@ -51,6 +52,22 @@ export type GetDoctorInvoicesParams = {
   end_date?: string;
   search?: string;
   status?: string;
+};
+
+export type CreateManualInvoicePayload = {
+  period_month: string;
+  platform: string;
+  amount: number;
+};
+
+export type CreateManualInvoiceApiPayload = {
+  period_month: string;
+  platform: string;
+  amount: number;
+};
+
+export type CreateManualInvoiceResponse = {
+  message: string;
 };
 
 export type GetDoctorInvoices = Pagination & {
