@@ -1,6 +1,6 @@
 "use server";
 
-import { createManualInvoiceApi } from "@/services/apis/invoices.api";
+import { createManualInvoiceApi } from "../apis/doctor-invoices.api";
 import { CreateManualInvoicePayload } from "@/types/invoices";
 
 export const createManualInvoiceAction = async (

@@ -2,7 +2,7 @@ import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import InvoicesProvider from "./contexts/invoices-provider";
-import { getDoctorInvoicesApi } from "@/services/apis/invoices.api";
+import { getDoctorInvoicesApi } from "@/services/apis/doctor-invoices.api";
 
 type InvoicesListProps = {
   searchParamsValues: { [key: string]: string | undefined };

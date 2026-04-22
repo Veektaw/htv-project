@@ -1,42 +1,42 @@
 import { Api } from "./api";
 import {
-  CreateManualInvoiceApiPayload,
-  CreateManualInvoiceResponse,
+  GetInvoicesResponse,
+  GetInvoicesParams,
   GetDoctorInvoices,
   GetDoctorInvoicesParams,
-  GetInvoicesParams,
+  Invoice,
 } from "@/types/invoices";
 
-export const getDoctorInvoicesApi = ({
+export const getAdminInvoicesApi = ({
+  page = "1",
+  limit,
+  doctor_id,
+  search,
+}: GetInvoicesParams = {}) => {
+  const params: Record<string, string> = {
+    page,
+  };
+
+  if (limit) params.limit = limit;
+  if (doctor_id) params.doctor_id = doctor_id;
+  if (search) params.keyword = search;
+
+  const queryString = new URLSearchParams(params).toString();
+  const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;
+  return Api.get<GetInvoicesResponse>(url, true);
+};
+
+export const getAllInvoicesApi = ({
   page = "1",
   limit = "10",
-  user_id,
+  status,
 }: GetDoctorInvoicesParams) => {
   const params: Record<string, string> = {
     page,
     limit,
   };
 
-  if (user_id) params.user_id = user_id;
-
-  const queryString = new URLSearchParams(params).toString();
-
-  const url = `/doctor/invoices/${queryString ? `?${queryString}` : ""}`;
-
-  return Api.get<GetDoctorInvoices>(url, true);
-};
-
-export const getAllInvoicesApi = ({
-  page = "1",
-  limit = "10",
-  search,
-}: GetInvoicesParams) => {
-  const params: Record<string, string> = {
-    page,
-    limit,
-  };
-
-  if (search) params.search = search;
+  if (status) params.status = status;
 
   const queryString = new URLSearchParams(params).toString();
 
@@ -45,10 +45,36 @@ export const getAllInvoicesApi = ({
   return Api.get<GetDoctorInvoices>(url, true);
 };
 
-export const createManualInvoiceApi = (body: CreateManualInvoiceApiPayload) => {
-  return Api.post<CreateManualInvoiceApiPayload, CreateManualInvoiceResponse>(
-    "/doctor/invoices/",
-    body,
+export const updateInvoiceStatusApi = (
+  invoiceId: string,
+  actionType: string,
+  disputeMessage?: string,
+) => {
+  const payload: { action_type: string; dispute_message?: string } = {
+    action_type: actionType,
+  };
+  if (disputeMessage) {
+    payload.dispute_message = disputeMessage;
+  }
+  return Api.put<typeof payload, Invoice>(
+    `/admin/invoices/${invoiceId}/`,
+    payload,
     true,
   );
+};
+
+export const addInvoiceCommentApi = (invoiceId: string, message: string) => {
+  const payload = {
+    message,
+    invoice_id: invoiceId,
+  };
+  return Api.post<typeof payload, any>(
+    `/admin/invoices/${invoiceId}/comments/`,
+    payload,
+    true,
+  );
+};
+
+export const getInvoiceCommentsApi = (invoiceId: string) => {
+  return Api.get<any>(`/admin/invoices/${invoiceId}/comments/`, true);
 };
