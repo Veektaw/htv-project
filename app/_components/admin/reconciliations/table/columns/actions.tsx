@@ -87,7 +87,7 @@ export default function Actions({
         <DialogContent>
           <DialogHeader className="flex flex-col items-center justify-center gap-1 px-6 pt-6 pb-4 text-center">
             <DialogTitle>Add Comment</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-center">
               Add a comment help users better understand what needs to be done.
             </DialogDescription>
           </DialogHeader>

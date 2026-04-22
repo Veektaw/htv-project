@@ -79,9 +79,9 @@ export const addInvoiceCommentApi = (invoiceId: string, message: string) => {
     message,
     invoice_id: invoiceId,
   };
-  return Api.post<typeof payload, any>(`/admin/invoices/${invoiceId}/comments/`, payload, true);
+  return Api.post(`/admin/invoices/${invoiceId}/comments/`, payload, true);
 };
 
 export const getInvoiceCommentsApi = (invoiceId: string) => {
-  return Api.get<any>(`/admin/invoices/${invoiceId}/comments/`, true);
+  return Api.get(`/admin/invoices/${invoiceId}/comments/`, true);
 };
