@@ -48,13 +48,13 @@ export const reconciliationColumns: Column<ColumnType>[] = [
     //     maximumFractionDigits: 2,
     //   })}`,
   },
- 
+
   {
     title: "Date paid",
     key: "date_paid",
     render: () => "--",
   },
-   {
+  {
     title: "Outstanding",
     key: "outstanding",
     render: (value) =>
@@ -70,11 +70,12 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "",
     key: "actions",
-    render: (_, record) =>
-      record.status !== "completed" && (
-        <MenuActions>
-          <Actions reconciliation={record} />
-        </MenuActions>
-      ),
+    render: (_, record) => (
+      // record.status !== "completed" && (
+      <MenuActions>
+        <Actions reconciliation={record} />
+      </MenuActions>
+    ),
+    // ),
   },
 ];

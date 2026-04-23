@@ -1,7 +1,7 @@
 "use server";
 
-import { addReconciliationCommentApi, getReconciliationCommentsApi, updateReconciliationApi } from "../apis/reconciliations.api";
-import { UpdateReconciliationPayload } from "@/types/reconciliations";
+import { addReconciliationCommentApi, getReconciliationCommentsApi, manualReconciliationApi, updateReconciliationApi } from "../apis/reconciliations.api";
+import { AdminCreateReconciliationParams, UpdateReconciliationPayload } from "@/types/reconciliations";
 
 export const updateReconciliationAction = async (
   id: string,
@@ -47,3 +47,22 @@ export async function getReconciliationComments(reconciliationId: string) {
     return { success: false, error: "Failed to load comments" };
   }
 }
+export const manualReconciliationAction = async (
+  doctor_id: string,
+  payload: Omit<AdminCreateReconciliationParams, "doctor_id">
+) => {
+  const response = await manualReconciliationApi({ doctor_id, ...payload });
+
+  if (!response.ok) {
+    console.error("Manual reconciliation failed:", response.body);
+    return {
+      error: true,
+      message: response.body.message,
+    };
+  }
+
+  return {
+    error: false,
+    message: `Manual reconciliation triggered successfully`,
+  };
+};

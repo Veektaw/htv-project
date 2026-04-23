@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
 import Header from "@/app/_components/shared/header/header";
-import SubHeader from "@/app/_components/doctor/reconciliations/sub-header";
+import SubHeader from "@/app/_components/admin/reconciliations/sub-header";
 import Loader from "@/app/_components/shared/loader";
 import DoctorReconciliations from "@/app/_components/admin/reconciliations/doctor-reconciliations";
 

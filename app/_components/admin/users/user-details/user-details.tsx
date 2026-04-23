@@ -350,32 +350,30 @@ export default function UserDetails({ user }: { user: User }) {
                   />
                 </div>
 
-                {user.role === "admin" && (
-                  <Controller
-                    name="address"
-                    control={form.control}
-                    render={({ field, fieldState }) => {
-                      return (
-                        <Field data-invalid={fieldState.invalid}>
-                          <FieldLabel htmlFor={field.name}>
-                            Residential Address
-                          </FieldLabel>
-                          <Input
-                            {...field}
-                            id={field.name}
-                            aria-invalid={fieldState.invalid}
-                            placeholder="Address"
-                            className="border-GreyChateau"
-                            disabled={!canEdit}
-                          />
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      );
-                    }}
-                  />
-                )}
+                <Controller
+                  name="address"
+                  control={form.control}
+                  render={({ field, fieldState }) => {
+                    return (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>
+                          Residential Address
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id={field.name}
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Address"
+                          className="border-GreyChateau"
+                          disabled={!canEdit}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    );
+                  }}
+                />
               </AccordionContent>
             </AccordionItem>
 
@@ -503,32 +501,6 @@ export default function UserDetails({ user }: { user: User }) {
                                   placeholder="Enter User ID here"
                                   className="border-GreyChateau"
                                   disabled={!canEdit}
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            );
-                          }}
-                        />
-
-                        {/* Platform Recipient Email */}
-                        <Controller
-                          name={`platforms.${index}.platform_account_recipient_email`}
-                          control={form.control}
-                          render={({ field, fieldState }) => {
-                            return (
-                              <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor={field.name}>
-                                  Platform Email
-                                </FieldLabel>
-                                <Input
-                                  {...field}
-                                  id={field.name}
-                                  aria-invalid={fieldState.invalid}
-                                  type="email"
-                                  placeholder="Email address"
-                                  className="border-GreyChateau"
                                 />
                                 {fieldState.invalid && (
                                   <FieldError errors={[fieldState.error]} />

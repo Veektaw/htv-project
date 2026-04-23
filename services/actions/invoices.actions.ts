@@ -1,10 +1,13 @@
 "use server";
 
+import { da } from "zod/locales";
 import { createManualInvoiceApi } from "../apis/doctor-invoices.api";
 import {
   addInvoiceCommentApi,
   getInvoiceCommentsApi,
   updateInvoiceStatusApi,
+  resendmailInvoiceApi,
+  downloadInvoiceApi,
 } from "../apis/invoices.api";
 import { CreateManualInvoicePayload } from "@/types/invoices";
 
@@ -82,5 +85,57 @@ export async function getInvoiceComments(invoiceId: string) {
   } catch (error) {
     console.error("Error loading invoice comments:", error);
     return { success: false, error: "Failed to load comments" };
+  }
+}
+export const resendInvoiceEmailAction = async (invoiceId: string) => {
+  try {
+    const response = await resendmailInvoiceApi(invoiceId);
+    if (response.ok) {
+      return {
+        success: true,
+        message:  response.body.message || "Invoice email resent successfully",
+      };
+    } else {
+      return {
+        success: false,
+        error: response.body.message || "Failed to resend invoice email",
+      };
+    }
+  } catch (error) {
+    console.error("Error resending invoice email:", error);
+    return {
+      success: false,
+      error: "Failed to resend invoice email",
+    };
+  }
+};
+export const downloadInvoiceAction = async (invoiceId: string) => {
+  try {
+    const response = await downloadInvoiceApi(invoiceId);
+    if (response.ok) {
+      const blob = new Blob([response.body], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `invoice_${invoiceId}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      return {
+        success: true,
+        message: "Invoice downloaded successfully",
+      };
+    } else {
+      return {
+        success: false,
+        error: response.body.message || "Failed to download invoice",
+      };
+    }
+  } catch (error) {
+    console.error("Error downloading invoice:", error);
+    return {
+      success: false,
+      error: "Failed to download invoice",
+    };
   }
 }

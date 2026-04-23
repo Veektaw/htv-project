@@ -1,5 +1,6 @@
 import { Api } from "./api";
 import {
+  AdminCreateReconciliationParams,
   GetDoctorReconciliations,
   GetDoctorReconciliationsParams,
   Reconciliation,
@@ -75,6 +76,14 @@ export const addReconciliationCommentApi = (reconciliationId: string, message: s
 export const getReconciliationCommentsApi = (reconciliationId: string) => {
   return Api.get(
     `/admin/reconciliation/${reconciliationId}/comments/`, 
+    true
+  );
+};
+export const manualReconciliationApi = (data:AdminCreateReconciliationParams) => {
+  const { doctor_id ,...payload} = data;
+  return Api.post(
+    `/admin/reconciliation/${doctor_id}/manual-payment/`,
+    payload,
     true
   );
 };

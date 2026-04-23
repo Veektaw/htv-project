@@ -28,11 +28,11 @@ export const paymentColumns: Column<ColumnType>[] = [
     render: (_, record) =>
       `${record.amount_paid.toLocaleString("en-US", { style: "currency", currency: "EUR" })}`,
   },
-  {
-    title: "Invoice Ref",
-    key: "invoice_ref",
-    render: (_, record) => record.invoice_ref,
-  },
+  // {
+  //   title: "Invoice Ref",
+  //   key: "invoice_ref",
+  //   render: (_, record) => record.invoice_ref,
+  // },
   {
     title: "Payment Date",
     key: "payment_date",

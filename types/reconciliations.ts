@@ -26,7 +26,17 @@ export type Reconciliation = {
   created_at: string;
   updated_at: string;
 };
-
+export type AdminCreateReconciliationParams = {
+  doctor_id: string;
+  manual_paid: number;
+  platform: string;
+  gross_amount: number;
+  adyen_paid: number;
+  outstanding: number;
+  note: string;
+  comment: string;
+  period_month: string;
+};
 export type GetDoctorReconciliations = Pagination & {
   reconciliations: Reconciliation[];
 };

@@ -9,6 +9,7 @@ import {
   UpdateUserProfileSchemaType,
 } from "../schemas";
 import { UserSessionData } from "@/types/auth";
+// import { defaultPlatformValue } from "../../users/user-details/hooks/use-update-user-details";
 
 export default function useUpdateUserProfile({
   user,
@@ -28,6 +29,7 @@ export default function useUpdateUserProfile({
       title: user.title ? user.title : "",
       phone: user.phone ? user.phone : "",
       company_name: user.company_name ? user.company_name : "",
+      platforms: user.all_platforms && user.all_platforms.length > 0
     },
   });
   const { register, handleSubmit, formState, reset } = form;
