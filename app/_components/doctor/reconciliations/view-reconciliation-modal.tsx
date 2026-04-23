@@ -41,40 +41,34 @@ export default function ViewReconciliationModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="rounded-3xl border border-[#B4B4B4] px-6 py-10.5">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <span className="font-inter text-sm font-medium text-gray-600">
-                Platform:
-              </span>
-              <span className="font-inter text-sm text-black">
-                {reconciliation.platform}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="font-inter text-sm font-medium text-gray-600">
-                Date:
-              </span>
-              <span className="font-inter text-sm text-black">
-                {formatPeriodMonth(reconciliation.period_month)}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="font-inter text-sm font-medium text-gray-600">
-                Status:
-              </span>
-              <span className="font-inter text-sm text-black capitalize">
-                {reconciliation.status}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="font-inter text-sm font-medium text-gray-600">
-                Est. Commissions:
-              </span>
-              <span className="font-inter text-sm text-black">
-                ${reconciliation.gross_amount.toFixed(2)}
-              </span>
-            </div>
+        <div className="space-y-4">
+          <div>
+            <label className="font-semibold">Platform</label>
+            <p>{reconciliation.platform}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Date</label>
+            <p>{formatPeriodMonth(reconciliation.period_month)}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Status</label>
+            <p>{reconciliation.status}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Est. Commissions:</label>
+            <p>€{reconciliation.gross_amount.toFixed(2)}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Adyen Paid</label>
+            <p>€{reconciliation.adyen_paid}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Manual Paid</label>
+            <p>€{reconciliation.manual_paid}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Outstanding</label>
+            <p>€{reconciliation.outstanding}</p>
           </div>
         </div>
       </DialogContent>

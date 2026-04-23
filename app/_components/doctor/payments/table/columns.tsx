@@ -2,6 +2,8 @@ import { ReactNode } from "react";
 import { Column } from "@/app/_components/shared/table-component/table-component";
 import { Payment } from "@/types/doctors-payments";
 import { formatDate } from "@/lib/utils";
+import { PaymentStatus } from "@/types/doctors-payments";
+import Status from "./columns/status";
 
 type ColumnType = Payment & { actions?: ReactNode };
 
@@ -18,13 +20,18 @@ export const PaymentColumns: Column<ColumnType>[] = [
   },
   {
     title: "Amount",
-    key: "amount",
-    render: (value) => `$${Number(value).toFixed(2)}`,
+    key: "amount_paid",
+    render: (value) => `€${Number(value).toFixed(2)}`,
   },
   {
     title: "Payment Date",
-    key: "submitted_at",
+    key: "updated_at",
     render: (value) => (value ? formatDate(value as string) : "N/A"),
+  },
+  {
+    title: "Status",
+    key: "status",
+    render: (value) => <Status value={value as PaymentStatus} />,
   },
   {
     title: "Source",
@@ -33,7 +40,7 @@ export const PaymentColumns: Column<ColumnType>[] = [
   },
   {
     title: "Invoice ID",
-    key: "invoice_ref",
+    key: "invoice_id",
     render: (value) => value as string,
   },
   {

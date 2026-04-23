@@ -21,6 +21,18 @@ export default function ViewCommentModal({
   children,
   invoice,
 }: ViewCommentModalProps) {
+  const getStatusStyles = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "paid":
+        return "text-GreenHaze";
+      case "disputed":
+        return "text-PortlandOrange";
+      case "under review":
+        return "text-LightMustard";
+      default:
+        return "text-gray-700";
+    }
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -34,40 +46,32 @@ export default function ViewCommentModal({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="rounded-3xl border border-[#B4B4B4] px-6 py-10.5">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <span className="font-inter text-sm font-medium text-gray-600">
-                Name:
-              </span>
-              <span className="font-inter text-sm text-black">
-                {invoice.user.full_name}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="font-inter text-sm font-medium text-gray-600">
-                Invoice ID:
-              </span>
-              <span className="font-inter text-sm text-black">
-                {invoice.id}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="font-inter text-sm font-medium text-gray-600">
-                Payment Date:
-              </span>
-              <span className="font-inter text-sm text-black">
-                {invoice.created_at ? formatDate(invoice.updated_at) : "N/A"}
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="font-inter text-sm font-medium text-gray-600">
-                Status:
-              </span>
-              <span className="font-inter text-sm text-black capitalize">
-                {invoice.status.replace("_", " ")}
-              </span>
-            </div>
+        <div className="space-y-4">
+          <div>
+            <label className="font-semibold">Name:</label>
+            <p>{invoice.user.full_name}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Invoice ID:</label>
+            <p>{invoice.id}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Payment Date</label>
+            <p>{invoice.created_at ? formatDate(invoice.updated_at) : "N/A"}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Status:</label>
+            <p className={`${getStatusStyles(invoice.status)}`}>
+              {invoice.status}
+            </p>
+          </div>
+          <div>
+            <label className="font-semibold">Date Created:</label>
+            <p>{invoice.created_at ? formatDate(invoice.updated_at) : "N/A"}</p>
+          </div>
+          <div>
+            <label className="font-semibold">Invoice Ref</label>
+            <p>{invoice.invoice_ref}</p>
           </div>
         </div>
       </DialogContent>

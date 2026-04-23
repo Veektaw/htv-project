@@ -22,6 +22,8 @@ export default function CreateNewInvoiceModal({
   reconciliation?: Reconciliation;
   user?: UserSessionData;
 }) {
+  const title = reconciliation ? "Create invoice" : "Create invoice manually";
+
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -31,7 +33,7 @@ export default function CreateNewInvoiceModal({
       >
         <DialogHeader>
           <DialogTitle className="font-inter text-2xl font-bold text-[#1D1E25]">
-            Create invoice manually
+            {title}
           </DialogTitle>
         </DialogHeader>
 

@@ -1,6 +1,8 @@
 import { Pagination } from "./users";
 import { User } from "./auth";
 
+export type PaymentStatus = "pending" | "completed" | "failed";
+
 export type GetDoctorPaymentsParams = {
   page?: string;
   limit?: string;
