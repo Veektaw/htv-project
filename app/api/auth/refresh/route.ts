@@ -11,13 +11,13 @@ export async function POST() {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get(REFRESH_TOKEN)?.value;
 
-  console.log({ xyz: refreshToken });
+  // console.log({ xyz: refreshToken });
 
   if (!refreshToken) {
     return Response.json({ error: "No refresh token" }, { status: 401 });
   }
 
-  console.log(`${process.env.BASE_URL}/auth/refresh-token/`);
+  // console.log(`${process.env.BASE_URL}/auth/refresh-token/`);
 
   try {
     const res = await fetch(`${process.env.BASE_URL}/auth/refresh-token/`, {
@@ -30,7 +30,7 @@ export async function POST() {
 
     if (!res.ok) {
       const errorMessage = data.message || data.detail || "Session expired";
-      console.log({ errorMessage });
+      // console.log({ errorMessage });
 
       cookieStore.delete(USER_SESSION_KEY);
       cookieStore.delete(REFRESH_TOKEN);
@@ -42,7 +42,7 @@ export async function POST() {
       ? await decrypt<UserSession>(sessionCookie)
       : null;
 
-    console.log({ xyz2: userSession });
+    // console.log({ xyz2: userSession });
 
     if (!userSession) {
       return Response.json({ error: "No session cookie" }, { status: 401 });
@@ -50,7 +50,7 @@ export async function POST() {
 
     const { access_token, refresh_token }: RefreshTokensResponse = data;
 
-    console.log({ access_token, refresh_token });
+    // console.log({ access_token, refresh_token });
 
     const user = userSession?.data.user;
 
@@ -65,8 +65,8 @@ export async function POST() {
       accessToken: access_token,
       refreshToken: refresh_token,
     });
-  } catch (error) {
-    console.error({ fetchError: error });
+  } catch {
+    // console.error({ fetchError: error });
     return Response.json(
       { error: "Unable to reach auth server" },
       { status: 503 },
