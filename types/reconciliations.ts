@@ -10,7 +10,11 @@ export type GetDoctorReconciliationsParams = {
   search?: string;
 };
 
-export type ReconciliationStatus = "pending" | "approved" | "completed";
+export type ReconciliationStatus =
+  | "pending"
+  | "approved"
+  | "completed"
+  | "void";
 
 export type Reconciliation = {
   id: string;

@@ -9,20 +9,22 @@ import {
   DialogTrigger,
 } from "@/app/_components/ui/dialog";
 import { Reconciliation } from "@/types/reconciliations";
+import { UserSessionData } from "@/types/auth";
 
 import ManualInvoiceForm from "./manual-invoice-form";
 
 export default function CreateNewInvoiceModal({
   children,
   reconciliation,
+  user,
 }: {
   children: ReactNode;
   reconciliation?: Reconciliation;
+  user?: UserSessionData;
 }) {
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      {/* Set the width directly to the manual form size (max-w-251) */}
       <DialogContent
         aria-describedby={undefined}
         className="gap-10 rounded-[24px] sm:max-w-251"
@@ -34,8 +36,9 @@ export default function CreateNewInvoiceModal({
         </DialogHeader>
 
         <ManualInvoiceForm
-          key={reconciliation?.id ?? "manual-invoice-form"}
+          key={reconciliation?.id ?? user?.id ?? "manual-invoice-form"}
           reconciliation={reconciliation}
+          user={user}
         />
       </DialogContent>
     </Dialog>

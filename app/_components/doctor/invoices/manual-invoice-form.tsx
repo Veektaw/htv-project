@@ -9,6 +9,7 @@ import {
   FieldLabel,
 } from "@/app/_components/ui/field";
 import { Reconciliation } from "@/types/reconciliations";
+import { UserSessionData } from "@/types/auth";
 
 import { Input } from "@/app/_components/ui/input";
 import { Button } from "@/app/_components/ui/button";
@@ -90,7 +91,16 @@ const getInitialInvoiceRow = (
   ...getPeriodDates(reconciliation?.period_month),
 });
 
-const getUserName = (reconciliation?: Reconciliation) => {
+const getUserName = (
+  reconciliation?: Reconciliation,
+  user?: UserSessionData,
+) => {
+  if (user) {
+    return (
+      user.full_name ||
+      [user.first_name, user.last_name].filter(Boolean).join(" ")
+    );
+  }
   if (!reconciliation?.user) return "";
   return (
     reconciliation.user.full_name ||
@@ -102,11 +112,13 @@ const getUserName = (reconciliation?: Reconciliation) => {
 
 export default function ManualInvoiceForm({
   reconciliation,
+  user,
 }: {
   reconciliation?: Reconciliation;
+  user?: UserSessionData;
 }) {
   const defaultValues = {
-    name: getUserName(reconciliation),
+    name: getUserName(reconciliation, user),
     address: "",
     invoiceId: "",
     dateTime: formatToDateTimeLocal(reconciliation?.created_at),
