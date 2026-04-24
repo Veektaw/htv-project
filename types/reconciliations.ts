@@ -29,6 +29,7 @@ export type Reconciliation = {
   status: ReconciliationStatus;
   created_at: string;
   updated_at: string;
+  prescription_count: number;
 };
 
 export type GetDoctorReconciliations = Pagination & {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Controller } from "react-hook-form";
 import {
   Field,
@@ -34,6 +34,9 @@ import { Calendar } from "@/app/_components/ui/calendar";
 import { showToast } from "@/lib/toast";
 import { createManualInvoiceAction } from "@/services/actions/invoices.actions";
 import useManualInvoice from "./hooks/use-manual-invoice";
+import { getDoctorPrescriptionsAction } from "@/services/actions/prescriptions.actions";
+import { getPlatformsAction } from "@/services/actions/platforms.actions";
+import { Prescription } from "@/types/prescriptions";
 
 type InvoiceRow = {
   id: number;
@@ -69,21 +72,22 @@ const formatToDateTimeLocal = (dateTime?: string) => {
   const date = new Date(dateTime);
   if (Number.isNaN(date.getTime())) return "";
 
-  const tzOffset = date.getTimezoneOffset();
-  const localDate = new Date(date.getTime() - tzOffset * 60000);
+  const yyyy = date.getFullYear();
+  const mm = String(date.getMonth() + 1).padStart(2, "0");
+  const dd = String(date.getDate()).padStart(2, "0");
+  const hh = String(date.getHours()).padStart(2, "0");
+  const min = String(date.getMinutes()).padStart(2, "0");
 
-  return localDate.toISOString().slice(0, 16);
+  return `${yyyy}-${mm}-${dd}T${hh}:${min}`;
 };
 
-const getInitialInvoiceRow = (
-  reconciliation?: Pick<
-    Reconciliation,
-    "platform" | "gross_amount" | "period_month"
-  >,
-) => ({
+const getInitialInvoiceRow = (reconciliation?: Reconciliation) => ({
   id: 1,
   platform: reconciliation?.platform ?? "",
-  totalPrescriptions: "",
+  totalPrescriptions:
+    reconciliation?.prescription_count !== undefined
+      ? String(reconciliation.prescription_count)
+      : "",
   amount:
     reconciliation?.gross_amount !== undefined
       ? String(reconciliation.gross_amount)
@@ -119,7 +123,7 @@ export default function ManualInvoiceForm({
 }) {
   const defaultValues = {
     name: getUserName(reconciliation, user),
-    address: "",
+    address: user?.address ?? reconciliation?.user?.address ?? "",
     invoiceId: "",
     dateTime: formatToDateTimeLocal(reconciliation?.created_at),
     platform: reconciliation?.platform ?? "",
@@ -134,10 +138,81 @@ export default function ManualInvoiceForm({
   const { form, formState, reset, refresh } = useManualInvoice({
     defaultValues,
   });
-  const { handleSubmit, control, watch } = form;
+
+  const {
+    handleSubmit,
+    control,
+    watch,
+    setValue,
+    formState: { errors },
+  } = form;
   const [rows, setRows] = useState<InvoiceRow[]>(() => [
     getInitialInvoiceRow(reconciliation),
   ]);
+
+  useEffect(() => {
+    console.log("Trace - All Errors:", errors);
+
+    if (Object.keys(errors).length > 0) {
+      // This will now catch nested errors and array errors
+      console.warn("Validation Failed on these fields:", Object.keys(errors));
+    }
+  }, [errors]);
+
+  useEffect(() => {
+    if (!reconciliation?.platform || !reconciliation?.period_month) return;
+
+    const { periodFrom, periodTo } = getPeriodDates(
+      reconciliation.period_month,
+    );
+    if (!periodFrom || !periodTo) return;
+
+    getDoctorPrescriptionsAction({
+      platform: reconciliation.platform,
+      start_date: periodFrom.toISOString().split("T")[0],
+      end_date: periodTo.toISOString().split("T")[0],
+    }).then((res) => {
+      const prescriptions = (
+        res?.data as { body?: { prescriptions?: Prescription[] } }
+      )?.body?.prescriptions;
+      const total = prescriptions?.reduce(
+        (sum: number, p: Prescription) => sum + p.prescription_count,
+        0,
+      );
+      console.log("3. computed total", total);
+      if (total !== undefined) {
+        setRows((current) =>
+          current.map((row) =>
+            row.id === 1 ? { ...row, totalPrescriptions: String(total) } : row,
+          ),
+        );
+      }
+    });
+  }, [reconciliation?.platform, reconciliation?.period_month]);
+
+  useEffect(() => {
+    if (!reconciliation?.platform || !reconciliation?.doctor_id) return;
+
+    getPlatformsAction().then((res) => {
+      const platforms = (
+        res?.data as {
+          body?: {
+            platforms?: Array<{ address: string; brand_partner: string }>;
+          };
+        }
+      )?.body?.platforms;
+      if (!platforms) return;
+
+      const match = platforms.find(
+        (p) => p.brand_partner === reconciliation.platform,
+      );
+
+      if (match?.address) {
+        setValue("invoiceId", match.address);
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reconciliation?.platform, reconciliation?.doctor_id]);
 
   const updateRow = (
     id: number,
@@ -154,6 +229,17 @@ export default function ManualInvoiceForm({
         row.id === id ? { ...row, [field]: value } : row,
       ),
     );
+
+    if (id === 1) {
+      if (field === "platform") setValue("platform", value as string);
+      if (field === "amount") setValue("amount", Number(value));
+
+      if (field === "periodFrom" || field === "periodTo") {
+        const row = rows.find((r) => r.id === id);
+        const updatedRow = { ...row, [field]: value } as InvoiceRow;
+        setValue("period_month", getPeriodMonth(updatedRow));
+      }
+    }
   };
 
   const formatDate = (date?: Date) =>
@@ -180,14 +266,7 @@ export default function ManualInvoiceForm({
 
   const sumTotal = rows.reduce((total, row) => {
     const amount = Number(row.amount.replace(/,/g, ""));
-    const prescriptions = Number(row.totalPrescriptions.replace(/,/g, ""));
-
-    const rowTotal =
-      Number.isFinite(prescriptions) && Number.isFinite(amount)
-        ? prescriptions * amount
-        : 0;
-
-    return total + rowTotal;
+    return total + (Number.isFinite(amount) ? amount : 0);
   }, 0);
 
   const adyenPaid = Number(
@@ -209,10 +288,18 @@ export default function ManualInvoiceForm({
       return;
     }
 
+    const formValues = form.getValues();
+    const formattedDate = formValues.dateTime?.includes("T")
+      ? formValues.dateTime.split("T")[0]
+      : formValues.dateTime || "";
+
     const payload = {
       period_month,
       platform: row.platform,
       amount: sumTotal,
+      full_name: formValues.name,
+      address: formValues.address,
+      bill_from_address: formValues.invoiceId,
     };
 
     try {
@@ -232,10 +319,16 @@ export default function ManualInvoiceForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+    <form
+      onSubmit={handleSubmit(handleFormSubmit, (errors) =>
+        console.log("Form Validation Errors:", errors),
+      )}
+      className="space-y-6"
+    >
       <FieldGroup className="grid grid-cols-2 gap-y-4 sm:grid-cols-2 sm:gap-x-10.5">
         <Controller
           name="name"
+          disabled={!!reconciliation}
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
@@ -253,6 +346,7 @@ export default function ManualInvoiceForm({
         <Controller
           name="address"
           control={form.control}
+          disabled={!!reconciliation}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Address</FieldLabel>
@@ -269,6 +363,7 @@ export default function ManualInvoiceForm({
         <Controller
           name="invoiceId"
           control={form.control}
+          disabled={!!reconciliation}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Bill to address</FieldLabel>
@@ -285,6 +380,7 @@ export default function ManualInvoiceForm({
         <Controller
           name="dateTime"
           control={form.control}
+          disabled={!!reconciliation}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Date/Time</FieldLabel>
@@ -292,6 +388,7 @@ export default function ManualInvoiceForm({
                 {...field}
                 id={field.name}
                 type="datetime-local"
+                placeholder="YYYY/MM/DD HH:mm"
                 aria-invalid={fieldState.invalid}
               />
               {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
@@ -335,102 +432,140 @@ export default function ManualInvoiceForm({
                   <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
                     <div className="flex-1 space-y-1">
                       <p className="text-[11px] font-medium text-black">From</p>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className="h-9 w-full justify-between rounded-[24px] border-black px-3 py-2 text-left text-xs"
-                            type="button"
-                          >
-                            <span className="flex items-center gap-2">
-                              <Image src={calendarIcon} alt="calendar icon" />
-                              <span className="text-muted-foreground">
-                                {row.periodFrom
-                                  ? formatDate(row.periodFrom)
-                                  : "Start date"}
-                              </span>
+                      {reconciliation ? (
+                        <Button
+                          variant="outline"
+                          className="h-9 w-full justify-between rounded-[24px] border-black px-3 py-2 text-left text-xs disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                          type="button"
+                          disabled
+                        >
+                          <span className="flex items-center gap-2">
+                            <Image src={calendarIcon} alt="calendar icon" />
+                            <span className="text-muted-foreground">
+                              {row.periodFrom
+                                ? formatDate(row.periodFrom)
+                                : "Start date"}
                             </span>
-                            <span className="text-muted-foreground">▾</span>
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-72 p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={row.periodFrom}
-                            onSelect={(date) =>
-                              updateRow(row.id, "periodFrom", date)
-                            }
-                            defaultMonth={row.periodTo ?? undefined}
-                            fromMonth={
-                              row.periodTo
-                                ? new Date(
-                                    row.periodTo.getFullYear(),
-                                    row.periodTo.getMonth(),
-                                  )
-                                : undefined
-                            }
-                            toMonth={
-                              row.periodTo
-                                ? new Date(
-                                    row.periodTo.getFullYear(),
-                                    row.periodTo.getMonth(),
-                                  )
-                                : undefined
-                            }
-                            className="w-full"
-                          />
-                        </PopoverContent>
-                      </Popover>
+                          </span>
+                          <span className="text-muted-foreground">▾</span>
+                        </Button>
+                      ) : (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="h-9 w-full justify-between rounded-[24px] border-black px-3 py-2 text-left text-xs"
+                              type="button"
+                            >
+                              <span className="flex items-center gap-2">
+                                <Image src={calendarIcon} alt="calendar icon" />
+                                <span className="text-muted-foreground">
+                                  {row.periodFrom
+                                    ? formatDate(row.periodFrom)
+                                    : "Start date"}
+                                </span>
+                              </span>
+                              <span className="text-muted-foreground">▾</span>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-72 p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={row.periodFrom}
+                              onSelect={(date) =>
+                                updateRow(row.id, "periodFrom", date)
+                              }
+                              defaultMonth={row.periodTo ?? undefined}
+                              fromMonth={
+                                row.periodTo
+                                  ? new Date(
+                                      row.periodTo.getFullYear(),
+                                      row.periodTo.getMonth(),
+                                    )
+                                  : undefined
+                              }
+                              toMonth={
+                                row.periodTo
+                                  ? new Date(
+                                      row.periodTo.getFullYear(),
+                                      row.periodTo.getMonth(),
+                                    )
+                                  : undefined
+                              }
+                              className="w-full"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
                     </div>
 
                     <div className="flex-1 space-y-1">
                       <p className="text-[11px] font-medium text-black">To</p>
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button
-                            variant="outline"
-                            className="h-9 w-full justify-between rounded-[24px] border-black px-3 py-2 text-left text-xs"
-                            type="button"
-                          >
-                            <span className="flex items-center gap-2">
-                              <Image src={calendarIcon} alt="calendar icon" />
-                              <span className="text-muted-foreground">
-                                {row.periodTo
-                                  ? formatDate(row.periodTo)
-                                  : "End date"}
-                              </span>
+                      {reconciliation ? (
+                        <Button
+                          variant="outline"
+                          className="h-9 w-full justify-between rounded-[24px] border-black px-3 py-2 text-left text-xs disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
+                          type="button"
+                          disabled
+                        >
+                          <span className="flex items-center gap-2">
+                            <Image src={calendarIcon} alt="calendar icon" />
+                            <span className="text-muted-foreground">
+                              {row.periodTo
+                                ? formatDate(row.periodTo)
+                                : "End date"}
                             </span>
-                            <span className="text-muted-foreground">▾</span>
-                          </Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-72 p-0" align="start">
-                          <Calendar
-                            mode="single"
-                            selected={row.periodTo}
-                            onSelect={(date) =>
-                              updateRow(row.id, "periodTo", date)
-                            }
-                            defaultMonth={row.periodFrom ?? undefined}
-                            fromMonth={
-                              row.periodFrom
-                                ? new Date(
-                                    row.periodFrom.getFullYear(),
-                                    row.periodFrom.getMonth(),
-                                  )
-                                : undefined
-                            }
-                            toMonth={
-                              row.periodFrom
-                                ? new Date(
-                                    row.periodFrom.getFullYear(),
-                                    row.periodFrom.getMonth(),
-                                  )
-                                : undefined
-                            }
-                            className="w-full"
-                          />
-                        </PopoverContent>
-                      </Popover>
+                          </span>
+                          <span className="text-muted-foreground">▾</span>
+                        </Button>
+                      ) : (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              className="h-9 w-full justify-between rounded-[24px] border-black px-3 py-2 text-left text-xs"
+                              type="button"
+                            >
+                              <span className="flex items-center gap-2">
+                                <Image src={calendarIcon} alt="calendar icon" />
+                                <span className="text-muted-foreground">
+                                  {row.periodTo
+                                    ? formatDate(row.periodTo)
+                                    : "End date"}
+                                </span>
+                              </span>
+                              <span className="text-muted-foreground">▾</span>
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-72 p-0" align="start">
+                            <Calendar
+                              mode="single"
+                              selected={row.periodTo}
+                              onSelect={(date) =>
+                                updateRow(row.id, "periodTo", date)
+                              }
+                              defaultMonth={row.periodTo ?? undefined}
+                              fromMonth={
+                                row.periodTo
+                                  ? new Date(
+                                      row.periodTo.getFullYear(),
+                                      row.periodTo.getMonth(),
+                                    )
+                                  : undefined
+                              }
+                              toMonth={
+                                row.periodTo
+                                  ? new Date(
+                                      row.periodTo.getFullYear(),
+                                      row.periodTo.getMonth(),
+                                    )
+                                  : undefined
+                              }
+                              className="w-full"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
                     </div>
                   </div>
                 </TableCell>
@@ -442,7 +577,8 @@ export default function ManualInvoiceForm({
                       updateRow(row.id, "platform", event.target.value)
                     }
                     placeholder="Platform"
-                    className="h-9 text-xs"
+                    disabled={!!reconciliation}
+                    className="h-9 text-xs text-black"
                   />
                 </TableCell>
 
@@ -457,7 +593,8 @@ export default function ManualInvoiceForm({
                       )
                     }
                     placeholder="Total prescriptions"
-                    className="h-9 text-xs"
+                    disabled={!!reconciliation}
+                    className="h-9 text-xs text-black"
                   />
                 </TableCell>
 
@@ -468,7 +605,8 @@ export default function ManualInvoiceForm({
                       updateRow(row.id, "amount", event.target.value)
                     }
                     placeholder="Amount"
-                    className="h-9 text-xs"
+                    disabled={!!reconciliation}
+                    className="h-9 text-xs text-black"
                   />
                 </TableCell>
               </TableRow>
@@ -493,6 +631,7 @@ export default function ManualInvoiceForm({
               <Input
                 {...field}
                 placeholder="EUR"
+                disabled={!!reconciliation}
                 className="h-9 w-32 text-right! text-xs placeholder:text-right!"
               />
             )}
