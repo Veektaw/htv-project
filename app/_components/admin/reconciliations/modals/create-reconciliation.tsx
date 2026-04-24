@@ -167,7 +167,7 @@ export default function CreateReconciliationModal() {
           <div className="relative max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-2xl bg-white shadow-2xl">
             <div className="flex items-center justify-between px-8 pt-7 pb-4">
               <h2 className="text-xl font-semibold text-gray-900">
-                Manual Reconciliation
+                Reconciliation
               </h2>
               <button
                 type="button"
@@ -291,7 +291,7 @@ export default function CreateReconciliationModal() {
                           Field
                         </th>
                         <th className="rounded-tr-lg px-4 py-3 text-right text-xs font-medium text-gray-600">
-                          Amount (EUR)
+                          Amount (€)
                         </th>
                       </tr>
                     </thead>

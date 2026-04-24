@@ -42,6 +42,11 @@ export const paymentColumns: Column<ColumnType>[] = [
         : "N/A",
   },
   {
+    title: "Payment Status",
+    key: "status",
+    render: (_, record) => record.status,
+  },
+  {
     title: "Payment Method",
     key: "payment_method",
     render: (_, record) => record.payment_type || "N/A",

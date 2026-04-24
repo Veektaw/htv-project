@@ -81,11 +81,7 @@ export const getInvoiceCommentsApi = (invoiceId: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return Api.get<any>(`/admin/invoices/${invoiceId}/comments/`, true);
 };
-export const downloadInvoiceApi = (invoiceId: string) => {
-  return Api.get(`/admin/invoices/${invoiceId}/download-pdf/`, true, {
-    responseType: "blob",
-  });
-}
+
 
 export const resendmailInvoiceApi = (invoiceId: string) => {
   return Api.post(`/admin/invoices/${invoiceId}/resend-email/`, {}, true);

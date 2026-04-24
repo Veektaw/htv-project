@@ -152,16 +152,20 @@ export default function Actions({ invoice }: ActionsProps) {
   const handleDownloadInvoice = async () => {
     try {
       const result = await downloadInvoiceAction(invoice.id);
-      if (result.success) {
-        const url = window.URL.createObjectURL(
-          new Blob([result.success], { type: "application/pdf" }),
+
+      if (!result.error && result.base64) {
+        const binary = Uint8Array.from(atob(result.base64), (c) =>
+          c.charCodeAt(0),
         );
+        const blob = new Blob([binary], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
         link.setAttribute("download", `invoice_${invoice.invoice_ref}.pdf`);
         document.body.appendChild(link);
         link.click();
         link.parentNode?.removeChild(link);
+        URL.revokeObjectURL(url);
       } else {
         showErrorToast("Failed to download invoice");
       }
@@ -376,7 +380,7 @@ export default function Actions({ invoice }: ActionsProps) {
         <DialogContent>
           <DialogHeader className="flex flex-col items-center justify-center gap-1 px-6 pt-6 pb-4 text-center">
             <DialogTitle>Add Comment</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-center">
               Add a comment help users better understand what needs to be done.
             </DialogDescription>
           </DialogHeader>
@@ -385,12 +389,12 @@ export default function Actions({ invoice }: ActionsProps) {
               <label className="mb-2 block text-sm font-medium">
                 Enter your reasons here
               </label>
+
               <Textarea
                 value={commentMessage}
                 onChange={(e) => setCommentMessage(e.target.value)}
                 placeholder="Enter your comment..."
-                rows={20}
-                cols={50}
+                rows={4}
                 className="resize-none"
               />
             </div>

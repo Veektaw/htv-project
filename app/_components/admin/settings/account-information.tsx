@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Controller, useFieldArray } from "react-hook-form";
+import { useEffect } from "react";
+import { Controller } from "react-hook-form";
 import {
   Field,
   FieldError,
@@ -15,8 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/_components/ui/select";
-import plus from "@/public/svgs/plus.svg";
-import minus from "@/public/svgs/minus.svg";
 import { Input } from "@/app/_components/ui/input";
 import { Button } from "@/app/_components/ui/button";
 import { Spinner } from "@/app/_components/ui/spinner";
@@ -29,68 +27,96 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../../ui/accordion";
-import {
-  brandPartners as brandPartnerOptions,
-  platforms as platformOptions,
-} from "@/lib/constants";
-import Image from "next/image";
-import { defaultPlatformValue } from "../users/user-details/hooks/use-update-user-details";
+import { brandPartners as brandPartnerOptions } from "@/lib/constants";
+import { Platform } from "@/types/platforms";
+import { getPlatformsAction } from "@/services/actions/platforms.actions";
+
+import useUpdateAdvanceSettings from "./hooks/use-update-advance-settings";
 
 export default function AccountInformation({
   user,
 }: {
   user: UserSessionData;
 }) {
-  const [canEdit, setCanEdit] = useState(false);
-
-  const { form, onSubmit, formState } = useUpdateUserProfile({
-    user,
-    setCanEdit,
-  });
-  const {
-    fields: platformFields,
-    append: appendPlatform,
-    remove: removePlatform,
-  } = useFieldArray({
-    control: form.control,
-    name: "platforms",
-  });
+  const { form, onSubmit, formState, canEdit, setCanEdit } =
+    useUpdateUserProfile({
+      user,
+    });
   const { isSubmitting } = formState;
 
+  const {
+    advancedForm,
+    platformFields,
+    canEditAdvanced,
+    setCanEditAdvanced,
+    onSubmitAdvanced,
+    loadingPlatforms,
+    setLoadingPlatforms,
+  } = useUpdateAdvanceSettings();
+
+  useEffect(() => {
+    const fetchPlatforms = async () => {
+      setLoadingPlatforms(true);
+      try {
+        const result = await getPlatformsAction();
+        if (!result.error && result.platforms.length > 0) {
+          advancedForm.reset({
+            platforms: result.platforms.map((p: Platform) => ({
+              id: p.id,
+              brand_partner: p.brand_partner,
+              address: p.address,
+              platform_account_recipient_email:
+                p.platform_account_recipient_email ?? "",
+            })),
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch platforms:", error);
+      } finally {
+        setLoadingPlatforms(false);
+      }
+    };
+    fetchPlatforms();
+  }, [advancedForm, setLoadingPlatforms]);
+  console.log({
+    advancedFormValues: advancedForm.watch(),
+    advancedFormErrors: advancedForm.formState.errors,
+  });
+
   return (
-    <form onSubmit={onSubmit} className="space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-bold lg:text-[2rem]">
-          Account Information
-        </h2>
+    <div className="space-y-6">
+      {/* ── Account Information Form ── */}
+      <form onSubmit={onSubmit}>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-xl font-bold lg:text-[2rem]">
+            Account Information
+          </h2>
 
-        <Button
-          type={canEdit ? "submit" : "button"}
-          disabled={isSubmitting}
-          onClick={(e) => {
-            if (!canEdit) {
-              e.preventDefault();
-              setCanEdit(true);
-            }
-          }}
-          variant="secondary"
-          className="inline-flex h-12 w-38.5"
-        >
-          {canEdit ? "Save Changes" : "Update"}
-          {isSubmitting && <Spinner data-icon="inline-start" />}
-        </Button>
-      </div>
+          <Button
+            type={canEdit ? "submit" : "button"}
+            disabled={isSubmitting}
+            onClick={(e) => {
+              if (!canEdit) {
+                e.preventDefault();
+                setCanEdit(true);
+              }
+            }}
+            variant="secondary"
+            className="inline-flex h-12 w-38.5"
+          >
+            {canEdit ? "Save Changes" : "Update"}
+            {isSubmitting && <Spinner data-icon="inline-start" />}
+          </Button>
+        </div>
 
-      <div className="border-GreyChateau rounded-[32px] border px-10 py-13.5">
-        <FieldGroup className="grid grid-cols-2 gap-x-10.5 gap-y-6">
-          <Controller
-            name="title"
-            control={form.control}
-            render={({ field, fieldState }) => {
-              return (
+        <div className="border-GreyChateau mt-6 rounded-[32px] border px-10 py-13.5">
+          <FieldGroup className="grid grid-cols-2 gap-x-10.5 gap-y-6">
+            <Controller
+              name="title"
+              control={form.control}
+              render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>Title*</FieldLabel>
-
                   <Select
                     name={field.name}
                     value={field.value}
@@ -116,60 +142,54 @@ export default function AccountInformation({
                     <FieldError errors={[fieldState.error]} />
                   )}
                 </Field>
-              );
-            }}
-          />
+              )}
+            />
 
-          <Controller
-            name="first_name"
-            disabled={!canEdit}
-            control={form.control}
-            render={({ field, fieldState }) => {
-              return (
+            <Controller
+              name="first_name"
+              disabled={!canEdit}
+              control={form.control}
+              render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>First Name*</FieldLabel>
                   <Input
                     {...field}
                     id={field.name}
                     aria-invalid={fieldState.invalid}
-                    placeholder="Type in user’s first name"
+                    placeholder="Type in user's first name"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
                 </Field>
-              );
-            }}
-          />
+              )}
+            />
 
-          <Controller
-            name="last_name"
-            disabled={!canEdit}
-            control={form.control}
-            render={({ field, fieldState }) => {
-              return (
+            <Controller
+              name="last_name"
+              disabled={!canEdit}
+              control={form.control}
+              render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>Last Name*</FieldLabel>
                   <Input
                     {...field}
                     id={field.name}
                     aria-invalid={fieldState.invalid}
-                    placeholder="Type in user’s last name"
+                    placeholder="Type in user's last name"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
                 </Field>
-              );
-            }}
-          />
+              )}
+            />
 
-          <Controller
-            name="email"
-            disabled
-            control={form.control}
-            render={({ field, fieldState }) => {
-              return (
+            <Controller
+              name="email"
+              disabled
+              control={form.control}
+              render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>Email address*</FieldLabel>
                   <Input
@@ -177,22 +197,20 @@ export default function AccountInformation({
                     id={field.name}
                     aria-invalid={fieldState.invalid}
                     type="email"
-                    placeholder="Type in user’s email address here"
+                    placeholder="Type in user's email address here"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
                   )}
                 </Field>
-              );
-            }}
-          />
+              )}
+            />
 
-          <Controller
-            name="phone"
-            disabled={!canEdit}
-            control={form.control}
-            render={({ field, fieldState }) => {
-              return (
+            <Controller
+              name="phone"
+              disabled={!canEdit}
+              control={form.control}
+              render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>Phone Number</FieldLabel>
                   <Input
@@ -205,16 +223,14 @@ export default function AccountInformation({
                     <FieldError errors={[fieldState.error]} />
                   )}
                 </Field>
-              );
-            }}
-          />
+              )}
+            />
 
-          <Controller
-            name="company_name"
-            disabled={!canEdit}
-            control={form.control}
-            render={({ field, fieldState }) => {
-              return (
+            <Controller
+              name="company_name"
+              disabled={!canEdit}
+              control={form.control}
+              render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel htmlFor={field.name}>Company Name</FieldLabel>
                   <Input
@@ -227,11 +243,15 @@ export default function AccountInformation({
                     <FieldError errors={[fieldState.error]} />
                   )}
                 </Field>
-              );
-            }}
-          />
-        </FieldGroup>
-        <Accordion type="single" collapsible className="w-full pt-9">
+              )}
+            />
+          </FieldGroup>
+        </div>
+      </form>
+
+      {/* ── Advanced Settings Form — completely separate ── */}
+      <form onSubmit={advancedForm.handleSubmit(onSubmitAdvanced)}>
+        <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="item-2" className="space-y-3">
             <AccordionTrigger
               className="bg-CloudyGrey rounded-xls px-5 py-4.5 text-lg font-medium text-white hover:no-underline"
@@ -241,42 +261,67 @@ export default function AccountInformation({
             </AccordionTrigger>
 
             <AccordionContent className="border-GreyCloud rounded-xls space-y-9 border px-10 py-7">
-              {/* Platform Configuration */}
-              <div className="space-y-4">
+              <div className="flex items-center justify-between">
                 <h2 className="text-sm font-semibold text-black">
-                  Invoice Configuration
+                  Platform Configuration
                 </h2>
+                <Button
+                  type={canEditAdvanced ? "submit" : "button"}
+                  disabled={advancedForm.formState.isSubmitting}
+                  onClick={() => {
+                    if (!canEditAdvanced) setCanEditAdvanced(true);
+                  }}
+                  variant="secondary"
+                  className="inline-flex h-10 w-36"
+                >
+                  {canEditAdvanced ? "Save Changes" : "Update"}
+                  {advancedForm.formState.isSubmitting && (
+                    <Spinner data-icon="inline-start" />
+                  )}
+                </Button>
+              </div>
 
-                {platformFields.map((field, index) => (
-                  <div key={field.id} className="flex justify-between gap-3">
-                    <div className="border-GreyCloud rounded-xls grid flex-1 gap-2 border px-5.5 py-6 lg:grid-cols-2">
-                      {/* Platform Selection */}
+              {loadingPlatforms ? (
+                <div className="flex items-center justify-center py-6">
+                  <Spinner />
+                </div>
+              ) : platformFields.length === 0 ? (
+                <p className="text-sm text-gray-400">
+                  No platforms configured.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {platformFields.map((field, index) => (
+                    <div
+                      key={field.id}
+                      className="border-GreyCloud rounded-xls grid gap-4 border px-5.5 py-6 lg:grid-cols-2"
+                    >
+                      {/* Brand Partner */}
                       <Controller
-                        control={form.control}
-                        name={`platforms.${index}.platform`}
+                        control={advancedForm.control}
+                        name={`platforms.${index}.brand_partner`}
                         render={({ field, fieldState }) => (
                           <Field data-invalid={fieldState.invalid}>
                             <FieldLabel htmlFor={field.name}>
-                              Platform
+                              Brand Partner
                             </FieldLabel>
-
                             <Select
                               name={field.name}
                               value={field.value}
                               onValueChange={field.onChange}
-                              disabled={!canEdit}
+                              disabled={!canEditAdvanced}
                             >
                               <SelectTrigger
                                 id={field.name}
                                 aria-invalid={fieldState.invalid}
                                 className="border-GreyChateau min-w-full"
                               >
-                                <SelectValue placeholder="Select Platform here" />
+                                <SelectValue placeholder="Select Brand Partner" />
                               </SelectTrigger>
                               <SelectContent position="item-aligned">
-                                {platformOptions.map((item, index) => (
+                                {brandPartnerOptions.map((item, i) => (
                                   <SelectItem
-                                    key={index}
+                                    key={i}
                                     value={item}
                                     className="text-xs capitalize"
                                   >
@@ -285,7 +330,6 @@ export default function AccountInformation({
                                 ))}
                               </SelectContent>
                             </Select>
-
                             {fieldState.invalid && (
                               <FieldError errors={[fieldState.error]} />
                             )}
@@ -293,41 +337,23 @@ export default function AccountInformation({
                         )}
                       />
 
+                      {/* Bill To Address */}
                       <Controller
-                        control={form.control}
-                        name={`platforms.${index}.bill_to_address`}
+                        control={advancedForm.control}
+                        name={`platforms.${index}.address`}
                         render={({ field, fieldState }) => (
                           <Field data-invalid={fieldState.invalid}>
                             <FieldLabel htmlFor={field.name}>
                               Bill To Address
                             </FieldLabel>
-
-                            <Select
-                              name={field.name}
-                              value={field.value}
-                              onValueChange={field.onChange}
-                              disabled={!canEdit}
-                            >
-                              <SelectTrigger
-                                id={field.name}
-                                aria-invalid={fieldState.invalid}
-                                className="border-GreyChateau min-w-full"
-                              >
-                                <SelectValue placeholder="Select Brand Partner here" />
-                              </SelectTrigger>
-                              <SelectContent position="item-aligned">
-                                {brandPartnerOptions.map((item, index) => (
-                                  <SelectItem
-                                    key={index}
-                                    value={item}
-                                    className="text-xs capitalize"
-                                  >
-                                    {item}
-                                  </SelectItem>
-                                ))}
-                              </SelectContent>
-                            </Select>
-
+                            <Input
+                              {...field}
+                              id={field.name}
+                              aria-invalid={fieldState.invalid}
+                              placeholder="Enter bill to address"
+                              className="border-GreyChateau"
+                              disabled={!canEditAdvanced}
+                            />
                             {fieldState.invalid && (
                               <FieldError errors={[fieldState.error]} />
                             )}
@@ -335,65 +361,40 @@ export default function AccountInformation({
                         )}
                       />
 
-                      {/* External User ID */}
+                      {/* Bill To Email */}
                       <Controller
+                        control={advancedForm.control}
                         name={`platforms.${index}.platform_account_recipient_email`}
-                        control={form.control}
-                        render={({ field, fieldState }) => {
-                          return (
-                            <Field
-                              data-invalid={fieldState.invalid}
-                              className="col-span-2"
-                            >
-                              <FieldLabel htmlFor={field.name}></FieldLabel>
-                              <Input
-                                {...field}
-                                id={field.name}
-                                aria-invalid={fieldState.invalid}
-                                placeholder="Enter Recipient Email here"
-                                className="border-GreyChateau"
-                                disabled={!canEdit}
-                              />
-                              {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]} />
-                              )}
-                            </Field>
-                          );
-                        }}
+                        render={({ field, fieldState }) => (
+                          <Field
+                            data-invalid={fieldState.invalid}
+                            className="lg:col-span-2"
+                          >
+                            <FieldLabel htmlFor={field.name}>
+                              Bill To Email
+                            </FieldLabel>
+                            <Input
+                              {...field}
+                              id={field.name}
+                              aria-invalid={fieldState.invalid}
+                              placeholder="Enter bill to email"
+                              className="border-GreyChateau"
+                              disabled={!canEditAdvanced}
+                            />
+                            {fieldState.invalid && (
+                              <FieldError errors={[fieldState.error]} />
+                            )}
+                          </Field>
+                        )}
                       />
                     </div>
-
-                    {/* Add and remove buttons */}
-                    <menu className="flex flex-col gap-y-1">
-                      {index === 0 && (
-                        <button
-                          disabled={!canEdit}
-                          type="button"
-                          onClick={() => appendPlatform(defaultPlatformValue)}
-                          className="disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <Image src={plus} alt="plus icon" />
-                        </button>
-                      )}
-
-                      {index > 0 && (
-                        <button
-                          disabled={!canEdit}
-                          type="button"
-                          onClick={() => removePlatform(index)}
-                          className="disabled:cursor-not-allowed disabled:opacity-50"
-                        >
-                          <Image src={minus} alt="minus icon" />
-                        </button>
-                      )}
-                    </menu>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }

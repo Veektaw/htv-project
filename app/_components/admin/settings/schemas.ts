@@ -20,3 +20,20 @@ export type UpdateUserProfileSchemaType = z.infer<
   typeof updateUserProfileFormSchema
 >;
 export type PlatformSchemaType = z.infer<typeof platformSchema>;
+
+
+export const advancedSettingsSchema = z.object({
+  platforms: z.array(
+    z.object({
+      id: z.string(),
+      brand_partner: z.string().min(1, "Brand partner is required"),
+      address: z.string().min(1, "Bill to address is required"),
+      platform_account_recipient_email: z
+        .string()
+        .min(1, "Bill to email is required")
+        .email("Enter a valid email address"),
+    }),
+  ),
+});
+
+export type AdvancedSettingsForm = z.infer<typeof advancedSettingsSchema>;

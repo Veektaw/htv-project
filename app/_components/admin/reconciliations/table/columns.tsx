@@ -43,10 +43,10 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Manual Paid",
     key: "manual_paid",
-    // render: (value) =>
-    //   `€${(value as number).toLocaleString("en-US", {
-    //     maximumFractionDigits: 2,
-    //   })}`,
+    render: (value) =>
+      `€${(value as number).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}`,
   },
 
   {
