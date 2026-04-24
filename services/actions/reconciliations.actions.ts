@@ -38,15 +38,32 @@ export async function getReconciliationComments(reconciliationId: string) {
   try {
     const result = await getReconciliationCommentsApi(reconciliationId);
     if (result.ok) {
-      return { success: true, data: result.body };
+      return { success: true, data: result.body, error: null };
     } else {
-      return { success: false, error: result.body.message || "Failed to load comments" };
+      return {
+        success: false,
+        data: null,
+        error: result.body.message || "Failed to load comments",
+      };
     }
   } catch (error) {
     console.error("Error loading invoice comments:", error);
-    return { success: false, error: "Failed to load comments" };
+    return { success: false, data: null, error: "Failed to load comments" };
   }
 }
+// export async function getReconciliationComments(reconciliationId: string) {
+//   try {
+//     const result = await getReconciliationCommentsApi(reconciliationId);
+//     if (result.ok) {
+//       return { success: true, data: result.body };
+//     } else {
+//       return { success: false, error: result.body.message || "Failed to load comments" };
+//     }
+//   } catch (error) {
+//     console.error("Error loading invoice comments:", error);
+//     return { success: false, error: "Failed to load comments" };
+//   }
+// }
 export const manualReconciliationAction = async (
   doctor_id: string,
   payload: Omit<AdminCreateReconciliationParams, "doctor_id">

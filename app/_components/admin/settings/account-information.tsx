@@ -79,6 +79,7 @@ export default function AccountInformation({
               // platform: p.platform,
               brand_partner: p.brand_partner,
               address: p.address,
+              id: p.id,
               // external_user_id: p.external_user_id,
               platform_account_recipient_email:
                 p.platform_account_recipient_email ?? "",
@@ -101,7 +102,6 @@ export default function AccountInformation({
 
   return (
     <div className="space-y-6">
-      {/* ── Account Information Form ── */}
       <form onSubmit={onSubmit}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-xl font-bold lg:text-[2rem]">

@@ -1,5 +1,5 @@
 import { PopoverContent } from "@/app/_components/ui/popover";
-import { Reconciliation } from "@/types/reconciliations";
+import { Reconciliation, ReconciliationComment } from "@/types/reconciliations";
 import UpdateStatusModal from "../../modals/update-status";
 import { useState } from "react";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
@@ -17,12 +17,7 @@ import {
 } from "@/app/_components/ui/dialog";
 import { Textarea } from "@/app/_components/ui/textarea";
 import { Button } from "@/app/_components/ui/button";
-type InvoiceComment = {
-  id: string;
-  message: string;
-  created_at?: string;
-  full_name?: string;
-};
+
 export default function Actions({
   reconciliation,
 }: {
@@ -31,7 +26,7 @@ export default function Actions({
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const [commentMessage, setCommentMessage] = useState("");
   const [isViewCommentsModalOpen, setIsViewCommentsModalOpen] = useState(false);
-  const [comments, setComments] = useState<InvoiceComment[]>([]);
+  const [comments, setComments] = useState<ReconciliationComment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [expandedCommentId, setExpandedCommentId] = useState<string | null>(
     null,

@@ -4,6 +4,7 @@ import {
   GetDoctorReconciliations,
   GetDoctorReconciliationsParams,
   Reconciliation,
+  ReconciliationCommentsResponse,
   UpdateReconciliationPayload,
 } from "@/types/reconciliations";
 
@@ -72,13 +73,18 @@ export const addReconciliationCommentApi = (reconciliationId: string, message: s
     true
   );
 };
-
 export const getReconciliationCommentsApi = (reconciliationId: string) => {
-  return Api.get(
-    `/admin/reconciliation/${reconciliationId}/comments/`, 
+  return Api.get<ReconciliationCommentsResponse>(
+    `/admin/reconciliation/${reconciliationId}/comments/`,
     true
   );
 };
+// export const getReconciliationCommentsApi = (reconciliationId: string) => {
+//   return Api.get(
+//     `/admin/reconciliation/${reconciliationId}/comments/`, 
+//     true
+//   );
+// };
 export const manualReconciliationApi = (data:AdminCreateReconciliationParams) => {
   const { doctor_id ,...payload} = data;
   return Api.post(

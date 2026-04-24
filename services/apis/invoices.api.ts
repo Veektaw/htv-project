@@ -81,8 +81,20 @@ export const getInvoiceCommentsApi = (invoiceId: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return Api.get<any>(`/admin/invoices/${invoiceId}/comments/`, true);
 };
+type ResendInvoiceEmailResponse = {
+  message: string;
+};
+
 
 
 export const resendmailInvoiceApi = (invoiceId: string) => {
-  return Api.post(`/admin/invoices/${invoiceId}/resend-email/`, {}, true);
-}
+  return Api.post<Record<string, never>, ResendInvoiceEmailResponse>(
+    `/admin/invoices/${invoiceId}/resend-email/`,
+    {},
+    true
+  );
+};
+
+// export const resendmailInvoiceApi = (invoiceId: string) => {
+//   return Api.post(`/admin/invoices/${invoiceId}/resend-email/`, {}, true);
+// }

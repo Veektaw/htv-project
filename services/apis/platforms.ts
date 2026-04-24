@@ -28,5 +28,5 @@ export const updatePlatformApi = (
   return Api.patch<
     Partial<CreatePlatformPayload>,
     { message: string; platform: Platform }
-  >(`/admin/${userId}/${platformId}/platforms`, data, true);
+  >(`/admin/${userId}/${platformId}/platforms/`, data, true);
 };

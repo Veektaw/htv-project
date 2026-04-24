@@ -8,6 +8,7 @@ import { format } from "date-fns";
 import { showToast } from "@/lib/toast";
 import { Button } from "@/app/_components/ui/button";
 import { Input } from "@/app/_components/ui/input";
+import { brandPartners as platformOptions } from "@/lib/constants";
 import {
   Select,
   SelectContent,
@@ -62,7 +63,9 @@ const createReconciliationSchema = z.object({
 
 type CreateReconciliationForm = z.infer<typeof createReconciliationSchema>;
 
-export default function CreateReconciliationModal() {
+export default function CreateReconciliationModal({}: {
+  children: React.ReactNode;
+}) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [doctors, setDoctors] = useState<User[]>([]);
@@ -145,7 +148,6 @@ export default function CreateReconciliationModal() {
 
   const selectedDoctor = doctors.find((d) => d.id === selectedDoctorId);
 
-  // Derive a display label for the selected period month
   const periodMonthValue = watch("period_month");
   const periodMonthDisplay = periodMonthValue
     ? format(new Date(`${periodMonthValue}-01`), "MMMM yyyy")
@@ -267,11 +269,21 @@ export default function CreateReconciliationModal() {
                     <label className="mb-1.5 block text-xs text-gray-500">
                       Platform
                     </label>
-                    <Input
-                      {...register("platform")}
-                      placeholder="Enter platform"
-                      className="h-11 rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-black"
-                    />
+                    <Select
+                      value={watch("platform")}
+                      onValueChange={(value) => setValue("platform", value)}
+                    >
+                      <SelectTrigger className="h-11! w-full rounded-lg border-gray-200 bg-white text-sm text-gray-800 focus:ring-2 focus:ring-black">
+                        <SelectValue placeholder="Select a platform" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {platformOptions.map((item, index) => (
+                          <SelectItem key={index} value={item}>
+                            {item}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     {errors.platform && (
                       <p className="mt-1 text-xs text-red-500">
                         {errors.platform.message}
