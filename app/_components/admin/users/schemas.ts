@@ -49,10 +49,8 @@ export const updateUserDetailsFormSchema = z.object({
 
     platforms.forEach((item, index) => {
       const hasAnyValue =
-        item.platform ||
-        item.brand_partner ||
-        item.external_user_id 
-        // item.platform_account_recipient_email;
+        item.platform || item.brand_partner || item.external_user_id;
+      // item.platform_account_recipient_email;
 
       // ✅ CASE 1: Only 1 row
       if (!isMultiple) {

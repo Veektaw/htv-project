@@ -12,12 +12,11 @@ import { UserSessionData } from "@/types/auth";
 
 export default function useUpdateUserProfile({
   user,
-
 }: {
   user: UserSessionData;
 }) {
   const { refresh } = useRouter();
-const [canEdit, setCanEdit] = useState(false);
+  const [canEdit, setCanEdit] = useState(false);
 
   const form = useForm<UpdateUserProfileSchemaType>({
     resolver: zodResolver(updateUserProfileFormSchema),
@@ -43,7 +42,6 @@ const [canEdit, setCanEdit] = useState(false);
         setCanEdit(false);
         reset(data);
         showToast(res.message);
-        reset();
       } else {
         showToast(res.message, "error");
       }
@@ -59,6 +57,6 @@ const [canEdit, setCanEdit] = useState(false);
     formState,
     reset,
     canEdit,
-    setCanEdit
+    setCanEdit,
   };
 }

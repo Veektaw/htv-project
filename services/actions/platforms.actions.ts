@@ -1,19 +1,23 @@
 "use server";
 
-
-import { UpdatePlatformParams } from "@/types/platforms";
-import { getUserSession } from "../auth";
-import { getPlatformsApi, updatePlatformApi } from "../apis/platforms";
+import { CreatePlatformPayload } from "@/types/platforms";
+import { getUser } from "../auth";
+import {
+  createPlatformApi,
+  getPlatformsApi,
+  updatePlatformApi,
+} from "../apis/platforms";
 
 export const getPlatformsAction = async () => {
-  const userSession = await getUserSession();
-  const user_id = userSession?.data.user.id;
+  const user = await getUser();
 
-  if (!user_id) {
+  if (!user) {
     return { error: true, message: "User session not found", platforms: [] };
   }
 
-  const response = await getPlatformsApi(user_id);
+  const response = await getPlatformsApi(user.id);
+
+  console.log({ response: response.body });
 
   if (!response.ok) {
     return {
@@ -30,17 +34,43 @@ export const getPlatformsAction = async () => {
   };
 };
 
-export const updatePlatformAction = async (
-  payload: Omit<UpdatePlatformParams, "user_id">,
-) => {
-  const userSession = await getUserSession();
-  const user_id = userSession?.data.user.id;
+export const createPlatformAction = async (payload: CreatePlatformPayload) => {
+  const user = await getUser();
 
-  if (!user_id) {
+  if (!user) {
     return { error: true, message: "User session not found" };
   }
 
-  const response = await updatePlatformApi({ user_id, ...payload });
+  const response = await createPlatformApi(user.id, payload);
+
+  console.log({ createPRes: response.body });
+
+  if (!response.ok) {
+    return {
+      error: true,
+      message: response.body.message,
+    };
+  }
+
+  return {
+    error: false,
+    message: "Platform created successfully",
+  };
+};
+
+export const updatePlatformAction = async (
+  platformId: string,
+  payload: Partial<CreatePlatformPayload>,
+) => {
+  const user = await getUser();
+
+  if (!user) {
+    return { error: true, message: "User session not found" };
+  }
+
+  const response = await updatePlatformApi(user.id, platformId, payload);
+
+  console.log({ updatePRes: response.body });
 
   if (!response.ok) {
     return {

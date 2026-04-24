@@ -9,7 +9,7 @@ export type Platform = {
   created_at: string;
   updated_at: string;
 };
- 
+
 export type GetPlatformsResponse = {
   total: number;
   page: number;
@@ -17,11 +17,11 @@ export type GetPlatformsResponse = {
   total_pages: number;
   platforms: Platform[];
 };
- 
-export type UpdatePlatformParams = {
-  user_id: string;
-  id: string;
+
+export type CreatePlatformPayload = {
+  platform: string;
   brand_partner: string;
-  address: string;
+  external_user_id: string;
   platform_account_recipient_email: string;
+  address: string;
 };
