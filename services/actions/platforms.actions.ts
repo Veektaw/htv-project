@@ -16,8 +16,8 @@ export const getPlatformsAction = async () => {
   }
 
   const response = await getPlatformsApi(user.id);
-
-  console.log({ response: response.body });
+ console.log({ createPRes: response.body });
+  console.log({ response: response.body },"this is the response body");
 
   if (!response.ok) {
     return {
@@ -42,8 +42,7 @@ export const createPlatformAction = async (payload: CreatePlatformPayload) => {
   }
 
   const response = await createPlatformApi(user.id, payload);
-
-  console.log({ createPRes: response.body });
+ 
 
   if (!response.ok) {
     return {

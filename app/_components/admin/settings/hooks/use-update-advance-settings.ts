@@ -12,9 +12,9 @@ import { CreatePlatformPayload, Platform } from "@/types/platforms";
 
 export const defaultPlatformValues = {
   id: "",
-  platform: "",
+//   platform: "",
   brand_partner: "",
-  external_user_id: "",
+//   external_user_id: "",
   platform_account_recipient_email: "",
   address: "",
 };
@@ -74,8 +74,8 @@ export default function useUpdateAdvanceSettings({
       const results = await Promise.all(
         (data as AdvancedSettingsForm).platforms.map((platform) =>
           updatePlatformAction(platform.id, {
-            platform: platform.platform,
-            external_user_id: platform.external_user_id,
+            // platform: platform.platform,
+            // external_user_id: platform.external_user_id,
             brand_partner: platform.brand_partner,
             address: platform.address,
             platform_account_recipient_email:
@@ -87,6 +87,7 @@ export default function useUpdateAdvanceSettings({
       const failed = results.find((r) => r.error);
       if (failed) {
         showToast(failed.message, "error");
+        console.log("Failed to update platforms:", failed.message);
       } else {
         showToast("Advanced settings updated successfully", "success");
         setCanEditAdvanced(false);

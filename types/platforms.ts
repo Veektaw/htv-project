@@ -1,13 +1,11 @@
 export type Platform = {
   id: string;
-  user_id: string;
-  platform: string;
+//   user_id: string;
+//   platform: string;
   brand_partner: string;
   address: string;
   platform_account_recipient_email: string;
-  external_user_id: string;
-  created_at: string;
-  updated_at: string;
+//   external_user_id: string;
 };
 
 export type GetPlatformsResponse = {
@@ -19,9 +17,9 @@ export type GetPlatformsResponse = {
 };
 
 export type CreatePlatformPayload = {
-  platform: string;
+//   platform: string;
   brand_partner: string;
-  external_user_id: string;
+//   external_user_id: string;
   platform_account_recipient_email: string;
   address: string;
 };

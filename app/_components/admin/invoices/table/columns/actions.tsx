@@ -323,12 +323,6 @@ export default function Actions({ invoice }: ActionsProps) {
               <label className="font-semibold">Platform:</label>
               <p>{invoice.platform}</p>
             </div>
-            {invoice.notes && (
-              <div>
-                <label className="font-semibold">Notes:</label>
-                <p>{invoice.notes}</p>
-              </div>
-            )}
           </div>
         </DialogContent>
       </Dialog>

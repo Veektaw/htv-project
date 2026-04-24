@@ -3,6 +3,8 @@ import { Column } from "@/app/_components/shared/table-component/table-component
 import { GetAdminPayments } from "@/types/payments";
 import { format } from "date-fns";
 import DeletePaymentModal from "../modals/delete-payment-modal";
+import Status from "./status";
+import { InvoiceStatus } from "@/types/invoices";
 
 type ColumnType = GetAdminPayments & { actions?: ReactNode };
 
@@ -41,10 +43,15 @@ export const paymentColumns: Column<ColumnType>[] = [
         ? format(new Date(record.payment_date), "dd/MM/yyyy")
         : "N/A",
   },
+  // {
+  //   title: "Payment Status",
+  //   key: "status",
+  //   render: (_, record) => record.status,
+  // },
   {
-    title: "Payment Status",
+    title: "Status",
     key: "status",
-    render: (_, record) => record.status,
+    render: (value) => <Status value={value as InvoiceStatus} />,
   },
   {
     title: "Payment Method",

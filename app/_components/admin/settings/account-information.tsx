@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import {
   brandPartners as brandPartnerOptions,
   nameTitles,
-  platforms as platformOptions,
 } from "@/lib/constants";
 import { Platform } from "@/types/platforms";
 import { getPlatformsAction } from "@/services/actions/platforms.actions";
@@ -77,9 +76,10 @@ export default function AccountInformation({
           setUserPlatforms(result.platforms);
           advancedForm.reset({
             platforms: result.platforms.map((p: Platform) => ({
-              platform: p.platform,
+              // platform: p.platform,
               brand_partner: p.brand_partner,
-              external_user_id: p.external_user_id,
+              address: p.address,
+              // external_user_id: p.external_user_id,
               platform_account_recipient_email:
                 p.platform_account_recipient_email ?? "",
             })),
@@ -107,162 +107,182 @@ export default function AccountInformation({
           <h2 className="text-xl font-bold lg:text-[2rem]">
             Account Information
           </h2>
-
-          <Button
-            type={canEdit ? "submit" : "button"}
-            disabled={isSubmitting}
-            onClick={(e) => {
-              if (!canEdit) {
-                e.preventDefault();
-                setCanEdit(true);
-              }
-            }}
-            variant="secondary"
-            className="inline-flex h-12 w-38.5"
-          >
-            {canEdit ? "Save Changes" : "Update"}
-            {isSubmitting && <Spinner data-icon="inline-start" />}
-          </Button>
         </div>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="item-2" className="space-y-3">
+            <AccordionTrigger
+              className="bg-CloudyGrey rounded-xls px-5 py-4.5 text-lg font-medium text-white hover:no-underline"
+              chevronDownClassName="size-6 text-GreyCloud"
+            >
+              Basic Settings
+            </AccordionTrigger>
+            <AccordionContent className="border-GreyCloud rounded-xls space-y-9 border px-10 py-7">
+              <div className="flex items-center justify-end">
+                <Button
+                  type={canEdit ? "submit" : "button"}
+                  disabled={isSubmitting}
+                  onClick={(e) => {
+                    if (!canEdit) {
+                      e.preventDefault();
+                      setCanEdit(true);
+                    }
+                  }}
+                  variant="secondary"
+                  className="inline-flex h-12 w-38.5"
+                >
+                  {canEdit ? "Save Changes" : "Update"}
+                  {isSubmitting && <Spinner data-icon="inline-start" />}
+                </Button>
+              </div>
+              <div className="border-GreyChateau mt-6 rounded-[32px] border px-10 py-13.5">
+                <FieldGroup className="grid grid-cols-2 gap-x-10.5 gap-y-6">
+                  <Controller
+                    name="title"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>Title*</FieldLabel>
+                        <Select
+                          name={field.name}
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          disabled={!canEdit}
+                        >
+                          <SelectTrigger
+                            id={field.name}
+                            aria-invalid={fieldState.invalid}
+                            className="min-w-full"
+                          >
+                            <SelectValue placeholder="Add Title, Dr, Mr, Mrs, Miss" />
+                          </SelectTrigger>
+                          <SelectContent position="item-aligned">
+                            {nameTitles.map((item, index) => (
+                              <SelectItem key={index} value={item}>
+                                {item}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
+                  />
 
-        <div className="border-GreyChateau mt-6 rounded-[32px] border px-10 py-13.5">
-          <FieldGroup className="grid grid-cols-2 gap-x-10.5 gap-y-6">
-            <Controller
-              name="title"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Title*</FieldLabel>
-                  <Select
-                    name={field.name}
-                    value={field.value}
-                    onValueChange={field.onChange}
+                  <Controller
+                    name="first_name"
                     disabled={!canEdit}
-                  >
-                    <SelectTrigger
-                      id={field.name}
-                      aria-invalid={fieldState.invalid}
-                      className="min-w-full"
-                    >
-                      <SelectValue placeholder="Add Title, Dr, Mr, Mrs, Miss" />
-                    </SelectTrigger>
-                    <SelectContent position="item-aligned">
-                      {nameTitles.map((item, index) => (
-                        <SelectItem key={index} value={item}>
-                          {item}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-
-            <Controller
-              name="first_name"
-              disabled={!canEdit}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>First Name*</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Type in user's first name"
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>
+                          First Name*
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id={field.name}
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Type in user's first name"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
 
-            <Controller
-              name="last_name"
-              disabled={!canEdit}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Last Name*</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Type in user's last name"
+                  <Controller
+                    name="last_name"
+                    disabled={!canEdit}
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>Last Name*</FieldLabel>
+                        <Input
+                          {...field}
+                          id={field.name}
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Type in user's last name"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
 
-            <Controller
-              name="email"
-              disabled
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Email address*</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    type="email"
-                    placeholder="Type in user's email address here"
+                  <Controller
+                    name="email"
+                    disabled
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>
+                          Email address*
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id={field.name}
+                          aria-invalid={fieldState.invalid}
+                          type="email"
+                          placeholder="Type in user's email address here"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
 
-            <Controller
-              name="phone"
-              disabled={!canEdit}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Phone Number</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Type in phone number with country code"
+                  <Controller
+                    name="phone"
+                    disabled={!canEdit}
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>
+                          Phone Number
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id={field.name}
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Type in phone number with country code"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
 
-            <Controller
-              name="company_name"
-              disabled={!canEdit}
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Company Name</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="Company Name"
+                  <Controller
+                    name="company_name"
+                    disabled={!canEdit}
+                    control={form.control}
+                    render={({ field, fieldState }) => (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>
+                          Company Name
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id={field.name}
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Company Name"
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    )}
                   />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
-          </FieldGroup>
-        </div>
+                </FieldGroup>
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </form>
 
       {/* ── Advanced Settings Form — completely separate ── */}
@@ -326,7 +346,7 @@ export default function AccountInformation({
                     <div key={field.id} className="flex justify-between gap-3">
                       <div className="border-GreyCloud rounded-xls grid flex-1 gap-4 border px-5.5 py-6 lg:grid-cols-2">
                         {/* Platform Selection */}
-                        <Controller
+                        {/* <Controller
                           control={advancedForm.control}
                           name={`platforms.${index}.platform`}
                           render={({ field, fieldState }) => (
@@ -366,7 +386,7 @@ export default function AccountInformation({
                               )}
                             </Field>
                           )}
-                        />
+                        /> */}
 
                         {/* Brand Partner */}
                         <Controller
@@ -391,15 +411,28 @@ export default function AccountInformation({
                                   <SelectValue placeholder="Select Brand Partner" />
                                 </SelectTrigger>
                                 <SelectContent position="item-aligned">
-                                  {brandPartnerOptions.map((item, i) => (
-                                    <SelectItem
-                                      key={i}
-                                      value={item}
-                                      className="text-xs capitalize"
-                                    >
-                                      {item}
-                                    </SelectItem>
-                                  ))}
+                                  {brandPartnerOptions.map((item, i) => {
+                                    // Get all selected brand partners across the form
+                                    const selectedPartners = advancedForm
+                                      .watch("platforms")
+                                      ?.map((p) => p.brand_partner)
+                                      .filter(Boolean);
+
+                                    const isAlreadySelected =
+                                      selectedPartners?.includes(item) &&
+                                      field.value !== item;
+
+                                    return (
+                                      <SelectItem
+                                        key={i}
+                                        value={item}
+                                        disabled={isAlreadySelected}
+                                        className="text-xs capitalize"
+                                      >
+                                        {item}
+                                      </SelectItem>
+                                    );
+                                  })}
                                 </SelectContent>
                               </Select>
                               {fieldState.invalid && (
@@ -410,7 +443,7 @@ export default function AccountInformation({
                         />
 
                         {/* External User ID */}
-                        <Controller
+                        {/* <Controller
                           control={advancedForm.control}
                           name={`platforms.${index}.external_user_id`}
                           render={({ field, fieldState }) => {
@@ -433,7 +466,7 @@ export default function AccountInformation({
                               </Field>
                             );
                           }}
-                        />
+                        /> */}
 
                         {/* Bill To Email */}
                         <Controller
@@ -473,7 +506,7 @@ export default function AccountInformation({
                                 id={field.name}
                                 aria-invalid={fieldState.invalid}
                                 placeholder="Enter bill to address"
-                                className="border-GreyChateau col-span-2"
+                                className="border-GreyChateau"
                                 disabled={!canEditAdvanced}
                               />
                               {fieldState.invalid && (

@@ -6,7 +6,8 @@ import {
 import { Api } from "./api";
 
 export const getPlatformsApi = (user_id: string) => {
-  return Api.get<GetPlatformsResponse>(`/admin/${user_id}/platforms`, true);
+  return Api.get<GetPlatformsResponse>(`/admin/${user_id}/platforms/`, true);
+
 };
 
 export const createPlatformApi = (
