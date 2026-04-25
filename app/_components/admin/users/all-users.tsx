@@ -4,6 +4,7 @@ import UsersProvider from "./contexts/users-provider";
 import SearchWrapper from "./search-wrapper";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
+import { sortData } from "@/lib/sort-data";
 
 type AllUsersProps = {
   search?: string;
@@ -62,9 +63,12 @@ export default async function AllUsers({ search, page, role }: AllUsersProps) {
       </UsersProvider>
     );
   }
-
+  const { sortKey, sortDir } = search
+    ? { sortKey: "name", sortDir: "asc" }
+    : { sortKey: undefined, sortDir: undefined };
+  const sortedUsers = sortData(res.body.users, sortKey, sortDir);
   return (
-    <UsersProvider data={res.body}>
+    <UsersProvider data={{ ...res.body, users: sortedUsers }}>
       <section className="space-y-4">
         <SearchWrapper />
         <TableWrapper />

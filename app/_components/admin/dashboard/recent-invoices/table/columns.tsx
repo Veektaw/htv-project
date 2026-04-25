@@ -6,6 +6,7 @@ import {
   formatPrescriptionDate,
 } from "@/lib/utils";
 import Status from "../../../invoices/table/columns/status";
+import SortableHeader from "@/app/_components/shared/header/sortableHeader";
 
 type ColumnType = Invoice & { actions?: ReactNode };
 
@@ -13,21 +14,27 @@ export const invoicesColumns: Column<ColumnType>[] = [
   {
     title: "Name",
     key: "full_name",
+    renderTitle: () => <SortableHeader label="Name" sortKey="full_name" />,
     render: (_, record) => record.user.full_name,
   },
   {
     title: "Month",
     key: "period_month",
+    renderTitle: () => <SortableHeader label="Month" sortKey="period_month" />,
     render: (value) => formatPrescriptionDate(value as string),
   },
   {
     title: "Invoice ID",
     key: "invoice_ref",
+    renderTitle: () => (
+      <SortableHeader label="Invoice ID" sortKey="invoice_ref" />
+    ),
     render: (value) => value as string,
   },
   {
     title: "Amount",
     key: "amount",
+    renderTitle: () => <SortableHeader label="Amount" sortKey="amount" />,
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
         maximumFractionDigits: 2,
@@ -36,11 +43,15 @@ export const invoicesColumns: Column<ColumnType>[] = [
   {
     title: "Status",
     key: "status",
+    renderTitle: () => <SortableHeader label="Status" sortKey="status" />,
     render: (value) => <Status value={value as InvoiceStatus} />,
   },
   {
     title: "Date Created",
     key: "created_at",
+    renderTitle: () => (
+      <SortableHeader label="Date Created" sortKey="created_at" />
+    ),
     render: (value) => formatInvoiceCreatedAtDate(value as string),
   },
 ];
