@@ -10,7 +10,9 @@ export default function Status({ value }: { value: ReconciliationStatus }) {
           ? "text-KellyGreen"
           : value === "approved"
             ? "text-ResolutionBlue"
-            : "text-yellow-500",
+            : value === "void"
+              ? "text-red-500"
+              : "text-yellow-500",
       )}
     >
       {value}

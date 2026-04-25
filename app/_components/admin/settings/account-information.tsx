@@ -59,7 +59,7 @@ export default function AccountInformation({
         </Button>
       </div>
 
-      <div className="border-GreyChateau rounded-[32px] border px-10 py-13.5">
+      <div className="border-GreyChateau rounded-[32px] px-10 py-13.5">
         <FieldGroup className="grid grid-cols-2 gap-x-10.5 gap-y-6">
           <Controller
             name="title"
@@ -200,6 +200,32 @@ export default function AccountInformation({
                     id={field.name}
                     aria-invalid={fieldState.invalid}
                     placeholder="Company Name"
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              );
+            }}
+          />
+        </FieldGroup>
+
+        <FieldGroup className="mt-6">
+          <Controller
+            name="residential_address"
+            disabled={!canEdit}
+            control={form.control}
+            render={({ field, fieldState }) => {
+              return (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Residential Address
+                  </FieldLabel>
+                  <Input
+                    {...field}
+                    id={field.name}
+                    aria-invalid={fieldState.invalid}
+                    placeholder="Type in residential address"
                   />
                   {fieldState.invalid && (
                     <FieldError errors={[fieldState.error]} />
