@@ -66,9 +66,7 @@ export type CreateManualInvoiceApiPayload = {
   amount: number;
 };
 
-export type CreateManualInvoiceResponse = {
-  message: string;
-};
+export type CreateManualInvoiceResponse = Invoice;
 
 export type GetDoctorInvoices = Pagination & {
   invoices: Invoice[];

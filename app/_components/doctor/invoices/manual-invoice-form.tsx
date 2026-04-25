@@ -139,6 +139,8 @@ export default function ManualInvoiceForm({
     defaultValues,
   });
 
+  console.log({ errors: form.formState.errors });
+
   const {
     handleSubmit,
     control,
@@ -319,12 +321,7 @@ export default function ManualInvoiceForm({
   };
 
   return (
-    <form
-      onSubmit={handleSubmit(handleFormSubmit, (errors) =>
-        console.log("Form Validation Errors:", errors),
-      )}
-      className="space-y-6"
-    >
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       <FieldGroup className="grid grid-cols-2 gap-y-4 sm:grid-cols-2 sm:gap-x-10.5">
         <Controller
           name="name"

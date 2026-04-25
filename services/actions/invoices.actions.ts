@@ -26,7 +26,7 @@ export const createManualInvoiceAction = async (
 
   return {
     error: false,
-    message: response.body.message,
+    message: "Invoice created successfully",
   };
 };
 

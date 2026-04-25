@@ -10,6 +10,7 @@ export const getDoctorInvoicesApi = ({
   page = "1",
   limit = "10",
   user_id,
+  status,
 }: GetDoctorInvoicesParams) => {
   const params: Record<string, string> = {
     page,
@@ -17,6 +18,7 @@ export const getDoctorInvoicesApi = ({
   };
 
   if (user_id) params.user_id = user_id;
+  if (status) params.status = status;
 
   const queryString = new URLSearchParams(params).toString();
 
