@@ -117,9 +117,11 @@ const getUserName = (
 export default function ManualInvoiceForm({
   reconciliation,
   user,
+  onSuccess,
 }: {
   reconciliation?: Reconciliation;
   user?: UserSessionData;
+  onSuccess?: () => void;
 }) {
   const defaultValues = {
     name: getUserName(reconciliation, user),
@@ -135,31 +137,16 @@ export default function ManualInvoiceForm({
     period_month: reconciliation?.period_month ?? "",
   };
 
-  const { form, formState, reset, refresh } = useManualInvoice({
+  const { form, formState, reset } = useManualInvoice({
     defaultValues,
   });
 
   console.log({ errors: form.formState.errors });
 
-  const {
-    handleSubmit,
-    control,
-    watch,
-    setValue,
-    formState: { errors },
-  } = form;
+  const { handleSubmit, watch, setValue } = form;
   const [rows, setRows] = useState<InvoiceRow[]>(() => [
     getInitialInvoiceRow(reconciliation),
   ]);
-
-  useEffect(() => {
-    console.log("Trace - All Errors:", errors);
-
-    if (Object.keys(errors).length > 0) {
-      // This will now catch nested errors and array errors
-      console.warn("Validation Failed on these fields:", Object.keys(errors));
-    }
-  }, [errors]);
 
   useEffect(() => {
     if (!reconciliation?.platform || !reconciliation?.period_month) return;
@@ -291,9 +278,6 @@ export default function ManualInvoiceForm({
     }
 
     const formValues = form.getValues();
-    const formattedDate = formValues.dateTime?.includes("T")
-      ? formValues.dateTime.split("T")[0]
-      : formValues.dateTime || "";
 
     const payload = {
       period_month,
@@ -308,10 +292,13 @@ export default function ManualInvoiceForm({
       const res = await createManualInvoiceAction(payload);
 
       if (!res.error) {
-        refresh();
-        showToast(res.message);
+        if (onSuccess) {
+          onSuccess();
+        }
+
         reset();
         setRows([initialRow]);
+        showToast(res.message);
       } else {
         showToast(res.message, "error");
       }

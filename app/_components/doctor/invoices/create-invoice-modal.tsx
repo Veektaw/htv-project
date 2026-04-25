@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -22,10 +22,11 @@ export default function CreateNewInvoiceModal({
   reconciliation?: Reconciliation;
   user?: UserSessionData;
 }) {
+  const [open, setOpen] = useState(false);
   const title = reconciliation ? "Create invoice" : "Create invoice manually";
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
@@ -41,6 +42,7 @@ export default function CreateNewInvoiceModal({
           key={reconciliation?.id ?? user?.id ?? "manual-invoice-form"}
           reconciliation={reconciliation}
           user={user}
+          onSuccess={() => setOpen(false)}
         />
       </DialogContent>
     </Dialog>
