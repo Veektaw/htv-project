@@ -68,12 +68,13 @@ export default async function RecentInvoices({
   // console.log({ res: res.body });
   const { sortKey, sortDir } = searchParamsValues;
   const sorted = sortData(res.body.invoices, sortKey, sortDir);
+  const recent = sorted.slice(0, 5);
   return (
     <section className="h-full">
       <TableComponent
         title="Invoices"
         columns={invoicesColumns}
-        data={sorted}
+        data={recent}
       />
     </section>
   );

@@ -345,49 +345,6 @@ export default function AccountInformation({
                   {platformFields.map((field, index) => (
                     <div key={field.id} className="flex justify-between gap-3">
                       <div className="border-GreyCloud rounded-xls grid flex-1 gap-4 border px-5.5 py-6 lg:grid-cols-2">
-                        {/* Platform Selection */}
-                        {/* <Controller
-                          control={advancedForm.control}
-                          name={`platforms.${index}.platform`}
-                          render={({ field, fieldState }) => (
-                            <Field data-invalid={fieldState.invalid}>
-                              <FieldLabel htmlFor={field.name}>
-                                Platform
-                              </FieldLabel>
-
-                              <Select
-                                name={field.name}
-                                value={field.value}
-                                onValueChange={field.onChange}
-                                disabled={!canEditAdvanced}
-                              >
-                                <SelectTrigger
-                                  id={field.name}
-                                  aria-invalid={fieldState.invalid}
-                                  className="border-GreyChateau min-w-full"
-                                >
-                                  <SelectValue placeholder="Select Platform here" />
-                                </SelectTrigger>
-                                <SelectContent position="item-aligned">
-                                  {platformOptions.map((item, index) => (
-                                    <SelectItem
-                                      key={index}
-                                      value={item}
-                                      className="text-xs capitalize"
-                                    >
-                                      {item}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-
-                              {fieldState.invalid && (
-                                <FieldError errors={[fieldState.error]} />
-                              )}
-                            </Field>
-                          )}
-                        /> */}
-
                         {/* Brand Partner */}
                         <Controller
                           control={advancedForm.control}
@@ -441,32 +398,6 @@ export default function AccountInformation({
                             </Field>
                           )}
                         />
-
-                        {/* External User ID */}
-                        {/* <Controller
-                          control={advancedForm.control}
-                          name={`platforms.${index}.external_user_id`}
-                          render={({ field, fieldState }) => {
-                            return (
-                              <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor={field.name}>
-                                  User ID
-                                </FieldLabel>
-                                <Input
-                                  {...field}
-                                  id={field.name}
-                                  aria-invalid={fieldState.invalid}
-                                  placeholder="Enter User ID here"
-                                  className="border-GreyChateau"
-                                  disabled={!canEditAdvanced}
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            );
-                          }}
-                        /> */}
 
                         {/* Bill To Email */}
                         <Controller

@@ -18,8 +18,6 @@ export const advancedSettingsSchema = z.object({
   platforms: z.array(
     z.object({
       id: z.string(),
-      // platform: z.string().nonempty("Platform is required"),
-      // external_user_id: z.string().nonempty("External user ID is required"),
       brand_partner: z.string().min(1, "Brand partner is required"),
       platform_account_recipient_email: z
         .string()
