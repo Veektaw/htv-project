@@ -95,6 +95,4 @@ export const resendmailInvoiceApi = (invoiceId: string) => {
   );
 };
 
-// export const resendmailInvoiceApi = (invoiceId: string) => {
-//   return Api.post(`/admin/invoices/${invoiceId}/resend-email/`, {}, true);
-// }
+

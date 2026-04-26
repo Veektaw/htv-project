@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -9,33 +9,40 @@ import {
   DialogTrigger,
 } from "@/app/_components/ui/dialog";
 import { Reconciliation } from "@/types/reconciliations";
+import { UserSessionData } from "@/types/auth";
 
 import ManualInvoiceForm from "./manual-invoice-form";
 
 export default function CreateNewInvoiceModal({
   children,
   reconciliation,
+  user,
 }: {
   children: ReactNode;
   reconciliation?: Reconciliation;
+  user?: UserSessionData;
 }) {
+  const [open, setOpen] = useState(false);
+  const title = reconciliation ? "Create invoice" : "Create invoice manually";
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      {/* Set the width directly to the manual form size (max-w-251) */}
       <DialogContent
         aria-describedby={undefined}
         className="gap-10 rounded-[24px] sm:max-w-251"
       >
         <DialogHeader>
           <DialogTitle className="font-inter text-2xl font-bold text-[#1D1E25]">
-            Create invoice manually
+            {title}
           </DialogTitle>
         </DialogHeader>
 
         <ManualInvoiceForm
-          key={reconciliation?.id ?? "manual-invoice-form"}
+          key={reconciliation?.id ?? user?.id ?? "manual-invoice-form"}
           reconciliation={reconciliation}
+          user={user}
+          onSuccess={() => setOpen(false)}
         />
       </DialogContent>
     </Dialog>
