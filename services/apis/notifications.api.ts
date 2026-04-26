@@ -4,7 +4,8 @@ import { Api } from "./api";
 
 export const getNotificationsApi = async () => {
   const res = await Api.get<GetNotificationsResponse>(
-    "/admin/notifications/notifications/"
+    "/admin/notifications/notifications/",
+    true,
   );
   return res;
 };
