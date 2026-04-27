@@ -40,7 +40,7 @@ export default async function page({ searchParams }: PageParams) {
           />
           <Card
             text="Outstanding Invoices"
-            value={totalOutstanding?.current_value ?? 0}
+            value={totalOutstanding?.current_value.toLocaleString("en-US") ?? 0}
             percentage={`${totalOutstanding?.percentage ?? 0}%`}
           />
         </div>

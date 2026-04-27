@@ -3,7 +3,7 @@ import arrowUp from "@/public/svgs/green-arrow-up.svg";
 
 type CardProps = {
   text: string;
-  value: number;
+  value: number | string;
   percentage: string;
 };
 
@@ -22,7 +22,11 @@ export default function Card({ text, value, percentage }: CardProps) {
             <p className="text-DarkJungleGreen text-2xl font-bold">{value}</p>
           ) : (
             <p className="text-DarkJungleGreen text-2xl font-black">
-              €{value.toFixed(2)}
+              €
+              {value.toLocaleString("en-US", {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </p>
           )}
 
