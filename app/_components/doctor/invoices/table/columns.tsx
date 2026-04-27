@@ -20,6 +20,11 @@ export const InvoiceColumns: Column<ColumnType>[] = [
     render: (value) => formatDate(value as string),
   },
   {
+    title: "Invoiced Amount",
+    key: "amount",
+    render: (value) => `€${Number(value).toFixed(2)}`,
+  },
+  {
     title: "Status",
     key: "status",
     render: (value) => <Status value={value as InvoiceStatus} />,
