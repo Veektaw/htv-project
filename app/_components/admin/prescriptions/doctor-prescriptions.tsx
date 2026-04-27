@@ -5,6 +5,7 @@ import PrescriptionsProvider from "@/app/_components/doctor/prescriptions/contex
 import SortAndDateFilter from "@/app/_components/doctor/prescriptions/sort-and-date-filter";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
+import { sortData } from "@/lib/sort-data";
 
 type DoctorPrescriptionsProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -116,9 +117,16 @@ export default async function DoctorPrescriptions({
       </PrescriptionsProvider>
     );
   }
-
+  const { sortKey, sortDir } = searchParamsValues;
+  const sortedPrescriptions = sortData(
+    res.body.prescriptions,
+    sortKey,
+    sortDir,
+  );
   return (
-    <PrescriptionsProvider data={res.body}>
+    <PrescriptionsProvider
+      data={{ ...res.body, prescriptions: sortedPrescriptions }}
+    >
       <section className="flex h-full flex-col gap-y-4">
         <SortAndDateFilter />
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">

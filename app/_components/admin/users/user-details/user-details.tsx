@@ -42,8 +42,8 @@ import { Button } from "@/app/_components/ui/button";
 import { Spinner } from "@/app/_components/ui/spinner";
 import useUpdateUserDetails, {
   commissionOptions,
-  defaultCommissionValue,
-  defaultPlatformValue,
+  defaultCommissionValues,
+  defaultPlatformValues,
 } from "./hooks/use-update-user-details";
 import Image from "next/image";
 import ActivateUserModal from "@/app/_components/admin/users/modals/activate-user";
@@ -350,32 +350,30 @@ export default function UserDetails({ user }: { user: User }) {
                   />
                 </div>
 
-                {user.role === "admin" && (
-                  <Controller
-                    name="address"
-                    control={form.control}
-                    render={({ field, fieldState }) => {
-                      return (
-                        <Field data-invalid={fieldState.invalid}>
-                          <FieldLabel htmlFor={field.name}>
-                            Residential Address
-                          </FieldLabel>
-                          <Input
-                            {...field}
-                            id={field.name}
-                            aria-invalid={fieldState.invalid}
-                            placeholder="Address"
-                            className="border-GreyChateau"
-                            disabled={!canEdit}
-                          />
-                          {fieldState.invalid && (
-                            <FieldError errors={[fieldState.error]} />
-                          )}
-                        </Field>
-                      );
-                    }}
-                  />
-                )}
+                <Controller
+                  name="address"
+                  control={form.control}
+                  render={({ field, fieldState }) => {
+                    return (
+                      <Field data-invalid={fieldState.invalid}>
+                        <FieldLabel htmlFor={field.name}>
+                          Residential Address
+                        </FieldLabel>
+                        <Input
+                          {...field}
+                          id={field.name}
+                          aria-invalid={fieldState.invalid}
+                          placeholder="Address"
+                          className="border-GreyChateau"
+                          disabled={!canEdit}
+                        />
+                        {fieldState.invalid && (
+                          <FieldError errors={[fieldState.error]} />
+                        )}
+                      </Field>
+                    );
+                  }}
+                />
               </AccordionContent>
             </AccordionItem>
 
@@ -511,32 +509,6 @@ export default function UserDetails({ user }: { user: User }) {
                             );
                           }}
                         />
-
-                        {/* Platform Recipient Email */}
-                        <Controller
-                          name={`platforms.${index}.platform_account_recipient_email`}
-                          control={form.control}
-                          render={({ field, fieldState }) => {
-                            return (
-                              <Field data-invalid={fieldState.invalid}>
-                                <FieldLabel htmlFor={field.name}>
-                                  Platform Email
-                                </FieldLabel>
-                                <Input
-                                  {...field}
-                                  id={field.name}
-                                  aria-invalid={fieldState.invalid}
-                                  type="email"
-                                  placeholder="Email address"
-                                  className="border-GreyChateau"
-                                />
-                                {fieldState.invalid && (
-                                  <FieldError errors={[fieldState.error]} />
-                                )}
-                              </Field>
-                            );
-                          }}
-                        />
                       </div>
 
                       {/* Add and remove buttons */}
@@ -545,7 +517,9 @@ export default function UserDetails({ user }: { user: User }) {
                           <button
                             disabled={!canEdit}
                             type="button"
-                            onClick={() => appendPlatform(defaultPlatformValue)}
+                            onClick={() =>
+                              appendPlatform(defaultPlatformValues)
+                            }
                             className="disabled:cursor-not-allowed disabled:opacity-50"
                           >
                             <Image src={plus} alt="plus icon" />
@@ -767,7 +741,7 @@ export default function UserDetails({ user }: { user: User }) {
                             disabled={!canEdit}
                             type="button"
                             onClick={() =>
-                              appendCommission(defaultCommissionValue)
+                              appendCommission(defaultCommissionValues)
                             }
                             className="disabled:cursor-not-allowed disabled:opacity-50"
                           >

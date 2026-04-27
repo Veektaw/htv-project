@@ -4,6 +4,7 @@ import InvoicesProvider from "./contexts/invoices-provider";
 import SearchWrapper from "./search-wrapper";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
+import { sortData } from "@/lib/sort-data";
 
 type AdminInvoicesProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -65,9 +66,11 @@ export default async function AdminInvoices({
       </InvoicesProvider>
     );
   }
+  const { sortKey, sortDir } = searchParamsValues;
+  const sortedInvoices = sortData(result.body.invoices, sortKey, sortDir);
 
   return (
-    <InvoicesProvider data={result.body}>
+    <InvoicesProvider data={{ ...result.body, invoices: sortedInvoices }}>
       <section className="flex h-full flex-col gap-y-4">
         <SearchWrapper />
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">

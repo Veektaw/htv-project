@@ -10,13 +10,14 @@ import {
 } from "../../schemas";
 import { User } from "@/types/auth";
 
-export const defaultPlatformValue = {
+export const defaultPlatformValues = {
   platform: "",
   brand_partner: "",
   external_user_id: "",
+  platform_account_recipient_email: "",
 };
 
-export const defaultCommissionValue = {
+export const defaultCommissionValues = {
   platform: "",
   amount_per_prescription: "",
   currency: "EUR",
@@ -97,7 +98,7 @@ export default function useUpdateUserDetails({
               platform_account_recipient_email:
                 platform.platform_account_recipient_email ?? "",
             }))
-          : [defaultPlatformValue],
+          : [defaultPlatformValues],
       commissions: user.commissions.length
         ? user.commissions.map((commission) => ({
             platform: commission.platform,
@@ -111,7 +112,7 @@ export default function useUpdateUserDetails({
             signed_prescriptions: commission.signed_prescriptions,
             cancelled_prescriptions: commission.cancelled_prescriptions,
           }))
-        : [defaultCommissionValue],
+        : [defaultCommissionValues],
     },
   });
   const { register, handleSubmit, formState, reset, control } = form;

@@ -14,6 +14,7 @@ export type GetAdminPayments = {
   doctor_id: string;
   user: User;
   platform: string;
+  status: string;
   amount_paid: number;
   invoice_ref: string;
   payment_date: string | null;

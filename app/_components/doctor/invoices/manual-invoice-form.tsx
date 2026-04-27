@@ -183,14 +183,14 @@ export default function ManualInvoiceForm({
     if (!reconciliation?.platform || !reconciliation?.doctor_id) return;
 
     getPlatformsAction().then((res) => {
-      const platforms = (
-        res?.data as {
-          body?: {
-            platforms?: Array<{ address: string; brand_partner: string }>;
-          };
-        }
-      )?.body?.platforms;
-      if (!platforms) return;
+      if (res.error) {
+        console.error(res.message);
+        return;
+      }
+      const platforms = res.platforms as Array<{
+        address: string;
+        brand_partner: string;
+      }>;
 
       const match = platforms.find(
         (p) => p.brand_partner === reconciliation.platform,

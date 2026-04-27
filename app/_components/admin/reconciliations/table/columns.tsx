@@ -5,6 +5,7 @@ import { formatPrescriptionDate } from "@/lib/utils";
 import Status from "@/app/_components/doctor/reconciliations/table/columns/status";
 import MenuActions from "@/app/_components/shared/menu-actions";
 import Actions from "./columns/actions";
+import SortableHeader from "@/app/_components/shared/header/sortableHeader";
 
 type ColumnType = Reconciliation & { actions?: ReactNode };
 
@@ -12,21 +13,27 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Name",
     key: "name",
+    renderTitle: () => <SortableHeader label="Name" sortKey="full_name" />,
     render: (_, record) => record.user.full_name,
   },
   {
     title: "Date",
     key: "period_month",
+    renderTitle: () => <SortableHeader label="Date" sortKey="period_month" />,
     render: (value) => formatPrescriptionDate(value as string),
   },
   {
     title: "Platform",
     key: "platform",
+    renderTitle: () => <SortableHeader label="Platform" sortKey="platform" />,
     render: (value) => value as string,
   },
   {
     title: "Est. Commissions",
     key: "gross_amount",
+    renderTitle: () => (
+      <SortableHeader label="Est. Commissions" sortKey="gross_amount" />
+    ),
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
         maximumFractionDigits: 2,
@@ -35,6 +42,9 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Adyen Paid",
     key: "adyen_paid",
+    renderTitle: () => (
+      <SortableHeader label="Adyen Paid" sortKey="adyen_paid" />
+    ),
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
         maximumFractionDigits: 2,
@@ -43,20 +53,27 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Manual Paid",
     key: "manual_paid",
-    // render: (value) =>
-    //   `€${(value as number).toLocaleString("en-US", {
-    //     maximumFractionDigits: 2,
-    //   })}`,
+    renderTitle: () => (
+      <SortableHeader label="Manual Paid" sortKey="manual_paid" />
+    ),
+    render: (value) =>
+      `€${(value as number).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}`,
   },
- 
+
   {
     title: "Date paid",
     key: "date_paid",
+    renderTitle: () => <SortableHeader label="Date Paid" sortKey="date_paid" />,
     render: () => "--",
   },
-   {
+  {
     title: "Outstanding",
     key: "outstanding",
+    renderTitle: () => (
+      <SortableHeader label="Outstanding" sortKey="outstanding" />
+    ),
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
         maximumFractionDigits: 2,
@@ -65,16 +82,18 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Status",
     key: "status",
+    renderTitle: () => <SortableHeader label="Status" sortKey="status" />,
     render: (value) => <Status value={value as ReconciliationStatus} />,
   },
   {
     title: "",
     key: "actions",
-    render: (_, record) =>
-      record.status !== "completed" && (
-        <MenuActions>
-          <Actions reconciliation={record} />
-        </MenuActions>
-      ),
+    render: (_, record) => (
+      // record.status !== "completed" && (
+      <MenuActions>
+        <Actions reconciliation={record} />
+      </MenuActions>
+    ),
+    // ),
   },
 ];
