@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,11 +12,12 @@ import { UserSessionData } from "@/types/auth";
 
 export default function useUpdateUserProfile({
   user,
+  setCanEdit,
 }: {
   user: UserSessionData;
+  setCanEdit: Dispatch<SetStateAction<boolean>>;
 }) {
   const { refresh } = useRouter();
-  const [canEdit, setCanEdit] = useState(false);
 
   const form = useForm<UpdateUserProfileSchemaType>({
     resolver: zodResolver(updateUserProfileFormSchema),
@@ -27,21 +28,25 @@ export default function useUpdateUserProfile({
       title: user.title ? user.title : "",
       phone: user.phone ? user.phone : "",
       company_name: user.company_name ? user.company_name : "",
+      residential_address: user.address ?? "",
     },
   });
   const { register, handleSubmit, formState, reset } = form;
 
   const onSubmit = async (data: UpdateUserProfileSchemaType) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { email, ...rest } = data;
+    const { email, residential_address, ...rest } = data;
+
+    const payload = { ...rest, address: residential_address };
     try {
-      const res = await updateUserProfileAction(rest);
+      const res = await updateUserProfileAction(payload);
 
       if (!res.error) {
         refresh();
         setCanEdit(false);
         reset(data);
         showToast(res.message);
+        reset();
       } else {
         showToast(res.message, "error");
       }
@@ -56,7 +61,5 @@ export default function useUpdateUserProfile({
     onSubmit: handleSubmit(onSubmit),
     formState,
     reset,
-    canEdit,
-    setCanEdit,
   };
 }

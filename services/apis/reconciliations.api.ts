@@ -25,7 +25,7 @@ export const getDoctorReconciliationsApi = ({
   if (end_date) params.end_date = end_date;
 
   const queryString = new URLSearchParams(params).toString();
-  const url = `/doctor/reconciliation/${queryString ? `?${queryString}` : ""}`;
+  const url = `/doctor/reconciliations/${queryString ? `?${queryString}` : ""}`;
 
   return Api.get<GetDoctorReconciliations>(url, true);
 };

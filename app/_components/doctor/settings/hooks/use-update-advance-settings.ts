@@ -12,9 +12,9 @@ import { CreatePlatformPayload, Platform } from "@/types/platforms";
 
 export const defaultPlatformValues = {
   id: "",
-  //   platform: "",
+//   platform: "",
   brand_partner: "",
-  //   external_user_id: "",
+//   external_user_id: "",
   platform_account_recipient_email: "",
   address: "",
 };

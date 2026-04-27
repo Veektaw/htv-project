@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { getUser } from "@/services/auth";
 import Header from "@/app/_components/shared/header/header";
-import AccountInformation from "@/app/_components/admin/settings/account-information";
+import AccountInformation from "@/app/_components/doctor/settings/account-information";
 
 export const metadata: Metadata = {
   title: "Profile Settings",
