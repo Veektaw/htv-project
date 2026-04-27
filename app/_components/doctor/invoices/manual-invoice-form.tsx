@@ -43,7 +43,7 @@ import { showToast } from "@/lib/toast";
 import { createManualInvoiceAction } from "@/services/actions/invoices.actions";
 import useManualInvoice from "./hooks/use-manual-invoice";
 import { getDoctorPrescriptionsAction } from "@/services/actions/prescriptions.actions";
-import { getPlatformsAction } from "@/services/actions/platforms.actions";
+import { getPlatformsActionTwo } from "@/services/actions/platforms.actions";
 import { Prescription } from "@/types/prescriptions";
 
 type InvoiceRow = {
@@ -190,7 +190,7 @@ export default function ManualInvoiceForm({
   useEffect(() => {
     if (!reconciliation?.platform || !reconciliation?.doctor_id) return;
 
-    getPlatformsAction().then((res) => {
+    getPlatformsActionTwo().then((res) => {
       const platforms = (
         res?.data as {
           body?: {

@@ -10,7 +10,7 @@ export const prescriptionColumns: Column<ColumnType>[] = [
   {
     title: "Name",
     key: "full_name",
-    renderTitle: () => <SortableHeader label="Status" sortKey="full_name" />,
+    renderTitle: () => <SortableHeader label="User ID" sortKey="full_name" />,
     render: (_, record) => record.user.full_name,
   },
   {

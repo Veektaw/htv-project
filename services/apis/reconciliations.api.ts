@@ -1,8 +1,10 @@
 import { Api } from "./api";
 import {
+  AdminCreateReconciliationParams,
   GetDoctorReconciliations,
   GetDoctorReconciliationsParams,
   Reconciliation,
+  ReconciliationCommentsResponse,
   UpdateReconciliationPayload,
 } from "@/types/reconciliations";
 
@@ -23,7 +25,7 @@ export const getDoctorReconciliationsApi = ({
   if (end_date) params.end_date = end_date;
 
   const queryString = new URLSearchParams(params).toString();
-  const url = `/doctor/reconciliations/${queryString ? `?${queryString}` : ""}`;
+  const url = `/doctor/reconciliation/${queryString ? `?${queryString}` : ""}`;
 
   return Api.get<GetDoctorReconciliations>(url, true);
 };
@@ -59,6 +61,36 @@ export const updateReconciliationApi = (
   return Api.put<UpdateReconciliationPayload, Reconciliation>(
     `/admin/reconciliation/${id}/`,
     body,
+    true,
+  );
+};
+
+export const addReconciliationCommentApi = (
+  reconciliationId: string,
+  message: string,
+) => {
+  const payload = { message, reconciliation_id: reconciliationId };
+  return Api.post(
+    `/admin/reconciliation/${reconciliationId}/comments/`,
+    payload,
+    true,
+  );
+};
+
+export const getReconciliationCommentsApi = (reconciliationId: string) => {
+  return Api.get<ReconciliationCommentsResponse>(
+    `/admin/reconciliation/${reconciliationId}/comments/`,
+    true,
+  );
+};
+
+export const manualReconciliationApi = (
+  data: AdminCreateReconciliationParams,
+) => {
+  const { doctor_id, ...payload } = data;
+  return Api.post(
+    `/admin/reconciliation/${doctor_id}/manual-payment/`,
+    payload,
     true,
   );
 };

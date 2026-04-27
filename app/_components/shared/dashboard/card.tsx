@@ -3,7 +3,7 @@ import arrowUp from "@/public/svgs/green-arrow-up.svg";
 
 type CardProps = {
   text: string;
-  value: number;
+  value: number | string;
   percentage: string;
   showEuro?: boolean;
 };
