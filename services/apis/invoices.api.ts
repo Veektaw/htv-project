@@ -85,14 +85,10 @@ type ResendInvoiceEmailResponse = {
   message: string;
 };
 
-
-
 export const resendmailInvoiceApi = (invoiceId: string) => {
   return Api.post<Record<string, never>, ResendInvoiceEmailResponse>(
     `/admin/invoices/${invoiceId}/resend-email/`,
     {},
-    true
+    true,
   );
 };
-
-

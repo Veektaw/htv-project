@@ -65,31 +65,32 @@ export const updateReconciliationApi = (
   );
 };
 
-export const addReconciliationCommentApi = (reconciliationId: string, message: string) => {
+export const addReconciliationCommentApi = (
+  reconciliationId: string,
+  message: string,
+) => {
   const payload = { message, reconciliation_id: reconciliationId };
   return Api.post(
-    `/admin/reconciliation/${reconciliationId}/comments/`, 
+    `/admin/reconciliation/${reconciliationId}/comments/`,
     payload,
-    true
+    true,
   );
 };
+
 export const getReconciliationCommentsApi = (reconciliationId: string) => {
   return Api.get<ReconciliationCommentsResponse>(
     `/admin/reconciliation/${reconciliationId}/comments/`,
-    true
+    true,
   );
 };
-// export const getReconciliationCommentsApi = (reconciliationId: string) => {
-//   return Api.get(
-//     `/admin/reconciliation/${reconciliationId}/comments/`, 
-//     true
-//   );
-// };
-export const manualReconciliationApi = (data:AdminCreateReconciliationParams) => {
-  const { doctor_id ,...payload} = data;
+
+export const manualReconciliationApi = (
+  data: AdminCreateReconciliationParams,
+) => {
+  const { doctor_id, ...payload } = data;
   return Api.post(
     `/admin/reconciliation/${doctor_id}/manual-payment/`,
     payload,
-    true
+    true,
   );
 };
