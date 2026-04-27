@@ -1,7 +1,15 @@
 "use server";
 
-import { addReconciliationCommentApi, getReconciliationCommentsApi, manualReconciliationApi, updateReconciliationApi } from "../apis/reconciliations.api";
-import { AdminCreateReconciliationParams, UpdateReconciliationPayload } from "@/types/reconciliations";
+import {
+  addReconciliationCommentApi,
+  getReconciliationCommentsApi,
+  manualReconciliationApi,
+  updateReconciliationApi,
+} from "../apis/reconciliations.api";
+import {
+  AdminCreateReconciliationParams,
+  UpdateReconciliationPayload,
+} from "@/types/reconciliations";
 
 export const updateReconciliationAction = async (
   id: string,
@@ -21,13 +29,19 @@ export const updateReconciliationAction = async (
     message: `Reconciliation ${data.action_type}ed`,
   };
 };
-export async function addReconciliationComment(reconciliationId: string, message: string) {
+export async function addReconciliationComment(
+  reconciliationId: string,
+  message: string,
+) {
   try {
     const result = await addReconciliationCommentApi(reconciliationId, message);
     if (result.ok) {
       return { success: true, data: result.body };
     } else {
-      return { success: false, error: result.body.message || "Failed to add comment" };
+      return {
+        success: false,
+        error: result.body.message || "Failed to add comment",
+      };
     }
   } catch (error) {
     console.error("Error adding comment:", error);
@@ -66,7 +80,7 @@ export async function getReconciliationComments(reconciliationId: string) {
 // }
 export const manualReconciliationAction = async (
   doctor_id: string,
-  payload: Omit<AdminCreateReconciliationParams, "doctor_id">
+  payload: Omit<AdminCreateReconciliationParams, "doctor_id">,
 ) => {
   const response = await manualReconciliationApi({ doctor_id, ...payload });
 

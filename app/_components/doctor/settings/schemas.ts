@@ -7,6 +7,7 @@ export const updateUserProfileFormSchema = z.object({
   last_name: z.string().nonempty("Last name is required"),
   phone: z.string(),
   company_name: z.string(),
+  residential_address: z.string().nonempty("Residential address is required"),
 });
 
 export type UpdateUserProfileSchemaType = z.infer<
