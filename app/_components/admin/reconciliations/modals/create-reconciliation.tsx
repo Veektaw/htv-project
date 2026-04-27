@@ -57,8 +57,8 @@ const createReconciliationSchema = z.object({
       message: "Must be a positive number",
     }),
   period_month: z.string().min(1, "Period month is required"),
-  note: z.string().min(1, "Note is required"),
-  comment: z.string().min(1, "Comment is required"),
+  note: z.string(),
+  comment: z.string(),
 });
 
 type CreateReconciliationForm = z.infer<typeof createReconciliationSchema>;
@@ -121,14 +121,26 @@ export default function CreateReconciliationModal({}: {
 
       const payload = {
         platform: rest.platform,
-        gross_amount: parseFloat(parseFloat(rest.gross_amount).toFixed(2)),
-        adyen_paid: parseFloat(parseFloat(rest.adyen_paid).toFixed(2)),
-        outstanding: parseFloat(parseFloat(rest.outstanding).toFixed(2)),
-        manual_paid: parseFloat(parseFloat(rest.manual_paid).toFixed(2)),
+        gross_amount: parseFloat(rest.gross_amount), // remove the double parseFloat
+        adyen_paid: parseFloat(rest.adyen_paid),
+        outstanding: parseFloat(rest.outstanding),
+        manual_paid: parseFloat(rest.manual_paid),
         period_month: rest.period_month,
-        note: rest.note,
-        comment: rest.comment,
+        note: rest.note || "",
+        comment: rest.comment || "",
       };
+
+      console.log("Payload:", payload);
+      // const payload = {
+      //   platform: rest.platform,
+      //   gross_amount: parseFloat(parseFloat(rest.gross_amount).toFixed(2)),
+      //   adyen_paid: parseFloat(parseFloat(rest.adyen_paid).toFixed(2)),
+      //   outstanding: parseFloat(parseFloat(rest.outstanding).toFixed(2)),
+      //   manual_paid: parseFloat(parseFloat(rest.manual_paid).toFixed(2)),
+      //   period_month: rest.period_month,
+      //   note: rest.note || "", // Optional fields can be empty strings
+      //   comment: rest.comment || "", // Optional fields can be empty strings
+      // };
 
       const result = await manualReconciliationAction(doctor_id, payload);
 

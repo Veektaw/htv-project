@@ -6,7 +6,7 @@ import {
   createPlatformApi,
   getPlatformsApi,
   updatePlatformApi,
-} from "../apis/platforms";
+} from "../apis/platforms.api";
 
 export const getPlatformsAction = async () => {
   const user = await getUser();
