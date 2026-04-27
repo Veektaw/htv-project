@@ -5,6 +5,7 @@ import PaymentsProvider from "./contexts/payments-provider";
 import SearchWrapper from "./search-wrapper";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
+import { sortData } from "@/lib/sort-data";
 
 type AdminPaymentsProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -116,9 +117,10 @@ export default async function AdminPayments({
       </PaymentsProvider>
     );
   }
-
+  const { sortKey, sortDir } = searchParamsValues;
+  const sortedPayments = sortData(res.body.payments, sortKey, sortDir);
   return (
-    <PaymentsProvider data={res.body}>
+    <PaymentsProvider data={{ ...res.body, payments: sortedPayments }}>
       <section className="flex h-full flex-col gap-y-4">
         <SearchWrapper />
 

@@ -214,7 +214,6 @@ export async function updateSession(request: NextRequest) {
 
 export async function logout() {
   const cookieStore = await cookies();
-
   cookieStore.set(USER_SESSION_KEY, "", { expires: new Date(0) });
   cookieStore.set(REFRESH_TOKEN, "", { expires: new Date(0) });
 }

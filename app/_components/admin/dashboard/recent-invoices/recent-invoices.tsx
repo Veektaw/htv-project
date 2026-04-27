@@ -4,6 +4,7 @@ import { statuses } from "../../invoices/table/columns/status";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import TableComponent from "../../../shared/table-component/table-component";
 import { InvoiceStatus } from "@/types/invoices";
+import { sortData } from "@/lib/sort-data";
 
 type InvoicesProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -65,13 +66,15 @@ export default async function RecentInvoices({
   }
 
   // console.log({ res: res.body });
-
+  const { sortKey, sortDir } = searchParamsValues;
+  const sorted = sortData(res.body.invoices, sortKey, sortDir);
+  const recent = sorted.slice(0, 5);
   return (
     <section className="h-full">
       <TableComponent
         title="Invoices"
         columns={invoicesColumns}
-        data={res.body.invoices}
+        data={recent}
       />
     </section>
   );

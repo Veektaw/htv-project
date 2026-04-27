@@ -44,7 +44,10 @@ export default function TableComponent<T extends Record<string, any>>(
         <TableHeader className="bg-SoftPeach">
           <TableRow>
             {columns.map((column, index) => (
-              <TableHead key={index} className="px-8 py-4 text-black">
+              <TableHead
+                key={index}
+                className="px-8 py-4 text-center text-black"
+              >
                 {column.renderTitle ? column.renderTitle() : column.title}
               </TableHead>
             ))}

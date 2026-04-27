@@ -16,28 +16,25 @@ import {
   updateInvoiceStatus,
   addInvoiceComment,
   getInvoiceComments,
+  resendInvoiceEmailAction,
+  downloadInvoiceAction,
 } from "@/services/actions/invoices.actions";
 import { showSuccessToast, showErrorToast } from "@/lib/toast";
 import { useInvoices } from "../../contexts/invoices-provider";
 
-const STATUS_OPTIONS = [
-  // "Paid",
-  "Approve",
-  // "Under Review",
-  "Dispute Invoice",
-];
+const STATUS_OPTIONS = ["Paid", "Under Review", "Dispute Invoice"];
 
 const STATUS_MAP = {
-  // Paid: "paid",
-  Approve: "approve",
-  // "Under Review": "under_review",
+  Paid: "paid",
+  // Approve: "approve",
+  "Under Review": "under_review",
   "Dispute Invoice": "dispute",
 };
 
 const STATUS_DISPLAY_MAP = {
-  // paid: "Paid",
-  approved: "Approved",
-  // "under_review": "Under Review",
+  paid: "Paid",
+  // approved: "Approved",
+  under_review: "Under Review",
   rejected: "Dispute Invoice",
 };
 
@@ -152,6 +149,46 @@ export default function Actions({ invoice }: ActionsProps) {
     }
   };
 
+  const handleDownloadInvoice = async () => {
+    try {
+      const result = await downloadInvoiceAction(invoice.id);
+
+      if (!result.error && result.base64) {
+        const binary = Uint8Array.from(atob(result.base64), (c) =>
+          c.charCodeAt(0),
+        );
+        const blob = new Blob([binary], { type: "application/pdf" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `invoice_${invoice.invoice_ref}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode?.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else {
+        showErrorToast("Failed to download invoice");
+      }
+    } catch (error) {
+      showErrorToast("Failed to download invoice");
+      console.error("Error downloading invoice:", error);
+    }
+  };
+
+  const handleResendEmail = async () => {
+    try {
+      const result = await resendInvoiceEmailAction(invoice.id);
+      if (result.success) {
+        showSuccessToast(result.message || "Invoice email resent successfully");
+      } else {
+        showErrorToast(result.error || "Failed to resend invoice email");
+      }
+    } catch (error) {
+      showErrorToast("Failed to resend invoice email");
+      console.error("Error resending invoice email:", error);
+    }
+  };
+
   return (
     <>
       <PopoverContent className="rounded-base w-45 cursor-pointer p-2">
@@ -223,6 +260,18 @@ export default function Actions({ invoice }: ActionsProps) {
           >
             View Comment
           </li>
+          <li
+            className="rounded-base hover:bg-Geraldine block w-full cursor-pointer px-3 py-1 text-left transition-colors duration-300 hover:text-white"
+            onClick={handleDownloadInvoice}
+          >
+            Download Invoice
+          </li>
+          <li
+            className="rounded-base hover:bg-Geraldine block w-full cursor-pointer px-3 py-1 text-left transition-colors duration-300 hover:text-white"
+            onClick={handleResendEmail}
+          >
+            Resend Mail
+          </li>
           <li className="rounded-base block w-full cursor-not-allowed px-3 py-1 text-left opacity-40">
             View Receipt
           </li>
@@ -274,12 +323,6 @@ export default function Actions({ invoice }: ActionsProps) {
               <label className="font-semibold">Platform:</label>
               <p>{invoice.platform}</p>
             </div>
-            {invoice.notes && (
-              <div>
-                <label className="font-semibold">Notes:</label>
-                <p>{invoice.notes}</p>
-              </div>
-            )}
           </div>
         </DialogContent>
       </Dialog>
@@ -331,7 +374,7 @@ export default function Actions({ invoice }: ActionsProps) {
         <DialogContent>
           <DialogHeader className="flex flex-col items-center justify-center gap-1 px-6 pt-6 pb-4 text-center">
             <DialogTitle>Add Comment</DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="text-center">
               Add a comment help users better understand what needs to be done.
             </DialogDescription>
           </DialogHeader>
@@ -340,12 +383,12 @@ export default function Actions({ invoice }: ActionsProps) {
               <label className="mb-2 block text-sm font-medium">
                 Enter your reasons here
               </label>
+
               <Textarea
                 value={commentMessage}
                 onChange={(e) => setCommentMessage(e.target.value)}
                 placeholder="Enter your comment..."
-                rows={20}
-                cols={50}
+                rows={4}
                 className="resize-none"
               />
             </div>

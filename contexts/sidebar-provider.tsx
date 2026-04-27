@@ -23,6 +23,7 @@ import ProfileIcon from "@/app/_components/shared/sidebar/icons/profile";
 export type NavigationItem = {
   name: string;
   href: string;
+  disabled?: boolean;
   icon: () => JSX.Element;
 };
 
@@ -48,7 +49,12 @@ const adminLinks = [
     href: "/admin/reconciliations",
     icon: ReconciliationsIcon,
   },
-  { name: "Appointments", href: "/admin/appointments", icon: AppointmentsIcon },
+  {
+    name: "Appointments",
+    href: "/admin/appointments",
+    icon: AppointmentsIcon,
+    disabled: true,
+  },
   { name: "Settings", href: "/admin/settings", icon: SettingsIcon },
 ];
 

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,12 +12,11 @@ import { UserSessionData } from "@/types/auth";
 
 export default function useUpdateUserProfile({
   user,
-  setCanEdit,
 }: {
   user: UserSessionData;
-  setCanEdit: Dispatch<SetStateAction<boolean>>;
 }) {
   const { refresh } = useRouter();
+  const [canEdit, setCanEdit] = useState(false);
 
   const form = useForm<UpdateUserProfileSchemaType>({
     resolver: zodResolver(updateUserProfileFormSchema),
@@ -44,7 +43,6 @@ export default function useUpdateUserProfile({
         setCanEdit(false);
         reset(data);
         showToast(res.message);
-        reset();
       } else {
         showToast(res.message, "error");
       }
@@ -59,5 +57,7 @@ export default function useUpdateUserProfile({
     onSubmit: handleSubmit(onSubmit),
     formState,
     reset,
+    canEdit,
+    setCanEdit,
   };
 }
