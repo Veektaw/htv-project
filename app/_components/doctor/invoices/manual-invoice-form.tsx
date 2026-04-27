@@ -10,6 +10,14 @@ import {
 } from "@/app/_components/ui/field";
 import { Reconciliation } from "@/types/reconciliations";
 import { UserSessionData } from "@/types/auth";
+import { brandPartners } from "@/lib/constants";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/app/_components/ui/select";
 
 import { Input } from "@/app/_components/ui/input";
 import { Button } from "@/app/_components/ui/button";
@@ -183,14 +191,14 @@ export default function ManualInvoiceForm({
     if (!reconciliation?.platform || !reconciliation?.doctor_id) return;
 
     getPlatformsAction().then((res) => {
-      if (res.error) {
-        console.error(res.message);
-        return;
-      }
-      const platforms = res.platforms as Array<{
-        address: string;
-        brand_partner: string;
-      }>;
+      const platforms = (
+        res?.data as {
+          body?: {
+            platforms?: Array<{ address: string; brand_partner: string }>;
+          };
+        }
+      )?.body?.platforms;
+      if (!platforms) return;
 
       const match = platforms.find(
         (p) => p.brand_partner === reconciliation.platform,
@@ -554,16 +562,29 @@ export default function ManualInvoiceForm({
                   </div>
                 </TableCell>
 
-                <TableCell className="px-3 py-3">
-                  <Input
+                <TableCell>
+                  <Select
                     value={row.platform}
-                    onChange={(event) =>
-                      updateRow(row.id, "platform", event.target.value)
+                    onValueChange={(value) =>
+                      updateRow(row.id, "platform", value)
                     }
-                    placeholder="Platform"
                     disabled={!!reconciliation}
-                    className="h-9 text-xs text-black"
-                  />
+                  >
+                    <SelectTrigger className="h-9 w-full text-xs text-black">
+                      <SelectValue placeholder="Select Platform" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {brandPartners.map((partner) => (
+                        <SelectItem
+                          key={partner}
+                          value={partner}
+                          className="text-xs capitalize"
+                        >
+                          {partner}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </TableCell>
 
                 <TableCell className="px-3 py-3">

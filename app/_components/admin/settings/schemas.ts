@@ -7,25 +7,9 @@ export const updateUserProfileFormSchema = z.object({
   last_name: z.string().nonempty("Last name is required"),
   phone: z.string(),
   company_name: z.string(),
-  residential_address: z.string().nonempty("Residential address is required"),
+  residential_address: z.string(),
 });
 
 export type UpdateUserProfileSchemaType = z.infer<
   typeof updateUserProfileFormSchema
 >;
-
-export const advancedSettingsSchema = z.object({
-  platforms: z.array(
-    z.object({
-      id: z.string(),
-      brand_partner: z.string().min(1, "Brand partner is required"),
-      platform_account_recipient_email: z
-        .string()
-        .min(1, "Bill to email is required")
-        .email("Enter a valid email address"),
-      address: z.string().min(1, "Bill to address is required"),
-    }),
-  ),
-});
-
-export type AdvancedSettingsForm = z.infer<typeof advancedSettingsSchema>;
