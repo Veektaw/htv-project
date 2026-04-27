@@ -1,19 +1,18 @@
-import { Suspense } from "react";
-import { getUsersApi } from "@/services/apis/users.api";
 import Card, { CardLoader } from "../../shared/dashboard/card";
+import { Suspense } from "react";
 
-export default async function TotalUsersCard() {
-  const res = await getUsersApi({});
+type TotalUsersCardProps = {
+  value: number;
+  percentage: string;
+};
 
-  let total = 0;
-
-  if (res.ok) {
-    total = res.body.total;
-  }
-
+export default function TotalUsersCard({
+  value,
+  percentage,
+}: TotalUsersCardProps) {
   return (
     <Suspense fallback={<CardLoader />}>
-      <Card text="Total Users" value={total} percentage="+68%" />
+      <Card text="Total Users" value={value} percentage={percentage} />
     </Suspense>
   );
 }
