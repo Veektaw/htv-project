@@ -17,6 +17,7 @@ export default async function OutstandingBalance() {
         text="Outstanding Balance"
         value={outstandingBalance}
         percentage="+0%"
+        showEuro
       />
     </Suspense>
   );

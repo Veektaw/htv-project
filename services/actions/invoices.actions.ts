@@ -1,7 +1,10 @@
 "use server";
 
-
-import {  addDoctorCommentApi, createManualInvoiceApi, getDoctorCommentsApi } from "../apis/doctor-invoices.api";
+import {
+  addDoctorCommentApi,
+  createManualInvoiceApi,
+  getDoctorCommentsApi,
+} from "../apis/doctor-invoices.api";
 import {
   addInvoiceCommentApi,
   getInvoiceCommentsApi,
@@ -10,7 +13,6 @@ import {
 } from "../apis/invoices.api";
 import { CreateManualInvoicePayload } from "@/types/invoices";
 import { getUserSession } from "../auth";
-
 
 export const createManualInvoiceAction = async (
   data: CreateManualInvoicePayload,
@@ -94,7 +96,7 @@ export const resendInvoiceEmailAction = async (invoiceId: string) => {
     if (response.ok) {
       return {
         success: true,
-        message:  response.body.message  || "Invoice email resent successfully",
+        message: response.body.message || "Invoice email resent successfully",
       };
     } else {
       return {
@@ -110,6 +112,7 @@ export const resendInvoiceEmailAction = async (invoiceId: string) => {
     };
   }
 };
+
 export const downloadInvoiceAction = async (invoiceId: string) => {
   const userSession = await getUserSession();
   const token = userSession?.data.accessToken;
@@ -130,7 +133,48 @@ export const downloadInvoiceAction = async (invoiceId: string) => {
 
   console.log("Response status:", response.status);
   console.log("Response ok:", response.ok);
-  console.log("Response headers:", Object.fromEntries(response.headers.entries()));
+  console.log(
+    "Response headers:",
+    Object.fromEntries(response.headers.entries()),
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    console.log("Error body:", errorText);
+    return { error: true, message: "Failed to download invoice" };
+  }
+
+  const buffer = await response.arrayBuffer();
+  console.log("Buffer size:", buffer.byteLength);
+
+  const base64 = Buffer.from(buffer).toString("base64");
+  return { error: false, base64 };
+};
+
+export const downloadDoctorInvoiceAction = async (invoiceId: string) => {
+  const userSession = await getUserSession();
+  const token = userSession?.data.accessToken;
+
+  console.log("Invoice ID:", invoiceId);
+  console.log("Token:", token);
+
+  const response = await fetch(
+    `${process.env.BASE_URL}/doctor/invoices/${invoiceId}/download/`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/pdf",
+      },
+    },
+  );
+
+  console.log("Response status:", response.status);
+  console.log("Response ok:", response.ok);
+  console.log(
+    "Response headers:",
+    Object.fromEntries(response.headers.entries()),
+  );
 
   if (!response.ok) {
     const errorText = await response.text();
