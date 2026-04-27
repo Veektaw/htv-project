@@ -13,7 +13,7 @@ export default async function AllEarningsCard() {
 
   return (
     <Suspense fallback={<CardLoader />}>
-      <Card text="Earnings" value={totalEarnings} percentage="+0%" />
+      <Card text="Earnings" value={totalEarnings} percentage="+0%" showEuro />
     </Suspense>
   );
 }

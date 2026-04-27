@@ -1,12 +1,14 @@
 "use server";
 
-import { CreatePlatformPayload } from "@/types/platforms";
 import { getUser } from "../auth";
 import {
   createPlatformApi,
   getPlatformsApi,
   updatePlatformApi,
 } from "../apis/platforms.api";
+import { getPlatformsApi as getDoctorPlatformsApi } from "../apis/doctor-platforms.api";
+import { CreatePlatformPayload } from "@/types/platforms";
+import { GetPlatformsParams } from "@/types/doctor-platforms";
 
 export const getPlatformsAction = async () => {
   const user = await getUser();
@@ -16,8 +18,8 @@ export const getPlatformsAction = async () => {
   }
 
   const response = await getPlatformsApi(user.id);
- console.log({ createPRes: response.body });
-  console.log({ response: response.body },"this is the response body");
+  // console.log({ createPRes: response.body });
+  // console.log({ response: response.body }, "this is the response body");
 
   if (!response.ok) {
     return {
@@ -42,7 +44,6 @@ export const createPlatformAction = async (payload: CreatePlatformPayload) => {
   }
 
   const response = await createPlatformApi(user.id, payload);
- 
 
   if (!response.ok) {
     return {
@@ -82,4 +83,15 @@ export const updatePlatformAction = async (
     error: false,
     message: "Platform updated successfully",
   };
+};
+
+export const getPlatformsActionTwo = async (
+  params: GetPlatformsParams = {},
+) => {
+  try {
+    const res = await getDoctorPlatformsApi(params);
+    return { data: res, error: null };
+  } catch {
+    return { data: null, error: "Failed to fetch platforms" };
+  }
 };
