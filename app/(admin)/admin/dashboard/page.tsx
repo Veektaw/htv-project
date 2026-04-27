@@ -8,6 +8,7 @@ import TotalUsersCard from "@/app/_components/admin/dashboard/total-users-card";
 import FilterButton from "@/app/_components/admin/dashboard/filter-button";
 import RecentInvoices from "@/app/_components/admin/dashboard/recent-invoices/recent-invoices";
 import RecentNotifications from "@/app/_components/admin/dashboard/notifications/recent-notifications";
+import { getDashboardApi } from "@/services/apis/dashboard.api";
 
 type PageParams = {
   searchParams: Promise<{ [key: string]: string | undefined }>;
@@ -19,7 +20,12 @@ export const metadata: Metadata = {
 
 export default async function page({ searchParams }: PageParams) {
   const searchParamsValues = await searchParams;
+  const dashboardRes = await getDashboardApi();
 
+  const totalUsers = dashboardRes.ok ? dashboardRes.body.total_users : null;
+  const totalOutstanding = dashboardRes.ok
+    ? dashboardRes.body.total_outstanding
+    : null;
   return (
     <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6 shadow-[0px_9px_20px_0px_#101E730F]">
       <Header type="Admin">
@@ -28,8 +34,15 @@ export default async function page({ searchParams }: PageParams) {
 
       <section className="flex flex-1 flex-col gap-y-6 overflow-y-auto rounded-sm bg-white px-8 py-8.5">
         <div className="grid gap-6 md:grid-cols-2">
-          <TotalUsersCard />
-          <Card text="Outstanding Invoices" value={0} percentage="+0%" />
+          <TotalUsersCard
+            value={totalUsers?.current_value ?? 0}
+            percentage={`${totalUsers?.percentage ?? 0}%`}
+          />
+          <Card
+            text="Outstanding Invoices"
+            value={totalOutstanding?.current_value ?? 0}
+            percentage={`${totalOutstanding?.percentage ?? 0}%`}
+          />
         </div>
 
         {/* <div className="flex w-full flex-col justify-between border lg:flex-row"> */}

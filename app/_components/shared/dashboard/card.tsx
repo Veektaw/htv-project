@@ -18,7 +18,13 @@ export default function Card({ text, value, percentage }: CardProps) {
         </div>
 
         <div className="flex items-center justify-between gap-2">
-          <p className="text-DarkJungleGreen text-2xl font-black">{value}</p>
+          {text === "Total Users" ? (
+            <p className="text-DarkJungleGreen text-2xl font-bold">{value}</p>
+          ) : (
+            <p className="text-DarkJungleGreen text-2xl font-black">
+              €{value.toFixed(2)}
+            </p>
+          )}
 
           <div className="flex items-center gap-0.5">
             <p className="text-DeepSea text-sm font-black">{percentage}</p>
