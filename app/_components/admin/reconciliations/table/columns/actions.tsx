@@ -178,7 +178,7 @@ export default function Actions({
               </p>
             ) : comments.length === 0 ? (
               <p className="py-4 text-center text-sm text-gray-500">
-                No comments found for this invoice.
+                No comments found for this reconciliation.
               </p>
             ) : (
               <div className="divide-y divide-gray-200 overflow-hidden rounded-xl border border-gray-200">

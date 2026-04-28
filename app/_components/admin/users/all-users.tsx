@@ -10,9 +10,17 @@ type AllUsersProps = {
   search?: string;
   page?: string;
   role?: string;
+  sortKey?: string;
+  sortDir?: string;
 };
 
-export default async function AllUsers({ search, page, role }: AllUsersProps) {
+export default async function AllUsers({
+  search,
+  page,
+  role,
+  sortKey,
+  sortDir,
+}: AllUsersProps) {
   const res = await getUsersApi({ search, page, role });
 
   if (!res.ok) {
@@ -63,9 +71,6 @@ export default async function AllUsers({ search, page, role }: AllUsersProps) {
       </UsersProvider>
     );
   }
-  const { sortKey, sortDir } = search
-    ? { sortKey: "name", sortDir: "asc" }
-    : { sortKey: undefined, sortDir: undefined };
   const sortedUsers = sortData(res.body.users, sortKey, sortDir);
   return (
     <UsersProvider data={{ ...res.body, users: sortedUsers }}>

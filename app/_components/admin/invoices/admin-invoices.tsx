@@ -13,7 +13,7 @@ type AdminInvoicesProps = {
 export default async function AdminInvoices({
   searchParamsValues,
 }: AdminInvoicesProps) {
-  const { page, search } = searchParamsValues;
+  const { page, search, sortKey, sortDir } = searchParamsValues;
 
   const result = await getAllInvoicesApi({
     page,
@@ -66,7 +66,6 @@ export default async function AdminInvoices({
       </InvoicesProvider>
     );
   }
-  const { sortKey, sortDir } = searchParamsValues;
   const sortedInvoices = sortData(result.body.invoices, sortKey, sortDir);
 
   return (
