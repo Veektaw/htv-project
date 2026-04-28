@@ -249,9 +249,10 @@ export default function CreateReconciliationModal({}: {
                           {periodMonthDisplay ?? <span>Pick a month</span>}
                         </Button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
+                      <PopoverContent className="w-56 p-0" align="start">
                         <Calendar
                           mode="single"
+                          className="w-full"
                           selected={
                             periodMonthValue
                               ? new Date(`${periodMonthValue}-01`)
