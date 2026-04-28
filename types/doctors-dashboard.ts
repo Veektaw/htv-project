@@ -2,6 +2,7 @@ export type GetDashboardParams = {
   page?: string;
   limit?: string;
   sort_order?: string;
+  preset?: string;
 };
 
 export type GetDashboardResponse = {

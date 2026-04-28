@@ -1,9 +1,14 @@
-import { Suspense } from "react";
 import { getDashboardStatsApi } from "@/services/apis/doctors-dashboard.api";
+import { Suspense } from "react";
+import { CardProps } from "./all-prescriptions";
 import Card, { CardLoader } from "../../shared/dashboard/card";
 
-export default async function OutstandingInvoice() {
-  const res = await getDashboardStatsApi({});
+export default async function OutstandingPayments({
+  searchParamsValues,
+}: CardProps) {
+  const res = await getDashboardStatsApi({
+    preset: searchParamsValues?.period,
+  });
 
   let outstandingInvoice = 0;
 
@@ -14,7 +19,7 @@ export default async function OutstandingInvoice() {
   return (
     <Suspense fallback={<CardLoader />}>
       <Card
-        text="Outstanding Invoices"
+        text="Outstanding Payments"
         value={outstandingInvoice}
         percentage="+0%"
       />
