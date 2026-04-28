@@ -11,7 +11,9 @@ export default function Actions({
   reconciliation: Reconciliation;
 }) {
   const canCreateInvoice =
-    reconciliation.status !== "completed" && reconciliation.status !== "void";
+    reconciliation.status !== "completed" &&
+    reconciliation.status !== "void" &&
+    reconciliation.status !== "pending";
 
   return (
     <PopoverContent className="rounded-base w-fit p-2">
