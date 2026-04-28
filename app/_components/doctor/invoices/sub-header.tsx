@@ -1,6 +1,6 @@
-import CreateNewInvoiceModal from "./create-invoice-modal";
-import { Button } from "../../ui/button";
 import { getUser } from "@/services/auth";
+import { Button } from "../../ui/button";
+import CreateNewInvoiceModal from "./modals/create-invoice";
 
 export default async function SubHeader() {
   const user = await getUser();

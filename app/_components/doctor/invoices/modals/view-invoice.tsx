@@ -11,13 +11,14 @@ import {
 } from "@/app/_components/ui/dialog";
 import { Invoice } from "@/types/invoices";
 import { formatDate } from "@/lib/utils";
+import { statuses } from "../table/columns/status";
 
 type ViewCommentModalProps = {
   children: ReactNode;
   invoice: Invoice;
 };
 
-export default function ViewCommentModal({
+export default function ViewInvoiceModal({
   children,
   invoice,
 }: ViewCommentModalProps) {
@@ -61,8 +62,8 @@ export default function ViewCommentModal({
           </div>
           <div>
             <label className="font-semibold">Status:</label>
-            <p className={`${getStatusStyles(invoice.status)}`}>
-              {invoice.status}
+            <p className={`${getStatusStyles(invoice.status)} capitalize`}>
+              {statuses[invoice.status] || invoice.status}
             </p>
           </div>
           <div>

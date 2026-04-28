@@ -1,9 +1,9 @@
+import { Reconciliation } from "@/types/reconciliations";
 import { PopoverContent } from "@/app/_components/ui/popover";
-import CreateNewInvoiceModal from "../../../invoices/create-invoice-modal";
 import AddNewCommentModal from "../../add-comment-modal";
 import ViewCommentHistoryModal from "../../view-comment-history-modal";
 import ViewReconciliationModal from "../../view-reconciliation-modal";
-import { Reconciliation } from "@/types/reconciliations";
+import CreateNewInvoiceModal from "../../../invoices/modals/create-invoice";
 
 export default function Actions({
   reconciliation,

@@ -49,13 +49,15 @@ export default function ViewCommentHistoryModal({
       setIsLoading(true);
       const result = await getDoctorComments(invoice.id, "invoice");
 
+      console.log({ result });
+
       if (result.success) {
         setComments(result.data.comments || []);
         setHasFetched(true);
       } else {
         showErrorToast(result.error || "Failed to load comments");
       }
-    } catch (error) {
+    } catch {
       // showErrorToast("An error occurred while loading comments");
     } finally {
       setIsLoading(false);

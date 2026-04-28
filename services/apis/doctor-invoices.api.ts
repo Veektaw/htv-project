@@ -81,3 +81,8 @@ export const getDoctorCommentsApi = ({
     true,
   );
 };
+
+export const getInvoiceCommentsApi = (invoiceId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return Api.get<any>(`/doctor/comments/invoices/${invoiceId}/`, true);
+};
