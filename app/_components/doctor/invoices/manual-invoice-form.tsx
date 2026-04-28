@@ -667,7 +667,7 @@ export default function ManualInvoiceForm({
           className="font-inter rounded-[44px] bg-black p-3 px-13"
           variant="secondary"
         >
-          {formState.isSubmitting ? <Spinner /> : "Submit"}
+          Submit {formState.isSubmitting && <Spinner />}
         </Button>
       </div>
     </form>

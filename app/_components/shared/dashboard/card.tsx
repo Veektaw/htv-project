@@ -10,7 +10,7 @@ type CardProps = {
 
 export default function Card({ text, value, percentage, showEuro }: CardProps) {
   return (
-    <div className="border-Iron flex min-h-37 gap-4 rounded-lg border px-4 py-6">
+    <div className="border-Iron flex min-h-37 gap-4 rounded-lg border px-4 py-6 group-has-data-[periodfilterpending=true]:animate-pulse">
       <span className="bg-DarkJungleGreen w-0.75 rounded-md"></span>
 
       <div className="flex-1 space-y-8">
