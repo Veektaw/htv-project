@@ -3,7 +3,6 @@
 import {
   addDoctorCommentApi,
   createManualInvoiceApi,
-  getDoctorCommentsApi,
 } from "../apis/doctor-invoices.api";
 import {
   addInvoiceCommentApi,
@@ -90,6 +89,7 @@ export async function getInvoiceComments(invoiceId: string) {
     return { success: false, error: "Failed to load comments" };
   }
 }
+
 export const resendInvoiceEmailAction = async (invoiceId: string) => {
   try {
     const response = await resendmailInvoiceApi(invoiceId);
@@ -189,7 +189,7 @@ export const downloadDoctorInvoiceAction = async (invoiceId: string) => {
   return { error: false, base64 };
 };
 
-export async function addDoctorComment(
+export async function addDoctorCommentAction(
   resourceId: string,
   message: string,
   resourceType: "invoice" | "reconciliation" = "invoice",
@@ -207,34 +207,5 @@ export async function addDoctorComment(
   } catch (error) {
     console.error("Error adding comment:", error);
     return { success: false, error: "Failed to add comment" };
-  }
-}
-
-export async function getDoctorComments(
-  resourceId?: string,
-  resourceType: "invoice" | "reconciliation" = "invoice",
-  page = "1",
-  limit = "10",
-) {
-  try {
-    const result = await getDoctorCommentsApi({
-      page,
-      limit,
-      invoice_id: resourceType === "invoice" ? resourceId : undefined,
-      reconciliation_id:
-        resourceType === "reconciliation" ? resourceId : undefined,
-    });
-
-    if (result.ok) {
-      return { success: true, data: result.body };
-    } else {
-      return {
-        success: false,
-        error: result.body.message || "Failed to load comments",
-      };
-    }
-  } catch (error) {
-    console.error("Error loading doctor comments:", error);
-    return { success: false, error: "Failed to load comments" };
   }
 }

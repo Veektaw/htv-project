@@ -1,6 +1,12 @@
 "use client";
 
 import { ReactNode, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { addDoctorCommentAction } from "@/services/actions/invoices.actions";
+import { showSuccessToast, showErrorToast } from "@/lib/toast";
+import { Reconciliation } from "@/types/reconciliations";
+import { Spinner } from "@/app/_components/ui/spinner";
+import { Button } from "@/app/_components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -9,11 +15,6 @@ import {
   DialogTrigger,
 } from "@/app/_components/ui/dialog";
 import { Textarea } from "@/app/_components/ui/textarea";
-import { Button } from "@/app/_components/ui/button";
-import { Reconciliation } from "@/types/reconciliations";
-import { Spinner } from "@/app/_components/ui/spinner";
-import { showSuccessToast, showErrorToast } from "@/lib/toast";
-import { addDoctorComment } from "@/services/actions/invoices.actions";
 
 type AddNewCommentModalProps = {
   children: ReactNode;
@@ -24,6 +25,8 @@ export default function AddNewCommentModal({
   children,
   reconciliation,
 }: AddNewCommentModalProps) {
+  const queryClient = useQueryClient();
+
   const [open, setOpen] = useState(false);
   const [comment, setComment] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -36,20 +39,23 @@ export default function AddNewCommentModal({
 
     try {
       setIsLoading(true);
-      const result = await addDoctorComment(
+      const result = await addDoctorCommentAction(
         reconciliation.id,
         comment,
         "reconciliation",
       );
 
       if (result.success) {
+        queryClient.invalidateQueries({
+          queryKey: ["reconciliation-comments", reconciliation.id],
+        });
         showSuccessToast("Comment was added successfully");
         setComment("");
         setOpen(false);
       } else {
         showErrorToast(result.error || "Failed to add comment");
       }
-    } catch (error) {
+    } catch {
       showErrorToast("An error occurred while adding the comment");
     } finally {
       setIsLoading(false);

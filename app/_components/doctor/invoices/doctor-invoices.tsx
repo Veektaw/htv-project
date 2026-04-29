@@ -1,14 +1,14 @@
-import TableWrapper from "./table/table-wrapper";
-import TablePaginationWrapper from "./table/table-pagination-wrapper";
+import { getDoctorInvoicesApi } from "@/services/apis/doctor-invoices.api";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import InvoicesProvider from "./contexts/invoices-provider";
-import { getDoctorInvoicesApi } from "@/services/apis/doctor-invoices.api";
+import TableWrapper from "./table/table-wrapper";
+import TablePaginationWrapper from "./table/table-pagination-wrapper";
 
 type InvoicesListProps = {
   searchParamsValues: { [key: string]: string | undefined };
 };
 
-export default async function InvoicesList({
+export default async function DoctorInvoices({
   searchParamsValues,
 }: InvoicesListProps) {
   const { page, user_id } = searchParamsValues;
