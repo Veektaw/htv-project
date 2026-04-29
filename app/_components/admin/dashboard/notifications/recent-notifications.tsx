@@ -92,7 +92,7 @@ export default function RecentNotifications() {
 
     const load = async () => {
       const res = await getNotificationsAction();
-      if (cancelled) return; // 👈 prevents setState if component unmounted
+      if (cancelled) return;
       if (!res.ok) {
         setError(res.body.message || "Error getting notifications");
       } else {
