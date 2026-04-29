@@ -6,6 +6,7 @@ import { useTransition, useState } from "react";
 
 type NotificationItemProps = {
   notification: Notification;
+  onRead: () => void;
 };
 
 const formatDate = (dateString: string) => {
@@ -19,6 +20,7 @@ const formatDate = (dateString: string) => {
 
 export default function NotificationItem({
   notification,
+  onRead,
 }: NotificationItemProps) {
   const [isPending, startTransition] = useTransition();
   const [isRead, setIsRead] = useState(notification.is_read);
@@ -33,6 +35,8 @@ export default function NotificationItem({
 
       if (res.error) {
         setIsRead(false);
+      } else {
+        onRead();
       }
     });
   };
@@ -52,10 +56,12 @@ export default function NotificationItem({
         <p className="text-DarkJungleGreen text-sm font-medium">
           {notification.title}
         </p>
-        {!isRead && (
+        {!isRead ? (
           <span
             className={`size-2 shrink-0 rounded-full bg-blue-500 ${isPending ? "animate-pulse" : ""}`}
           />
+        ) : (
+          <span className="size-2 shrink-0 rounded-full bg-gray-300" />
         )}
       </div>
       <p className="text-MediumGrey text-xs">{notification.message}</p>

@@ -1,6 +1,7 @@
 export type DashboardStat = {
   percentage: number;
   current_value: number;
+  total_outstanding_count?: number;
 };
 
 export type GetDashboardResponse = {
