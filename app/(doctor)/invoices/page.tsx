@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { Metadata } from "next";
 import Header from "@/app/_components/shared/header/header";
 import SubHeader from "@/app/_components/doctor/invoices/sub-header";
-import InvoicesList from "@/app/_components/doctor/invoices/invoices-list";
+import DoctorInvoices from "@/app/_components/doctor/invoices/doctor-invoices";
 import Loader from "@/app/_components/shared/loader";
 
 type PageParams = {
@@ -23,8 +23,8 @@ export default async function InvoicesPage({ searchParams }: PageParams) {
       </Header>
 
       <section className="flex-1 overflow-y-auto rounded-sm bg-white px-7 py-5.5 shadow-[0px_9px_20px_0px_#101E730F]">
-        <Suspense fallback={<Loader text="Loading invoices..." />}>
-          <InvoicesList searchParamsValues={searchParamsValues} />
+        <Suspense fallback={<Loader text="Getting invoices..." />}>
+          <DoctorInvoices searchParamsValues={searchParamsValues} />
         </Suspense>
       </section>
     </section>

@@ -12,7 +12,6 @@ type ActionsProps = {
 };
 
 export default function Actions({ invoice }: ActionsProps) {
-  console.log({ invoice });
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownloadInvoice = async () => {
@@ -54,6 +53,7 @@ export default function Actions({ invoice }: ActionsProps) {
       setIsDownloading(false);
     }
   };
+
   return (
     <PopoverContent className="rounded-base w-45 cursor-pointer p-2">
       <ul className="text-CloudyGrey text-xs font-semibold">

@@ -4,7 +4,6 @@ export type Notification = {
   message: string;
   created_at: string;
   is_read: boolean;
-
 };
 
 export type GetNotificationsResponse = {
@@ -19,4 +18,3 @@ export type GetNotificationsParams = {
   page?: number;
   limit?: number;
 };
-
