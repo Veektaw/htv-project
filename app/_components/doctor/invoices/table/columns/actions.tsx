@@ -1,17 +1,18 @@
-import { PopoverContent } from "@/app/_components/ui/popover";
-import AddNewCommentModal from "../../add-comment-modal";
-import ViewCommentHistoryModal from "../../view-comment-history-modal";
-import ViewCommentModal from "../../view-comment-modal";
-import { Invoice } from "@/types/invoices";
 import { useState } from "react";
 import { downloadDoctorInvoiceAction } from "@/services/actions/invoices.actions";
 import { showSuccessToast, showErrorToast } from "@/lib/toast";
+import { Invoice } from "@/types/invoices";
+import { PopoverContent } from "@/app/_components/ui/popover";
+import AddNewCommentModal from "../../modals/add-comment";
+import ViewCommentHistoryModal from "../../modals/view-comment-history";
+import ViewInvoiceModal from "../../modals/view-invoice";
 
 type ActionsProps = {
   invoice: Invoice;
 };
 
 export default function Actions({ invoice }: ActionsProps) {
+  console.log({ invoice });
   const [isDownloading, setIsDownloading] = useState(false);
 
   const handleDownloadInvoice = async () => {
@@ -56,11 +57,11 @@ export default function Actions({ invoice }: ActionsProps) {
   return (
     <PopoverContent className="rounded-base w-45 cursor-pointer p-2">
       <ul className="text-CloudyGrey text-xs font-semibold">
-        <ViewCommentModal invoice={invoice}>
+        <ViewInvoiceModal invoice={invoice}>
           <li className="rounded-base hover:bg-Geraldine block w-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
             View
           </li>
-        </ViewCommentModal>
+        </ViewInvoiceModal>
 
         <AddNewCommentModal invoice={invoice}>
           <li className="rounded-base hover:bg-Geraldine block w-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">

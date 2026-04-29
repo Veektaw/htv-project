@@ -45,7 +45,7 @@ export default function AddNewCommentModal({
       } else {
         showErrorToast(result.error || "Failed to add comment");
       }
-    } catch (error) {
+    } catch {
       showErrorToast("An error occurred while adding the comment");
     } finally {
       setIsLoading(false);

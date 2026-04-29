@@ -28,6 +28,7 @@ export default function Actions({
   const [isViewCommentsModalOpen, setIsViewCommentsModalOpen] = useState(false);
   const [comments, setComments] = useState<ReconciliationComment[]>([]);
   const [isLoadingComments, setIsLoadingComments] = useState(false);
+  const [viewDetailsModalOpen, setViewDetailsModalOpen] = useState(false);
   const [expandedCommentId, setExpandedCommentId] = useState<string | null>(
     null,
   );
@@ -80,11 +81,31 @@ export default function Actions({
     <>
       <PopoverContent className="rounded-base w-fit p-2">
         <ul className="text-CloudyGrey text-xs font-semibold">
+          <li>
+            <button
+              onClick={() => setViewDetailsModalOpen(true)}
+              className="rounded-base hover:bg-Geraldine size-full px-3 py-1 text-left transition-colors duration-300 hover:text-white"
+            >
+              View
+            </button>
+          </li>
           {reconciliation.status !== "approved" && (
             <li>
               <UpdateStatusModal type="approve" reconciliation={reconciliation}>
                 <button className="rounded-base hover:bg-Geraldine size-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
                   Approve
+                </button>
+              </UpdateStatusModal>
+            </li>
+          )}
+          {reconciliation.status !== "completed" && (
+            <li>
+              <UpdateStatusModal
+                type="complete"
+                reconciliation={reconciliation}
+              >
+                <button className="rounded-base hover:bg-Geraldine size-full px-3 py-1 text-left transition-colors duration-300 hover:text-white">
+                  Complete
                 </button>
               </UpdateStatusModal>
             </li>
@@ -281,6 +302,18 @@ export default function Actions({
               Add Comment
             </Button>
           </div>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={viewDetailsModalOpen}
+        onOpenChange={setViewDetailsModalOpen}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Reconciliation Details</DialogTitle>
+          </DialogHeader>
+          <h1>{reconciliation.id}</h1>
+          {/* Render reconciliation details here */}
         </DialogContent>
       </Dialog>
     </>

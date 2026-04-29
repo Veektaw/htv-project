@@ -683,6 +683,18 @@ export default function UserDetails({ user }: { user: User }) {
                                                 `${path}.cancelled_prescriptions`,
                                                 !!checked,
                                               );
+                                              form.setValue(
+                                                `${path}.declined_prescriptions`,
+                                                !!checked,
+                                              );
+                                              form.setValue(
+                                                `${path}.on_hold_prescriptions`,
+                                                !!checked,
+                                              );
+                                              form.setValue(
+                                                `${path}.approved_prescriptions`,
+                                                !!checked,
+                                              );
                                             } else {
                                               field.onChange(checked);
 
@@ -701,8 +713,23 @@ export default function UserDetails({ user }: { user: User }) {
                                               const cancelled = form.getValues(
                                                 `${path}.cancelled_prescriptions`,
                                               );
+                                              const declined = form.getValues(
+                                                `${path}.declined_prescriptions`,
+                                              );
+                                              const on_hold = form.getValues(
+                                                `${path}.on_hold_prescriptions`,
+                                              );
+                                              const approved = form.getValues(
+                                                `${path}.approved_prescriptions`,
+                                              );
 
-                                              if (signed && cancelled) {
+                                              if (
+                                                signed &&
+                                                cancelled &&
+                                                declined &&
+                                                on_hold &&
+                                                approved
+                                              ) {
                                                 form.setValue(
                                                   `${path}.all_prescriptions`,
                                                   true,

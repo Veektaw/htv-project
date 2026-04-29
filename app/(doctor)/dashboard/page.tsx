@@ -6,8 +6,9 @@ import Loader from "@/app/_components/shared/loader";
 import AllPrescriptionsCard from "@/app/_components/doctor/dashboard/all-prescriptions";
 import AllEarningsCard from "@/app/_components/doctor/dashboard/earnings";
 import OutstandingBalance from "@/app/_components/doctor/dashboard/outstanding-balance";
-import OutstandingInvoice from "@/app/_components/doctor/dashboard/outstanding-invoices";
+import OutstandingPayments from "@/app/_components/doctor/dashboard/outstanding-payments";
 import FilterButton from "@/app/_components/doctor/dashboard/filter-button";
+import FilterButtonTwo from "@/app/_components/doctor/dashboard/recent-invoices/filter-button";
 import RecentInvoices from "@/app/_components/doctor/dashboard/recent-invoices/recent-invoices";
 
 type PageParams = {
@@ -28,11 +29,15 @@ export default async function page({ searchParams }: PageParams) {
       </Header>
 
       <section className="flex flex-1 flex-col gap-y-6 overflow-y-auto rounded-sm bg-white px-8 py-8.5">
+        <div className="flex items-center justify-end">
+          <FilterButton />
+        </div>
+
         <div className="grid gap-6 md:grid-cols-4">
-          <AllPrescriptionsCard />
-          <AllEarningsCard />
-          <OutstandingBalance />
-          <OutstandingInvoice />
+          <AllPrescriptionsCard searchParamsValues={searchParamsValues} />
+          <AllEarningsCard searchParamsValues={searchParamsValues} />
+          <OutstandingBalance searchParamsValues={searchParamsValues} />
+          <OutstandingPayments searchParamsValues={searchParamsValues} />
         </div>
 
         <div className="border-Iron flex-1 space-y-8 rounded-lg border px-4 py-6">
@@ -44,7 +49,7 @@ export default async function page({ searchParams }: PageParams) {
               </h3>
             </div>
 
-            <FilterButton />
+            <FilterButtonTwo />
           </div>
 
           <Suspense fallback={<Loader text="Getting invoices..." />}>

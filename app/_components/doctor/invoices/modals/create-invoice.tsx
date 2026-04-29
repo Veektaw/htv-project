@@ -11,7 +11,7 @@ import {
 import { Reconciliation } from "@/types/reconciliations";
 import { UserSessionData } from "@/types/auth";
 
-import ManualInvoiceForm from "./manual-invoice-form";
+import ManualInvoiceForm from "../manual-invoice-form";
 
 export default function CreateNewInvoiceModal({
   children,
