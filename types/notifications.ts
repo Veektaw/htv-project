@@ -1,3 +1,6 @@
+import { User } from "./auth";
+import { Pagination } from "./users";
+
 export type Notification = {
   id: string;
   title: string;
@@ -17,4 +20,27 @@ export type GetNotificationsResponse = {
 export type GetNotificationsParams = {
   page?: number;
   limit?: number;
+};
+
+export type NotificationType = "invoice_updated";
+
+export type NotificationEntity = "invoice";
+
+export type DoctorNotification = {
+  id: string;
+  user_id: string;
+  user: User;
+  type: NotificationType;
+  entity: NotificationEntity;
+  entity_id: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  read_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type GetDoctorNotificationsResponse = Pagination & {
+  notifications: DoctorNotification[];
 };

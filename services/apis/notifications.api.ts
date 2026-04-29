@@ -1,20 +1,37 @@
-
-import { GetNotificationsResponse } from "@/types/notifications";
 import { Api } from "./api";
+import {
+  GetDoctorNotificationsResponse,
+  GetNotificationsResponse,
+} from "@/types/notifications";
 
 export const getNotificationsApi = async () => {
-  const res = await Api.get<GetNotificationsResponse>(
+  return await Api.get<GetNotificationsResponse>(
     "/admin/notifications/notifications/",
     true,
   );
-  return res;
 };
 
 export const markNotificationAsReadApi = async (id: string) => {
-  const res = await Api.post(
+  return await Api.post(
     "/admin/notifications/notifications/mark-as-read",
-    [id], 
-    true
+    [id],
+    true,
   );
-  return res;
+};
+
+export const getDoctorNotificationsApi = async () => {
+  return await Api.get<GetDoctorNotificationsResponse>(
+    "/doctor/notifications/",
+    true,
+  );
+};
+
+export const markDoctorNotificationAsReadApi = async (
+  notificationIds: string[],
+) => {
+  return await Api.post<string[], { marked_as_read: number }>(
+    "/doctor/notifications/mark-as-read/",
+    notificationIds,
+    true,
+  );
 };
