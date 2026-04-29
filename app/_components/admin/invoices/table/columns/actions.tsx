@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { PopoverContent } from "@/app/_components/ui/popover";
 import { ChevronRight } from "lucide-react";
 import {
@@ -21,6 +21,7 @@ import {
 } from "@/services/actions/invoices.actions";
 import { showSuccessToast, showErrorToast } from "@/lib/toast";
 import { useInvoices } from "../../contexts/invoices-provider";
+import { useSearchParams } from "next/navigation";
 
 const STATUS_OPTIONS = ["Paid", "Under Review", "Dispute Invoice"];
 
@@ -64,7 +65,10 @@ export default function Actions({ invoice }: ActionsProps) {
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [commentsError, setCommentsError] = useState<string | null>(null);
   const { updateInvoice } = useInvoices();
-
+  const searchParams = useSearchParams();
+  const entityId = searchParams.get("entity_id");
+  const title = searchParams.get("title");
+  const hasAutoOpened = useRef(false);
   const handleStatusSelect = (status: string) => {
     if (status === "Dispute Invoice") {
       setIsDisputeModalOpen(true);
@@ -73,7 +77,17 @@ export default function Actions({ invoice }: ActionsProps) {
     }
     setShowStatusDropdown(false);
   };
+  useEffect(() => {
+    if (
+      hasAutoOpened.current ||
+      entityId !== invoice.id ||
+      !title?.toLowerCase().includes("comment")
+    )
+      return;
 
+    hasAutoOpened.current = true;
+    handleViewComments();
+  });
   const handleStatusUpdate = async (
     status: string,
     disputeMessage?: string,

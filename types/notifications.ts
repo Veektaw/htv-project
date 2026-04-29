@@ -7,6 +7,8 @@ export type Notification = {
   message: string;
   created_at: string;
   is_read: boolean;
+  entity: string;
+  entity_id: string;
 };
 
 export type GetNotificationsResponse = {

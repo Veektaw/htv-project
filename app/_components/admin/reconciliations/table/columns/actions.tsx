@@ -1,7 +1,7 @@
 import { PopoverContent } from "@/app/_components/ui/popover";
 import { Reconciliation, ReconciliationComment } from "@/types/reconciliations";
 import UpdateStatusModal from "../../modals/update-status";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { showErrorToast, showSuccessToast } from "@/lib/toast";
 import {
   addReconciliationComment,
@@ -17,6 +17,7 @@ import {
 } from "@/app/_components/ui/dialog";
 import { Textarea } from "@/app/_components/ui/textarea";
 import { Button } from "@/app/_components/ui/button";
+import { useSearchParams } from "next/navigation";
 
 export default function Actions({
   reconciliation,
@@ -32,7 +33,24 @@ export default function Actions({
   const [expandedCommentId, setExpandedCommentId] = useState<string | null>(
     null,
   );
+  const searchParams = useSearchParams();
+  const entityId = searchParams.get("entity_id");
+  const title = searchParams.get("title");
+  const hasAutoOpened = useRef(false);
   const [commentsError, setCommentsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (
+      hasAutoOpened.current ||
+      entityId !== reconciliation.id ||
+      !title?.toLowerCase().includes("comment")
+    )
+      return;
+
+    hasAutoOpened.current = true;
+    handleViewComments();
+  });
+
   const handleAddComment = async () => {
     if (!commentMessage.trim()) {
       showErrorToast("Please enter a comment");

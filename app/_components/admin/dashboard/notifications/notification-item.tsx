@@ -3,7 +3,7 @@
 import { useTransition, useState } from "react";
 import { markNotificationAsReadAction } from "@/services/actions/notifications.actions";
 import type { Notification } from "@/types/notifications";
-
+import { useRouter } from "next/navigation";
 type NotificationItemProps = {
   notification: Notification;
 };
@@ -16,30 +16,59 @@ const formatDate = (dateString: string) => {
     year: "numeric",
   }).format(date);
 };
-
+const entityRouteMap: Record<string, string> = {
+  invoice: "/admin/invoices",
+  payment: "/admin/payments",
+  reconciliation: "/admin/reconciliations",
+  user: "/admin/users",
+};
+const getRoute = (
+  entity: string,
+  entityId: string,
+  title: string,
+): string | null => {
+  const base = entityRouteMap[entity.toLowerCase()];
+  if (!base) return null;
+  return `${base}?entity_id=${entityId}&title=${encodeURIComponent(title)}`;
+};
 export default function NotificationItem({
   notification,
 }: NotificationItemProps) {
   const [isPending, startTransition] = useTransition();
   const [isRead, setIsRead] = useState(notification.is_read);
+  const router = useRouter();
+  const handleClick = () => {
+    if (isPending) return;
 
-  const handleMarkAsRead = () => {
-    if (isRead || isPending) return;
+    const route = getRoute(
+      notification.entity,
+      notification.entity_id,
+      notification.title,
+    );
+    console.log("notification:", notification);
+    console.log("route:", route);
+    if (!isRead) {
+      setIsRead(true);
 
-    setIsRead(true);
+      startTransition(async () => {
+        const res = await markNotificationAsReadAction(notification.id);
 
-    startTransition(async () => {
-      const res = await markNotificationAsReadAction(notification.id);
+        if (res.error) {
+          setIsRead(false);
+          return;
+        }
 
-      if (res.error) {
-        setIsRead(false);
-      }
-    });
+        if (route) router.push(route);
+      });
+    } else {
+      // already read — just navigate
+      if (route) router.push(route);
+    }
   };
 
   return (
     <li
-      onClick={handleMarkAsRead}
+      onClick={handleClick}
       className={`flex flex-col gap-y-1 py-3 transition-opacity ${
         isPending
           ? "cursor-wait opacity-50"
