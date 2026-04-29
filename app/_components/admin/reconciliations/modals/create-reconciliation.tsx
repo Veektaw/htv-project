@@ -63,6 +63,7 @@ const createReconciliationSchema = z.object({
       message: "Must be a positive number",
     }),
   period_month: z.string().min(1, "Period month is required"),
+  period_month_end: z.string().min(1, "Period month end is required"),
   note: z.string(),
   comment: z.string(),
 });
@@ -77,6 +78,7 @@ export default function CreateReconciliationModal({}: {
   const [doctors, setDoctors] = useState<User[]>([]);
   const [loadingDoctors, setLoadingDoctors] = useState(false);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [endCalendarOpen, setEndCalendarOpen] = useState(false);
   const router = useRouter();
 
   const {
@@ -95,10 +97,15 @@ export default function CreateReconciliationModal({}: {
       outstanding: "0",
       manual_paid: "0",
       period_month: format(new Date(), "yyyy-MM"),
+      period_month_end: format(new Date(), "yyyy-MM"),
     },
   });
 
   const selectedDoctorId = watch("doctor_id");
+  const grossAmount = watch("gross_amount");
+  const adyenPaid = watch("adyen_paid");
+  const manualPaid = watch("manual_paid");
+  const advanceAmount = watch("advance_amount");
 
   useEffect(() => {
     if (!open) return;
@@ -116,6 +123,16 @@ export default function CreateReconciliationModal({}: {
     fetchDoctors();
   }, [open]);
 
+  useEffect(() => {
+    const gross = parseFloat(grossAmount) || 0;
+    const adyen = parseFloat(adyenPaid) || 0;
+    const manual = parseFloat(manualPaid) || 0;
+    const advance = parseFloat(advanceAmount) || 0;
+
+    const outstanding = Math.max(0, gross - (adyen + manual + advance));
+    setValue("outstanding", outstanding.toFixed(2));
+  }, [grossAmount, adyenPaid, manualPaid, advanceAmount, setValue]);
+
   const handleClose = () => {
     setOpen(false);
     reset();
@@ -128,27 +145,18 @@ export default function CreateReconciliationModal({}: {
 
       const payload = {
         platform: rest.platform,
-        gross_amount: parseFloat(rest.gross_amount), // remove the double parseFloat
+        gross_amount: parseFloat(rest.gross_amount),
         adyen_paid: parseFloat(rest.adyen_paid),
         outstanding: parseFloat(rest.outstanding),
         manual_paid: parseFloat(rest.manual_paid),
         advance_amount: parseFloat(rest.advance_amount),
         period_month: rest.period_month,
+        period_month_end: rest.period_month_end,
         note: rest.note || "",
         comment: rest.comment || "",
       };
 
       console.log("Payload:", payload);
-      // const payload = {
-      //   platform: rest.platform,
-      //   gross_amount: parseFloat(parseFloat(rest.gross_amount).toFixed(2)),
-      //   adyen_paid: parseFloat(parseFloat(rest.adyen_paid).toFixed(2)),
-      //   outstanding: parseFloat(parseFloat(rest.outstanding).toFixed(2)),
-      //   manual_paid: parseFloat(parseFloat(rest.manual_paid).toFixed(2)),
-      //   period_month: rest.period_month,
-      //   note: rest.note || "", // Optional fields can be empty strings
-      //   comment: rest.comment || "", // Optional fields can be empty strings
-      // };
 
       const result = await manualReconciliationAction(doctor_id, payload);
 
@@ -172,7 +180,10 @@ export default function CreateReconciliationModal({}: {
   const periodMonthDisplay = periodMonthValue
     ? format(new Date(`${periodMonthValue}-01`), "MMMM yyyy")
     : null;
-
+  const periodMonthEndValue = watch("period_month_end");
+  const periodMonthEndDisplay = periodMonthEndValue
+    ? format(new Date(`${periodMonthEndValue}-01`), "MMMM yyyy")
+    : null;
   return (
     <>
       <Button
@@ -241,7 +252,7 @@ export default function CreateReconciliationModal({}: {
 
                   <div>
                     <label className="mb-1.5 block text-xs text-gray-500">
-                      Period Month
+                      Period Month Start
                     </label>
                     <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
                       <PopoverTrigger asChild>
@@ -311,6 +322,55 @@ export default function CreateReconciliationModal({}: {
                       </p>
                     )}
                   </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs text-gray-500">
+                      Period Month End
+                    </label>
+                    <Popover
+                      open={endCalendarOpen}
+                      onOpenChange={setEndCalendarOpen}
+                    >
+                      <PopoverTrigger asChild>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className={cn(
+                            "h-11 w-full justify-start rounded-lg border border-gray-200 bg-white text-left text-sm font-normal text-gray-800 focus:ring-2 focus:ring-black",
+                            !periodMonthEndDisplay && "text-muted-foreground",
+                          )}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {periodMonthEndDisplay ?? <span>Pick a month</span>}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-56 p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          className="w-full"
+                          selected={
+                            periodMonthEndValue
+                              ? new Date(`${periodMonthEndValue}-01`)
+                              : undefined
+                          }
+                          onSelect={(date) => {
+                            if (date) {
+                              setValue(
+                                "period_month_end",
+                                format(date, "yyyy-MM"),
+                              );
+                              setCalendarOpen(false);
+                            }
+                          }}
+                          autoFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    {errors.period_month_end && (
+                      <p className="mt-1 text-xs text-red-500">
+                        {errors.period_month_end.message}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 <hr className="border-gray-200" />
@@ -365,6 +425,7 @@ export default function CreateReconciliationModal({}: {
                               type="number"
                               step="0.01"
                               min="0"
+                              disabled={key === "outstanding"}
                               {...register(key)}
                               placeholder="0.00"
                               className="ml-auto h-8 w-36 rounded-lg border-gray-200 text-right text-sm focus:ring-2 focus:ring-black"
@@ -416,39 +477,6 @@ export default function CreateReconciliationModal({}: {
                     </p>
                   )}
                 </div>
-                {/* Row: Note + Comment */}
-                {/* <div className="grid grid-cols-2 gap-6"> */}
-                {/* <div>
-                    <label className="mb-1.5 block text-xs text-gray-500">
-                      Note
-                    </label>
-                    <Input
-                      {...register("note")}
-                      placeholder="Enter note"
-                      className="h-11 rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-black"
-                    />
-                    {errors.note && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {errors.note.message}
-                      </p>
-                    )}
-                  </div> */}
-                {/* <div>
-                    <label className="mb-1.5 block text-xs text-gray-500">
-                      Comment
-                    </label>
-                    <Input
-                      {...register("comment")}
-                      placeholder="Enter comment"
-                      className="h-11 rounded-lg border-gray-200 text-sm focus:ring-2 focus:ring-black"
-                    />
-                    {errors.comment && (
-                      <p className="mt-1 text-xs text-red-500">
-                        {errors.comment.message}
-                      </p>
-                    )}
-                  </div> */}
-                {/* </div> */}
               </div>
 
               {/* Footer Buttons */}

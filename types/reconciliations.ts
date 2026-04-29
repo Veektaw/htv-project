@@ -43,6 +43,7 @@ export type AdminCreateReconciliationParams = {
   note: string;
   comment: string;
   period_month: string;
+  period_month_end: string;
 };
 export type GetDoctorReconciliations = Pagination & {
   reconciliations: Reconciliation[];
