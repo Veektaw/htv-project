@@ -22,7 +22,8 @@ export const InvoiceColumns: Column<ColumnType>[] = [
   {
     title: "Invoiced Amount",
     key: "amount",
-    render: (value) => `€${Number(value).toFixed(2)}`,
+    render: (value) =>
+      `€${(value as number).toLocaleString("en-US", { maximumFractionDigits: 2 })}`,
   },
   {
     title: "Status",

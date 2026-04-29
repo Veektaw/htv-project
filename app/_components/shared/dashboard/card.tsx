@@ -20,7 +20,11 @@ export default function Card({ text, value, percentage, showEuro }: CardProps) {
 
         <div className="flex items-center justify-between gap-2">
           <p className="text-DarkJungleGreen text-2xl font-black">
-            {showEuro ? `€${value}` : value}
+            {showEuro
+              ? `€${value.toLocaleString("en-US", {
+                  maximumFractionDigits: 2,
+                })}`
+              : value}
           </p>
 
           <div className="flex items-center gap-0.5">

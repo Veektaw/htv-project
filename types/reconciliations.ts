@@ -45,6 +45,7 @@ export type AdminCreateReconciliationParams = {
 export type GetDoctorReconciliations = Pagination & {
   reconciliations: Reconciliation[];
 };
+
 export type ReconciliationComment = {
   id: string;
   full_name: string;

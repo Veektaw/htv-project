@@ -1,3 +1,4 @@
+import { InvoiceComment } from "@/types/invoices";
 import { Api } from "./api";
 import {
   AdminCreateReconciliationParams,
@@ -91,6 +92,15 @@ export const manualReconciliationApi = (
   return Api.post(
     `/admin/reconciliation/${doctor_id}/manual-payment/`,
     payload,
+    true,
+  );
+};
+
+export const getDoctorReconciliationCommentsApi = (
+  reconciliationId: string,
+) => {
+  return Api.get<InvoiceComment[]>(
+    `/doctor/comments/reconciliations/${reconciliationId}/`,
     true,
   );
 };

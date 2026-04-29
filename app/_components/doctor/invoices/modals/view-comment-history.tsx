@@ -1,9 +1,11 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import Image from "next/image";
-import arrowDown from "@/public/svgs/arrow-down.svg";
-
+import { useQuery } from "@tanstack/react-query";
+import { getInvoiceComments } from "@/services/apis/get-invoice-comments";
+import { formatDate } from "@/lib/utils";
+import { Invoice } from "@/types/invoices";
+import { Spinner } from "@/app/_components/ui/spinner";
 import {
   Dialog,
   DialogContent,
@@ -11,18 +13,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/app/_components/ui/dialog";
-import { Invoice } from "@/types/invoices";
-import { Spinner } from "@/app/_components/ui/spinner";
-import { showErrorToast } from "@/lib/toast";
-import { getDoctorComments } from "@/services/actions/invoices.actions";
-import { formatDate } from "@/lib/utils";
-
-type Comment = {
-  id: string;
-  full_name: string;
-  message: string;
-  created_at: string;
-};
+import Image from "next/image";
+import arrowDown from "@/public/svgs/arrow-down.svg";
 
 type ViewCommentHistoryModalProps = {
   children: ReactNode;
@@ -33,48 +25,21 @@ export default function ViewCommentHistoryModal({
   children,
   invoice,
 }: ViewCommentHistoryModalProps) {
-  const [open, setOpen] = useState(false);
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasFetched, setHasFetched] = useState(false);
-
   const [expandedCommentId, setExpandedCommentId] = useState<string | null>(
     null,
   );
 
-  const fetchComments = async () => {
-    if (hasFetched) return;
-
-    try {
-      setIsLoading(true);
-      const result = await getDoctorComments(invoice.id, "invoice");
-
-      if (result.success) {
-        setComments(result.data.comments || []);
-        setHasFetched(true);
-      } else {
-        showErrorToast(result.error || "Failed to load comments");
-      }
-    } catch (error) {
-      // showErrorToast("An error occurred while loading comments");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleOpenChange = (newOpen: boolean) => {
-    setOpen(newOpen);
-    if (newOpen && !hasFetched) {
-      fetchComments();
-    }
-  };
+  const { data, isPending, isSuccess, isError } = useQuery({
+    queryKey: ["invoice-comments", invoice.id],
+    queryFn: () => getInvoiceComments(invoice.id),
+  });
 
   const toggleComment = (id: string) => {
     setExpandedCommentId(expandedCommentId === id ? null : id);
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
+    <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
@@ -87,22 +52,20 @@ export default function ViewCommentHistoryModal({
         </DialogHeader>
 
         <div className="rounded-3xl border border-[#B4B4B4] px-3 py-10.5">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8">
-              <Spinner className="h-6 w-6" />
-              <span className="ml-2 text-sm text-gray-600">
-                Loading comments...
-              </span>
+          {isPending ? (
+            <div className="flex items-center justify-center gap-2 py-8">
+              <Spinner className="size-6" />
+              <span className="text-sm text-gray-600">Loading comments...</span>
             </div>
-          ) : comments.length === 0 ? (
+          ) : isSuccess && data.data.length === 0 ? (
             <div className="flex items-center justify-center py-8">
               <p className="text-sm text-gray-500">
                 No comments found for this invoice.
               </p>
             </div>
-          ) : (
+          ) : isSuccess ? (
             <div className="flex flex-col gap-1.5">
-              {comments.map((comment) => {
+              {data.data.map((comment) => {
                 const isExpanded = expandedCommentId === comment.id;
 
                 return (
@@ -144,7 +107,13 @@ export default function ViewCommentHistoryModal({
                 );
               })}
             </div>
-          )}
+          ) : isError ? (
+            <div className="flex items-center justify-center gap-2 py-8">
+              <p className="text-sm text-red-600">
+                Failed to load comments. Please try again.
+              </p>
+            </div>
+          ) : null}
         </div>
       </DialogContent>
     </Dialog>

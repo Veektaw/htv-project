@@ -71,3 +71,33 @@ export type CreateManualInvoiceResponse = Invoice;
 export type GetDoctorInvoices = Pagination & {
   invoices: Invoice[];
 };
+
+export type InvoiceComment = {
+  id: string;
+  full_name: string;
+  created_at: string;
+  updated_at: string;
+  message: string;
+  invoice_id: string;
+  payment_id: string | null;
+  reconciliation_id: string | null;
+  period_month: string | null;
+  user_id: string;
+};
+
+export type DoctorComment = {
+  id: string;
+  full_name: string;
+  created_at: string;
+  updated_at: string;
+  message: string;
+  invoice_id: string | null;
+  payment_id: string | null;
+  reconciliation_id: string | null;
+  period_month: string | null;
+  user_id: string;
+};
+
+export type GetDoctorCommentsResponse = Pagination & {
+  comments: DoctorComment[];
+};
