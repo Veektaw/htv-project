@@ -1,7 +1,8 @@
 "use client";
 
 import { useTransition, useState } from "react";
-import { markNotificationAsReadAction } from "@/services/actions/notifications.actions";
+import { cn } from "@/lib/utils";
+import { markDoctorNotificationAsReadAction } from "@/services/actions/notifications.actions";
 import type { Notification } from "@/types/notifications";
 
 type NotificationItemProps = {
@@ -29,7 +30,7 @@ export default function NotificationItem({
     setIsRead(true);
 
     startTransition(async () => {
-      const res = await markNotificationAsReadAction(notification.id);
+      const res = await markDoctorNotificationAsReadAction([notification.id]);
 
       if (res.error) {
         setIsRead(false);
@@ -40,13 +41,11 @@ export default function NotificationItem({
   return (
     <li
       onClick={handleMarkAsRead}
-      className={`flex flex-col gap-y-1 py-3 transition-opacity ${
-        isPending
-          ? "cursor-wait opacity-50"
-          : isRead
-            ? "cursor-default"
-            : "cursor-pointer"
-      }`}
+      className={cn(
+        "flex flex-col gap-y-1 py-3",
+        isPending && "animate-pulse cursor-wait",
+        isRead ? "cursor-default" : "cursor-pointer",
+      )}
     >
       <div className="flex items-center justify-between gap-2">
         <p className="text-DarkJungleGreen text-sm font-medium">
