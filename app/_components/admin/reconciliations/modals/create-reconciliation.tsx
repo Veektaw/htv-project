@@ -56,6 +56,12 @@ const createReconciliationSchema = z.object({
     .refine((v) => !isNaN(Number(v)) && Number(v) >= 0, {
       message: "Must be a positive number",
     }),
+  advance_amount: z
+    .string()
+    .min(1, "Advance amount is required")
+    .refine((v) => !isNaN(Number(v)) && Number(v) >= 0, {
+      message: "Must be a positive number",
+    }),
   period_month: z.string().min(1, "Period month is required"),
   note: z.string(),
   comment: z.string(),
@@ -85,6 +91,7 @@ export default function CreateReconciliationModal({}: {
     defaultValues: {
       gross_amount: "0",
       adyen_paid: "0",
+      advance_amount: "0",
       outstanding: "0",
       manual_paid: "0",
       period_month: format(new Date(), "yyyy-MM"),
@@ -125,6 +132,7 @@ export default function CreateReconciliationModal({}: {
         adyen_paid: parseFloat(rest.adyen_paid),
         outstanding: parseFloat(rest.outstanding),
         manual_paid: parseFloat(rest.manual_paid),
+        advance_amount: parseFloat(rest.advance_amount),
         period_month: rest.period_month,
         note: rest.note || "",
         comment: rest.comment || "",
@@ -332,12 +340,16 @@ export default function CreateReconciliationModal({}: {
                             label: "Adyen Paid",
                           },
                           {
-                            key: "outstanding",
-                            label: "Outstanding",
-                          },
-                          {
                             key: "manual_paid",
                             label: "Manual Paid",
+                          },
+                          {
+                            key: "advance_amount",
+                            label: "Carry Over",
+                          },
+                          {
+                            key: "outstanding",
+                            label: "Outstanding",
                           },
                         ] as const
                       ).map(({ key, label }) => (

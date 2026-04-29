@@ -24,7 +24,7 @@ export default async function page({ searchParams }: PageParams) {
 
   const totalUsers = dashboardRes.ok ? dashboardRes.body.total_users : null;
   const totalOutstanding = dashboardRes.ok
-    ? dashboardRes.body.total_outstanding
+    ? dashboardRes.body.total_outstanding_count
     : null;
   return (
     <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6 shadow-[0px_9px_20px_0px_#101E730F]">
@@ -39,8 +39,8 @@ export default async function page({ searchParams }: PageParams) {
             percentage={`${totalUsers?.percentage ?? 0}%`}
           />
           <Card
-            text="Outstanding Invoices"
-            value={totalOutstanding?.total_outstanding_count ?? 0}
+            text="Outstanding Payments"
+            value={totalOutstanding?.current_value ?? 0}
             percentage={`${totalOutstanding?.percentage ?? 0}%`}
           />
         </div>

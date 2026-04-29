@@ -80,9 +80,7 @@ export type UpdateUserDetailsPayload = {
     cancelled_appointments: boolean;
     all_prescriptions: boolean;
     signed_prescriptions: boolean;
-    cancelled_prescriptions: boolean;
     declined_prescriptions: boolean;
-    on_hold_prescriptions: boolean;
     approved_prescriptions: boolean;
   }[];
 };

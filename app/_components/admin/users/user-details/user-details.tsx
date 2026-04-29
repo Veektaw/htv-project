@@ -679,18 +679,12 @@ export default function UserDetails({ user }: { user: User }) {
                                                 `${path}.signed_prescriptions`,
                                                 !!checked,
                                               );
-                                              form.setValue(
-                                                `${path}.cancelled_prescriptions`,
-                                                !!checked,
-                                              );
+
                                               form.setValue(
                                                 `${path}.declined_prescriptions`,
                                                 !!checked,
                                               );
-                                              form.setValue(
-                                                `${path}.on_hold_prescriptions`,
-                                                !!checked,
-                                              );
+
                                               form.setValue(
                                                 `${path}.approved_prescriptions`,
                                                 !!checked,
@@ -710,24 +704,18 @@ export default function UserDetails({ user }: { user: User }) {
                                               const signed = form.getValues(
                                                 `${path}.signed_prescriptions`,
                                               );
-                                              const cancelled = form.getValues(
-                                                `${path}.cancelled_prescriptions`,
-                                              );
+
                                               const declined = form.getValues(
                                                 `${path}.declined_prescriptions`,
                                               );
-                                              const on_hold = form.getValues(
-                                                `${path}.on_hold_prescriptions`,
-                                              );
+
                                               const approved = form.getValues(
                                                 `${path}.approved_prescriptions`,
                                               );
 
                                               if (
                                                 signed &&
-                                                cancelled &&
                                                 declined &&
-                                                on_hold &&
                                                 approved
                                               ) {
                                                 form.setValue(

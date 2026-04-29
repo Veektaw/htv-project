@@ -38,9 +38,9 @@ type CommissionOptionId =
   | "cancelled_appointments"
   | "all_prescriptions"
   | "signed_prescriptions"
-  | "cancelled_prescriptions"
+  // | "cancelled_prescriptions"
   | "declined_prescriptions"
-  | "on_hold_prescriptions"
+  // | "on_hold_prescriptions"
   | "approved_prescriptions";
 
 export type CommissionOption = {
@@ -69,18 +69,18 @@ export const commissionOptions: CommissionOption[] = [
     label: "Cancelled Appointments",
     id: "cancelled_appointments",
   },
-  {
-    label: "Cancelled Prescriptions",
-    id: "cancelled_prescriptions",
-  },
+  // {
+  //   label: "Cancelled Prescriptions",
+  //   id: "cancelled_prescriptions",
+  // },
   {
     label: "Declined Prescriptions",
     id: "declined_prescriptions",
   },
-  {
-    label: "On Hold Prescriptions",
-    id: "on_hold_prescriptions",
-  },
+  // {
+  //   label: "On Hold Prescriptions",
+  //   id: "on_hold_prescriptions",
+  // },
   {
     label: "Approved Prescriptions",
     id: "approved_prescriptions",
@@ -128,9 +128,9 @@ export default function useUpdateUserDetails({
             cancelled_appointments: commission.cancelled_appointments,
             all_prescriptions: commission.all_prescriptions,
             signed_prescriptions: commission.signed_prescriptions,
-            cancelled_prescriptions: commission.cancelled_prescriptions,
+            // cancelled_prescriptions: commission.cancelled_prescriptions,
             declined_prescriptions: commission.declined_prescriptions,
-            on_hold_prescriptions: commission.on_hold_prescriptions,
+            // on_hold_prescriptions: commission.on_hold_prescriptions,
             approved_prescriptions: commission.approved_prescriptions,
           }))
         : [defaultCommissionValues],
