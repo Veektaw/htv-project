@@ -45,7 +45,6 @@ export default async function page({ searchParams }: PageParams) {
           />
         </div>
 
-        {/* <div className="flex w-full flex-col justify-between border lg:flex-row"> */}
         <div className="flex flex-col justify-center gap-10 space-y-8 rounded-lg px-4 py-6 lg:flex-row">
           <div className="border-Iron w-full space-y-8 rounded-lg border-2 px-4 py-6 lg:w-1/2 lg:max-w-202.25">
             <div className="flex items-center justify-between gap-4">
@@ -69,7 +68,6 @@ export default async function page({ searchParams }: PageParams) {
             </Suspense>
           </div>
         </div>
-        {/* </div> */}
       </section>
     </section>
   );
