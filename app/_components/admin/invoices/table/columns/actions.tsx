@@ -24,7 +24,7 @@ import { useInvoices } from "../../contexts/invoices-provider";
 import { useSearchParams } from "next/navigation";
 
 const STATUS_OPTIONS = ["Paid", "Under Review", "Dispute Invoice"];
-let count = 0;
+// let count = 0;
 const STATUS_MAP = {
   Paid: "paid",
   // Approve: "approve",
@@ -82,49 +82,118 @@ export default function Actions({ invoice }: ActionsProps) {
     setShowStatusDropdown(false);
   };
 
-  const handleViewComments = useCallback(async () => {
-    // setIsViewCommentsModalOpen(true);
-    setActiveModal("viewComments");
-    setComments([]);
-    setCommentsError(null);
-    setIsLoadingComments(true);
-
-    try {
-      const result = await getInvoiceComments(invoice.id);
-      if (result.success) {
-        const commentsData = result.data?.comments;
-        setComments(Array.isArray(commentsData) ? commentsData : []);
-      } else {
-        setCommentsError(result.error || "Failed to fetch comments");
+  const handleViewComments = useCallback(
+    async (preloadedComments?: InvoiceComment[]) => {
+      if (preloadedComments) {
+        // Data already fetched — open modal instantly with no loading flicker
+        setComments(preloadedComments);
+        setCommentsError(null);
+        setIsLoadingComments(false);
+        setActiveModal("viewComments");
+        return;
       }
-    } catch (error) {
-      setCommentsError("Failed to fetch comments");
-      console.error("Error fetching comments:", error);
-    } finally {
-      setIsLoadingComments(false);
-    }
-  }, [invoice.id]);
+
+      // Manual "View Comment" click — show modal with loading state as before
+      setActiveModal("viewComments");
+      setComments([]);
+      setCommentsError(null);
+      setIsLoadingComments(true);
+
+      try {
+        const result = await getInvoiceComments(invoice.id);
+        if (result.success) {
+          const commentsData = result.data?.comments;
+          setComments(Array.isArray(commentsData) ? commentsData : []);
+        } else {
+          setCommentsError(result.error || "Failed to fetch comments");
+        }
+      } catch (error) {
+        setCommentsError("Failed to fetch comments");
+        console.error("Error fetching comments:", error);
+      } finally {
+        setIsLoadingComments(false);
+      }
+    },
+    [invoice.id],
+  );
 
   useEffect(() => {
-    if (entityId !== String(invoice.id) || type !== "comment_added") return;
-    hasAutoOpened.current = true;
-    queueMicrotask(() => {
-      handleViewComments();
-      // setIsViewCommentsModalOpen(true);
-      setActiveModal("viewComments");
-      count++;
+    if (
+      hasAutoOpened.current ||
+      entityId !== String(invoice.id) ||
+      type !== "comment_added"
+    )
+      return;
 
-      // TO-DO: Find better implementation for
-      if (count === 1) {
-        console.log("Here");
-        // setIsViewCommentsModalOpen(false);
-        setActiveModal(null);
+    hasAutoOpened.current = true;
+
+    // Fetch silently first, then open modal only when ready
+    const fetchThenOpen = async () => {
+      setIsLoadingComments(true);
+      try {
+        const result = await getInvoiceComments(invoice.id);
+        if (result.success) {
+          const commentsData = result.data?.comments;
+          handleViewComments(Array.isArray(commentsData) ? commentsData : []);
+        } else {
+          setCommentsError(result.error || "Failed to fetch comments");
+          setActiveModal("viewComments"); // Still open modal to show error
+        }
+      } catch (error) {
+        setCommentsError("Failed to fetch comments");
+        setActiveModal("viewComments"); // Still open modal to show error
+        console.error("Error fetching comments:", error);
+      } finally {
+        setIsLoadingComments(false);
       }
-    });
-    // queueMicrotask(() => {
-    //   handleViewComments();
-    // });
+    };
+
+    fetchThenOpen();
   }, [entityId, type, invoice.id, handleViewComments]);
+
+  // const handleViewComments = useCallback(async () => {
+  //   // setIsViewCommentsModalOpen(true);
+  //   setActiveModal("viewComments");
+  //   setComments([]);
+  //   setCommentsError(null);
+  //   setIsLoadingComments(true);
+
+  //   try {
+  //     const result = await getInvoiceComments(invoice.id);
+  //     if (result.success) {
+  //       const commentsData = result.data?.comments;
+  //       setComments(Array.isArray(commentsData) ? commentsData : []);
+  //     } else {
+  //       setCommentsError(result.error || "Failed to fetch comments");
+  //     }
+  //   } catch (error) {
+  //     setCommentsError("Failed to fetch comments");
+  //     console.error("Error fetching comments:", error);
+  //   } finally {
+  //     setIsLoadingComments(false);
+  //   }
+  // }, [invoice.id]);
+
+  // useEffect(() => {
+  //   if (entityId !== String(invoice.id) || type !== "comment_added") return;
+  //   hasAutoOpened.current = true;
+  //   queueMicrotask(() => {
+  //     handleViewComments();
+  //     // setIsViewCommentsModalOpen(true);
+  //     setActiveModal("viewComments");
+  //     count++;
+
+  //     // TO-DO: Find better implementation for
+  //     if (count === 1) {
+  //       console.log("Here");
+  //       // setIsViewCommentsModalOpen(false);
+  //       setActiveModal(null);
+  //     }
+  //   });
+  //   // queueMicrotask(() => {
+  //   //   handleViewComments();
+  //   // });
+  // }, [entityId, type, invoice.id, handleViewComments]);
 
   const handleStatusUpdate = async (
     status: string,
