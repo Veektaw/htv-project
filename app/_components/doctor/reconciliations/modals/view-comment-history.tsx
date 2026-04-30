@@ -3,7 +3,7 @@
 import { ReactNode, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatDate } from "@/lib/utils";
-import { getReconciliationComments } from "@/services/apis/get-reconciliation-comments";
+import { getDoctorReconciliationComments } from "@/services/apis/get-doctor-reconciliation-comments";
 import { Reconciliation } from "@/types/reconciliations";
 import { Spinner } from "@/app/_components/ui/spinner";
 import {
@@ -30,8 +30,8 @@ export default function ViewCommentHistoryModal({
   );
 
   const { data, isPending, isSuccess, isError } = useQuery({
-    queryKey: ["reconciliation-comments", reconciliation.id],
-    queryFn: () => getReconciliationComments(reconciliation.id),
+    queryKey: ["doctor-reconciliation-comments", reconciliation.id],
+    queryFn: () => getDoctorReconciliationComments(reconciliation.id),
   });
 
   const toggleComment = (id: string) => {
@@ -46,12 +46,12 @@ export default function ViewCommentHistoryModal({
         className="gap-10 rounded-[24px] sm:max-w-171.5"
       >
         <DialogHeader>
-          <DialogTitle className="font-inter text-2xl font-bold text-[#1D1E25]">
+          <DialogTitle className="font-inter text-Mirage text-2xl font-bold">
             Comment History
           </DialogTitle>
         </DialogHeader>
 
-        <div className="rounded-3xl border border-[#B4B4B4] px-3 py-10.5">
+        <div className="border-GreyCloud rounded-3xl border px-3 py-10.5">
           {isPending ? (
             <div className="flex items-center justify-center gap-2 py-8">
               <Spinner className="size-6" />
@@ -60,7 +60,7 @@ export default function ViewCommentHistoryModal({
           ) : isSuccess && data.data.length === 0 ? (
             <div className="flex items-center justify-center py-8">
               <p className="text-sm text-gray-500">
-                No comments found for this invoice.
+                No comments found for this reconciliation.
               </p>
             </div>
           ) : isSuccess ? (
@@ -71,7 +71,7 @@ export default function ViewCommentHistoryModal({
                 return (
                   <div
                     key={comment.id}
-                    className="flex flex-col rounded-4xl border border-[#B4B4B4] p-3 transition-all duration-300"
+                    className="border-GreyCloud flex flex-col rounded-4xl border p-3 transition-all duration-300"
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex-1">

@@ -47,7 +47,7 @@ export default function AddNewCommentModal({
 
       if (result.success) {
         queryClient.invalidateQueries({
-          queryKey: ["reconciliation-comments", reconciliation.id],
+          queryKey: ["doctor-reconciliation-comments", reconciliation.id],
         });
         showSuccessToast("Comment was added successfully");
         setComment("");
@@ -70,7 +70,7 @@ export default function AddNewCommentModal({
         className="gap-10 rounded-[24px] sm:max-w-167.25"
       >
         <DialogHeader className="space-y-2">
-          <DialogTitle className="font-inter text-2xl font-bold text-[#1D1E25]">
+          <DialogTitle className="font-inter text-Mirage text-2xl font-bold">
             Add comment
           </DialogTitle>
           <p className="font-inter text-sm leading-5.5 font-normal text-[#6E7079]">

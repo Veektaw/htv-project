@@ -43,7 +43,7 @@ export default async function page({ searchParams }: PageParams) {
           <OutstandingPayments searchParamsValues={searchParamsValues} />
         </div>
 
-        <div className="flex flex-1 flex-col gap-8 lg:flex-row">
+        <div className="flex flex-1 flex-col gap-4 lg:flex-row">
           <div className="border-Iron w-[calc(100%-424px)] space-y-2 rounded-lg border px-2 py-3 lg:px-4 lg:py-6">
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-2">

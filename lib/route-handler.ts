@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { ResponseType } from "@/types/api";
 
-// lib/route-handler.ts
 export function createResponse<R>(res: ResponseType<R>) {
   const response = NextResponse.json({
     status: res.status,

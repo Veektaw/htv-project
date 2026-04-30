@@ -45,7 +45,7 @@ export default async function page({ searchParams }: PageParams) {
           />
         </div>
 
-        <div className="flex flex-col justify-center gap-10 space-y-8 rounded-lg px-4 py-6 lg:flex-row">
+        <div className="flex flex-col justify-center gap-4 rounded-lg px-4 py-6 lg:flex-row">
           <div className="border-Iron min-h-100 w-full space-y-8 rounded-lg border-2 px-4 py-6 lg:w-1/2 lg:max-w-202.25">
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-2">
@@ -62,6 +62,7 @@ export default async function page({ searchParams }: PageParams) {
               <RecentInvoices searchParamsValues={searchParamsValues} />
             </Suspense>
           </div>
+
           <div className="border-Iron w-full space-y-8 rounded-lg border px-4 py-6 lg:w-1/2">
             <Suspense fallback={<Loader text="Getting notifications..." />}>
               <RecentNotifications />

@@ -2,7 +2,6 @@
 
 import {
   addReconciliationCommentApi,
-  getReconciliationCommentsApi,
   manualReconciliationApi,
   updateReconciliationApi,
 } from "../apis/reconciliations.api";
@@ -29,7 +28,7 @@ export const updateReconciliationAction = async (
     message: `Reconciliation ${data.action_type}ed`,
   };
 };
-export async function addReconciliationComment(
+export async function addReconciliationCommentAction(
   reconciliationId: string,
   message: string,
 ) {
@@ -48,23 +47,7 @@ export async function addReconciliationComment(
     return { success: false, error: "Failed to add comment" };
   }
 }
-export async function getReconciliationComments(reconciliationId: string) {
-  try {
-    const result = await getReconciliationCommentsApi(reconciliationId);
-    if (result.ok) {
-      return { success: true, data: result.body, error: null };
-    } else {
-      return {
-        success: false,
-        data: null,
-        error: result.body.message || "Failed to load comments",
-      };
-    }
-  } catch (error) {
-    console.error("Error loading invoice comments:", error);
-    return { success: false, data: null, error: "Failed to load comments" };
-  }
-}
+
 export const manualReconciliationAction = async (
   doctor_id: string,
   payload: Omit<AdminCreateReconciliationParams, "doctor_id">,

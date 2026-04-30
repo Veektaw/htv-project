@@ -33,7 +33,7 @@ export default function CreateNewInvoiceModal({
         className="gap-10 rounded-[24px] sm:max-w-251"
       >
         <DialogHeader>
-          <DialogTitle className="font-inter text-2xl font-bold text-[#1D1E25]">
+          <DialogTitle className="font-inter text-Mirage text-2xl font-bold">
             {title}
           </DialogTitle>
         </DialogHeader>

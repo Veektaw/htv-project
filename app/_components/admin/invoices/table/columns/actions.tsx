@@ -67,7 +67,7 @@ export default function Actions({ invoice }: ActionsProps) {
   const { updateInvoice } = useInvoices();
   const searchParams = useSearchParams();
   const entityId = searchParams.get("entity_id");
-  const title = searchParams.get("title");
+  const type = searchParams.get("type");
   const hasAutoOpened = useRef(false);
 
   const handleStatusSelect = (status: string) => {
@@ -102,16 +102,13 @@ export default function Actions({ invoice }: ActionsProps) {
   }, [invoice.id]);
 
   useEffect(() => {
-    if (
-      hasAutoOpened.current ||
-      entityId !== invoice.id ||
-      !title?.toLowerCase().includes("comment")
-    )
-      return;
-
+    if (entityId !== String(invoice.id) || type !== "comment_added") return;
     hasAutoOpened.current = true;
-    handleViewComments();
-  }, [entityId, title, invoice.id, handleViewComments]);
+
+    queueMicrotask(() => {
+      handleViewComments();
+    });
+  }, [entityId, type, invoice.id, handleViewComments]);
 
   const handleStatusUpdate = async (
     status: string,

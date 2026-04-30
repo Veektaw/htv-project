@@ -3,10 +3,10 @@
 import { useTransition, useState } from "react";
 import { cn } from "@/lib/utils";
 import { markDoctorNotificationAsReadAction } from "@/services/actions/notifications.actions";
-import type { Notification } from "@/types/notifications";
+import type { DoctorNotification } from "@/types/notifications";
 
 type NotificationItemProps = {
-  notification: Notification;
+  notification: DoctorNotification;
 };
 
 const formatDate = (dateString: string) => {

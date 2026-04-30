@@ -42,7 +42,7 @@ export default function ViewInvoiceModal({
         className="gap-10 rounded-[24px] sm:max-w-171.5"
       >
         <DialogHeader>
-          <DialogTitle className="font-inter text-2xl font-bold text-[#1D1E25]">
+          <DialogTitle className="font-inter text-Mirage text-2xl font-bold">
             Invoice Details
           </DialogTitle>
         </DialogHeader>
