@@ -11,7 +11,6 @@ import {
 } from "@/app/_components/ui/dialog";
 import { Reconciliation } from "@/types/reconciliations";
 
-
 type ViewReconciliationModalProps = {
   children: ReactNode;
   reconciliation: Reconciliation;
@@ -36,7 +35,7 @@ export default function ViewReconciliationModal({
         className="gap-10 rounded-[24px] sm:max-w-171.5"
       >
         <DialogHeader>
-          <DialogTitle className="font-inter text-2xl font-bold text-[#1D1E25]">
+          <DialogTitle className="font-inter text-Mirage text-2xl font-bold">
             Reconciliation Details
           </DialogTitle>
         </DialogHeader>

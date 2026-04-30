@@ -24,7 +24,7 @@ export default async function page({ searchParams }: PageParams) {
 
   const totalUsers = dashboardRes.ok ? dashboardRes.body.total_users : null;
   const totalOutstanding = dashboardRes.ok
-    ? dashboardRes.body.total_outstanding
+    ? dashboardRes.body.total_outstanding_count
     : null;
   return (
     <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6 shadow-[0px_9px_20px_0px_#101E730F]">
@@ -39,14 +39,14 @@ export default async function page({ searchParams }: PageParams) {
             percentage={`${totalUsers?.percentage ?? 0}%`}
           />
           <Card
-            text="Outstanding Invoices"
-            value={totalOutstanding?.current_value.toLocaleString("en-US") ?? 0}
+            text="Outstanding Payments"
+            value={totalOutstanding?.current_value ?? 0}
             percentage={`${totalOutstanding?.percentage ?? 0}%`}
           />
         </div>
 
-        <div className="flex flex-col justify-center gap-10 space-y-8 rounded-lg px-4 py-6 lg:flex-row">
-          <div className="border-Iron w-full space-y-8 rounded-lg border-2 px-4 py-6 lg:w-1/2 lg:max-w-202.25">
+        <div className="flex flex-col justify-center gap-4 rounded-lg px-4 py-6 lg:flex-row">
+          <div className="border-Iron min-h-100 w-full space-y-8 rounded-lg border-2 px-4 py-6 lg:w-1/2 lg:max-w-202.25">
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-2">
                 <h2 className="text-MediumGrey text-sm">Invoice</h2>
@@ -62,6 +62,7 @@ export default async function page({ searchParams }: PageParams) {
               <RecentInvoices searchParamsValues={searchParamsValues} />
             </Suspense>
           </div>
+
           <div className="border-Iron w-full space-y-8 rounded-lg border px-4 py-6 lg:w-1/2">
             <Suspense fallback={<Loader text="Getting notifications..." />}>
               <RecentNotifications />

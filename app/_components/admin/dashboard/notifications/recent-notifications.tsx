@@ -1,13 +1,3 @@
-// export default function RecentNotifications() {
-//   return (
-//     <div className="space-y-2">
-//       <h2 className="text-MediumGrey text-sm">Invoice</h2>
-//       <h3 className="text-DarkJungleGreen text-2xl font-bold">
-//         Latest Notifications
-//       </h3>
-//     </div>
-//   );
-// }
 import { getNotificationsApi } from "@/services/apis/notifications.api";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import NotificationItem from "./notification-item";

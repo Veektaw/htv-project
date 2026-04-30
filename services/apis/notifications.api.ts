@@ -13,7 +13,7 @@ export const getNotificationsApi = async () => {
 
 export const markNotificationAsReadApi = async (id: string) => {
   return await Api.post(
-    "/admin/notifications/notifications/mark-as-read",
+    "/admin/notifications/notifications/mark-as-read/",
     [id],
     true,
   );

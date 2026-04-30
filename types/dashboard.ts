@@ -5,5 +5,6 @@ export type DashboardStat = {
 
 export type GetDashboardResponse = {
   total_users: DashboardStat;
+  total_outstanding_count: DashboardStat;
   total_outstanding: DashboardStat;
 };

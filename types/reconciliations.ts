@@ -25,6 +25,7 @@ export type Reconciliation = {
   gross_amount: number;
   adyen_paid: number;
   outstanding: number;
+  advance_amount: number;
   manual_paid: number;
   status: ReconciliationStatus;
   created_at: string;
@@ -37,10 +38,12 @@ export type AdminCreateReconciliationParams = {
   platform: string;
   gross_amount: number;
   adyen_paid: number;
+  advance_amount: number;
   outstanding: number;
   note: string;
   comment: string;
   period_month: string;
+  period_month_end: string;
 };
 export type GetDoctorReconciliations = Pagination & {
   reconciliations: Reconciliation[];

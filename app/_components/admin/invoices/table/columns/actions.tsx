@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PopoverContent } from "@/app/_components/ui/popover";
 import { ChevronRight } from "lucide-react";
 import {
@@ -21,6 +21,7 @@ import {
 } from "@/services/actions/invoices.actions";
 import { showSuccessToast, showErrorToast } from "@/lib/toast";
 import { useInvoices } from "../../contexts/invoices-provider";
+import { useSearchParams } from "next/navigation";
 
 const STATUS_OPTIONS = ["Paid", "Under Review", "Dispute Invoice"];
 
@@ -64,6 +65,10 @@ export default function Actions({ invoice }: ActionsProps) {
   const [isLoadingComments, setIsLoadingComments] = useState(false);
   const [commentsError, setCommentsError] = useState<string | null>(null);
   const { updateInvoice } = useInvoices();
+  const searchParams = useSearchParams();
+  const entityId = searchParams.get("entity_id");
+  const type = searchParams.get("type");
+  const hasAutoOpened = useRef(false);
 
   const handleStatusSelect = (status: string) => {
     if (status === "Dispute Invoice") {
@@ -73,6 +78,37 @@ export default function Actions({ invoice }: ActionsProps) {
     }
     setShowStatusDropdown(false);
   };
+
+  const handleViewComments = useCallback(async () => {
+    setIsViewCommentsModalOpen(true);
+    setComments([]);
+    setCommentsError(null);
+    setIsLoadingComments(true);
+
+    try {
+      const result = await getInvoiceComments(invoice.id);
+      if (result.success) {
+        const commentsData = result.data?.comments;
+        setComments(Array.isArray(commentsData) ? commentsData : []);
+      } else {
+        setCommentsError(result.error || "Failed to fetch comments");
+      }
+    } catch (error) {
+      setCommentsError("Failed to fetch comments");
+      console.error("Error fetching comments:", error);
+    } finally {
+      setIsLoadingComments(false);
+    }
+  }, [invoice.id]);
+
+  useEffect(() => {
+    if (entityId !== String(invoice.id) || type !== "comment_added") return;
+    hasAutoOpened.current = true;
+
+    queueMicrotask(() => {
+      handleViewComments();
+    });
+  }, [entityId, type, invoice.id, handleViewComments]);
 
   const handleStatusUpdate = async (
     status: string,
@@ -124,28 +160,6 @@ export default function Actions({ invoice }: ActionsProps) {
     } catch (error) {
       showErrorToast("Failed to add comment");
       console.error("Error adding comment:", error);
-    }
-  };
-
-  const handleViewComments = async () => {
-    setIsViewCommentsModalOpen(true);
-    setComments([]);
-    setCommentsError(null);
-    setIsLoadingComments(true);
-
-    try {
-      const result = await getInvoiceComments(invoice.id);
-      if (result.success) {
-        const commentsData = result.data?.comments;
-        setComments(Array.isArray(commentsData) ? commentsData : []);
-      } else {
-        setCommentsError(result.error || "Failed to fetch comments");
-      }
-    } catch (error) {
-      setCommentsError("Failed to fetch comments");
-      console.error("Error fetching comments:", error);
-    } finally {
-      setIsLoadingComments(false);
     }
   };
 
