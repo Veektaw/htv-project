@@ -78,8 +78,7 @@ export class Api {
         status: response.status,
         body: (await response.json()) as R,
       };
-    }
-    else {
+    } else {
       let errorMessage =
         response.status === 502 ? "Bad Gateway" : "An error occurred";
       let errorDescription = "";
@@ -140,24 +139,21 @@ export class Api {
     options,
     auth = false,
     customHeader = "application/json",
-    fetchOptions = {},
   }: {
     baseUrl?: string;
     options: OptionsType<T>;
     auth?: boolean;
     customHeader?: string;
-    fetchOptions?: RequestInit;
   }): Promise<ResponseType<R>> {
-    const headers = await this.getHeaders({ auth, customHeader});
+    const headers = await this.getHeaders({ auth, customHeader });
     const body = this.getRequestBody(options, headers);
 
     try {
-      console.log("fetchOptions:", fetchOptions);
       const response = await fetch(baseUrl + options.url, {
         method: options.method,
         headers,
         body,
-        ...fetchOptions,
+        cache: "no-cache",
       });
 
       return this.handleResponse<R>(response);
@@ -166,11 +162,10 @@ export class Api {
     }
   }
 
-  static async get<R>(url: string, auth?: boolean, fetchOptions?: RequestInit) {
+  static async get<R>(url: string, auth?: boolean) {
     return this.request<void, R>({
       options: { method: "GET", url },
       auth,
-      fetchOptions,
     });
   }
 

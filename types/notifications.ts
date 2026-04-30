@@ -1,14 +1,24 @@
 import { User } from "./auth";
 import { Pagination } from "./users";
 
+export type NotificationType =
+  | "reconciliation_ready"
+  | "invoice_created"
+  | "comment_added";
+
+export type NotificationEntity = "reconciliation" | "invoice" | "payment";
+
 export type Notification = {
   id: string;
+  type: NotificationType;
+  entity: NotificationEntity;
+  entity_id: string;
   title: string;
   message: string;
-  created_at: string;
   is_read: boolean;
-  entity: string;
-  entity_id: string;
+  read_at: string | null;
+  created_at: string;
+  updated_at: string;
 };
 
 export type GetNotificationsResponse = {
@@ -24,15 +34,18 @@ export type GetNotificationsParams = {
   limit?: number;
 };
 
-export type NotificationType = "invoice_updated";
-
-export type NotificationEntity = "invoice";
+export type DoctorNotificationType =
+  | "admin_comment_added"
+  | "doctor_reconciliation_ready"
+  | "reconciliation_approved"
+  | "payment_logged"
+  | "invoice_updated";
 
 export type DoctorNotification = {
   id: string;
   user_id: string;
   user: User;
-  type: NotificationType;
+  type: DoctorNotificationType;
   entity: NotificationEntity;
   entity_id: string;
   title: string;

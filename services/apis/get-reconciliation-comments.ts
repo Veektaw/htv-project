@@ -1,12 +1,12 @@
-import { InvoiceComment } from "@/types/invoices";
+import { ReconciliationCommentsResponse } from "@/types/reconciliations";
 
 export const getReconciliationComments = async (
   reconciliationId: string,
 ): Promise<{
   status: number;
-  data: InvoiceComment[];
+  data: ReconciliationCommentsResponse;
 }> => {
-  const url = `/api/doctor/comments/reconciliations/${reconciliationId}`;
+  const url = `/api/admin/reconciliation/${reconciliationId}/comments`;
 
   const response = await fetch(url);
 

@@ -8,7 +8,6 @@ export const getNotificationsApi = async () => {
   return await Api.get<GetNotificationsResponse>(
     "/admin/notifications/notifications/",
     true,
-    { cache: "no-store" }
   );
 };
 

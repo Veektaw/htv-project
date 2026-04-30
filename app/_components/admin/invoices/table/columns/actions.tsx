@@ -24,14 +24,20 @@ import { useInvoices } from "../../contexts/invoices-provider";
 import { useSearchParams } from "next/navigation";
 
 const STATUS_OPTIONS = ["Paid", "Under Review", "Dispute Invoice"];
-
+let count = 0;
 const STATUS_MAP = {
   Paid: "paid",
   // Approve: "approve",
   "Under Review": "under_review",
   "Dispute Invoice": "dispute",
 };
-
+export type ActiveModal =
+  | null
+  | "viewDetails"
+  | "viewComments"
+  | "dispute"
+  | "addComment";
+// | "comments";
 const STATUS_DISPLAY_MAP = {
   paid: "Paid",
   // approved: "Approved",
@@ -52,10 +58,6 @@ type InvoiceComment = {
 
 export default function Actions({ invoice }: ActionsProps) {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-  const [isDisputeModalOpen, setIsDisputeModalOpen] = useState(false);
-  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-  const [isViewCommentsModalOpen, setIsViewCommentsModalOpen] = useState(false);
   const [disputeMessage, setDisputeMessage] = useState("");
   const [commentMessage, setCommentMessage] = useState("");
   const [comments, setComments] = useState<InvoiceComment[]>([]);
@@ -67,12 +69,13 @@ export default function Actions({ invoice }: ActionsProps) {
   const { updateInvoice } = useInvoices();
   const searchParams = useSearchParams();
   const entityId = searchParams.get("entity_id");
-  const title = searchParams.get("title");
+  const type = searchParams.get("type");
   const hasAutoOpened = useRef(false);
 
+  const [activeModal, setActiveModal] = useState<ActiveModal>(null);
   const handleStatusSelect = (status: string) => {
     if (status === "Dispute Invoice") {
-      setIsDisputeModalOpen(true);
+      setActiveModal("dispute");
     } else {
       handleStatusUpdate(status);
     }
@@ -80,7 +83,8 @@ export default function Actions({ invoice }: ActionsProps) {
   };
 
   const handleViewComments = useCallback(async () => {
-    setIsViewCommentsModalOpen(true);
+    // setIsViewCommentsModalOpen(true);
+    setActiveModal("viewComments");
     setComments([]);
     setCommentsError(null);
     setIsLoadingComments(true);
@@ -102,16 +106,25 @@ export default function Actions({ invoice }: ActionsProps) {
   }, [invoice.id]);
 
   useEffect(() => {
-    if (
-      hasAutoOpened.current ||
-      entityId !== invoice.id ||
-      !title?.toLowerCase().includes("comment")
-    )
-      return;
-
+    if (entityId !== String(invoice.id) || type !== "comment_added") return;
     hasAutoOpened.current = true;
-    handleViewComments();
-  }, [entityId, title, invoice.id, handleViewComments]);
+    queueMicrotask(() => {
+      handleViewComments();
+      // setIsViewCommentsModalOpen(true);
+      setActiveModal("viewComments");
+      count++;
+
+      // TO-DO: Find better implementation for
+      if (count === 1) {
+        console.log("Here");
+        // setIsViewCommentsModalOpen(false);
+        setActiveModal(null);
+      }
+    });
+    // queueMicrotask(() => {
+    //   handleViewComments();
+    // });
+  }, [entityId, type, invoice.id, handleViewComments]);
 
   const handleStatusUpdate = async (
     status: string,
@@ -134,7 +147,8 @@ export default function Actions({ invoice }: ActionsProps) {
         };
         updateInvoice(updatedInvoice);
         showSuccessToast(`Invoice status updated to ${status}`);
-        setIsDisputeModalOpen(false);
+        // setIsDisputeModalOpen(false);
+        setActiveModal(null);
         setDisputeMessage("");
       } else {
         showErrorToast(result.error || "Failed to update invoice status");
@@ -155,7 +169,8 @@ export default function Actions({ invoice }: ActionsProps) {
       const result = await addInvoiceComment(invoice.id, commentMessage);
       if (result.success) {
         showSuccessToast("Comment added successfully");
-        setIsCommentModalOpen(false);
+        // setIsCommentModalOpen(false);
+        setActiveModal(null);
         setCommentMessage("");
       } else {
         showErrorToast(result.error || "Failed to add comment");
@@ -212,7 +227,8 @@ export default function Actions({ invoice }: ActionsProps) {
         <ul className="text-CloudyGrey text-xs font-semibold">
           <li
             className="rounded-base hover:bg-Geraldine block w-full cursor-pointer px-3 py-1 text-left transition-colors duration-300 hover:text-white"
-            onClick={() => setIsViewModalOpen(true)}
+            // onClick={() => setIsViewModalOpen(true)}
+            onClick={() => setActiveModal("viewDetails")}
           >
             View
           </li>
@@ -267,13 +283,15 @@ export default function Actions({ invoice }: ActionsProps) {
 
           <li
             className="rounded-base hover:bg-Geraldine block w-full cursor-pointer px-3 py-1 text-left transition-colors duration-300 hover:text-white"
-            onClick={() => setIsCommentModalOpen(true)}
+            // onClick={() => setIsCommentModalOpen(true)}
+            onClick={() => setActiveModal("addComment")}
           >
             Add Comment
           </li>
           <li
             className="rounded-base hover:bg-Geraldine block w-full cursor-pointer px-3 py-1 text-left transition-colors duration-300 hover:text-white"
-            onClick={handleViewComments}
+            // onClick={handleViewComments}
+            onClick={() => setActiveModal("viewComments")}
           >
             View Comment
           </li>
@@ -298,7 +316,10 @@ export default function Actions({ invoice }: ActionsProps) {
         </ul>
       </PopoverContent>
 
-      <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
+      <Dialog
+        open={activeModal === "viewDetails"}
+        onOpenChange={(open) => !open && setActiveModal(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Invoice Details</DialogTitle>
@@ -344,7 +365,10 @@ export default function Actions({ invoice }: ActionsProps) {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isDisputeModalOpen} onOpenChange={setIsDisputeModalOpen}>
+      <Dialog
+        open={activeModal === "dispute"}
+        onOpenChange={(open) => !open && setActiveModal(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Dispute Invoice</DialogTitle>
@@ -369,7 +393,7 @@ export default function Actions({ invoice }: ActionsProps) {
             <Button
               variant="outline"
               onClick={() => {
-                setIsDisputeModalOpen(false);
+                setActiveModal(null);
                 setDisputeMessage("");
               }}
             >
@@ -387,7 +411,10 @@ export default function Actions({ invoice }: ActionsProps) {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={isCommentModalOpen} onOpenChange={setIsCommentModalOpen}>
+      <Dialog
+        open={activeModal === "addComment"}
+        onOpenChange={(open) => !open && setActiveModal(null)}
+      >
         <DialogContent>
           <DialogHeader className="flex flex-col items-center justify-center gap-1 px-6 pt-6 pb-4 text-center">
             <DialogTitle>Add Comment</DialogTitle>
@@ -414,7 +441,7 @@ export default function Actions({ invoice }: ActionsProps) {
             <Button
               variant="outline"
               onClick={() => {
-                setIsCommentModalOpen(false);
+                setActiveModal(null);
                 setCommentMessage("");
               }}
             >
@@ -432,10 +459,10 @@ export default function Actions({ invoice }: ActionsProps) {
       </Dialog>
 
       <Dialog
-        open={isViewCommentsModalOpen}
-        onOpenChange={setIsViewCommentsModalOpen}
+        open={activeModal === "viewComments"}
+        onOpenChange={(open) => !open && setActiveModal(null)}
       >
-        <DialogContent className="gap-0 overflow-hidden rounded-2xl p-0 sm:max-w-125">
+        <DialogContent className="gap-10 rounded-[24px] sm:max-w-171.5">
           <DialogHeader className="px-6 pt-6 pb-4">
             <DialogTitle className="text-lg font-semibold text-gray-900">
               Comment
@@ -544,13 +571,15 @@ export default function Actions({ invoice }: ActionsProps) {
           <div className="flex items-center justify-center gap-3 px-6 pb-6">
             <Button
               variant="outline"
-              onClick={() => setIsViewCommentsModalOpen(false)}
+              // onClick={() => setIsViewCommentsModalOpen(false)}
+              onClick={() => setActiveModal(null)}
               className="flex-1 rounded-full border-gray-300 font-medium text-gray-700 hover:bg-gray-50"
             >
               Cancel
             </Button>
             <Button
-              onClick={() => setIsCommentModalOpen(true)}
+              // onClick={() => setIsCommentModalOpen(true)}
+              onClick={() => setActiveModal("addComment")}
               className="flex-1 rounded-full bg-gray-900 font-medium text-white hover:bg-gray-800"
             >
               Add Comment

@@ -89,11 +89,9 @@ export const reconciliationColumns: Column<ColumnType>[] = [
     title: "",
     key: "actions",
     render: (_, record) => (
-      // record.status !== "completed" && (
       <MenuActions>
         <Actions reconciliation={record} />
       </MenuActions>
     ),
-    // ),
   },
 ];
