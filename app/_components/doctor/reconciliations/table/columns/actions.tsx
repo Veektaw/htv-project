@@ -31,7 +31,10 @@ export default function Actions({
   const hasAutoOpened = useRef(false);
 
   useEffect(() => {
-    if (entityId !== String(reconciliation.id) || type !== "comment_added")
+    if (
+      entityId !== String(reconciliation.id) ||
+      type !== "admin_comment_added"
+    )
       return;
     hasAutoOpened.current = true;
 
