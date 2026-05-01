@@ -23,7 +23,10 @@ export default async function page({ searchParams }: PageParams) {
 
       <section className="flex-1 overflow-y-auto rounded-sm bg-white px-7 py-5.5 shadow-[0px_9px_20px_0px_#101E730F]">
         <Suspense fallback={<Loader text="Getting payments..." />}>
-          <AdminPayments searchParamsValues={searchParamsValues} />
+          <AdminPayments
+            searchParamsValues={searchParamsValues}
+            key={`${searchParamsValues.page}-${searchParamsValues.platform}-${searchParamsValues.start_date}-${searchParamsValues.end_date}-${searchParamsValues.sortKey}-${searchParamsValues.sortDir}`}
+          />
         </Suspense>
       </section>
     </section>

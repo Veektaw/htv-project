@@ -679,8 +679,14 @@ export default function UserDetails({ user }: { user: User }) {
                                                 `${path}.signed_prescriptions`,
                                                 !!checked,
                                               );
+
                                               form.setValue(
-                                                `${path}.cancelled_prescriptions`,
+                                                `${path}.declined_prescriptions`,
+                                                !!checked,
+                                              );
+
+                                              form.setValue(
+                                                `${path}.approved_prescriptions`,
                                                 !!checked,
                                               );
                                             } else {
@@ -698,11 +704,20 @@ export default function UserDetails({ user }: { user: User }) {
                                               const signed = form.getValues(
                                                 `${path}.signed_prescriptions`,
                                               );
-                                              const cancelled = form.getValues(
-                                                `${path}.cancelled_prescriptions`,
+
+                                              const declined = form.getValues(
+                                                `${path}.declined_prescriptions`,
                                               );
 
-                                              if (signed && cancelled) {
+                                              const approved = form.getValues(
+                                                `${path}.approved_prescriptions`,
+                                              );
+
+                                              if (
+                                                signed &&
+                                                declined &&
+                                                approved
+                                              ) {
                                                 form.setValue(
                                                   `${path}.all_prescriptions`,
                                                   true,

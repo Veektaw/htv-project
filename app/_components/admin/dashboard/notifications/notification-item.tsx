@@ -1,8 +1,10 @@
 "use client";
 
 import { useTransition, useState } from "react";
-import { markNotificationAsReadAction } from "@/services/actions/notifications.actions";
+import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import type { Notification } from "@/types/notifications";
+import { markNotificationAsReadAction } from "@/services/actions/notifications.actions";
 
 type NotificationItemProps = {
   notification: Notification;
@@ -17,45 +19,77 @@ const formatDate = (dateString: string) => {
   }).format(date);
 };
 
+const entityRouteMap: Record<string, string> = {
+  invoice: "/admin/invoices",
+  payment: "/admin/payments",
+  reconciliation: "/admin/reconciliations",
+  user: "/admin/users",
+};
+
+const getRoute = (
+  entity: string,
+  entityId: string,
+  type: Notification["type"],
+): string | null => {
+  const base = entityRouteMap[entity.toLowerCase()];
+  if (!base) return null;
+  return `${base}?entity_id=${entityId}&type=${type}`;
+};
+
 export default function NotificationItem({
   notification,
 }: NotificationItemProps) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
   const [isRead, setIsRead] = useState(notification.is_read);
 
-  const handleMarkAsRead = () => {
-    if (isRead || isPending) return;
+  const handleClick = () => {
+    if (isPending) return;
 
-    setIsRead(true);
+    const route = getRoute(
+      notification.entity,
+      notification.entity_id,
+      notification.type,
+    );
+    // console.log("notification:", notification);
+    // console.log("route:", route);
+    if (!isRead) {
+      setIsRead(true);
 
-    startTransition(async () => {
-      const res = await markNotificationAsReadAction(notification.id);
+      startTransition(async () => {
+        const res = await markNotificationAsReadAction(notification.id);
 
-      if (res.error) {
-        setIsRead(false);
-      }
-    });
+        if (res.error) {
+          setIsRead(false);
+          return;
+        }
+
+        if (route) router.push(route);
+      });
+    }
+
+    if (route) router.push(route);
   };
 
   return (
     <li
-      onClick={handleMarkAsRead}
-      className={`flex flex-col gap-y-1 py-3 transition-opacity ${
-        isPending
-          ? "cursor-wait opacity-50"
-          : isRead
-            ? "cursor-default"
-            : "cursor-pointer"
-      }`}
+      onClick={handleClick}
+      className={cn(
+        "flex flex-col gap-y-1 py-3",
+        isPending ? "animate-pulse cursor-wait" : "cursor-pointer",
+      )}
     >
       <div className="flex items-center justify-between gap-2">
         <p className="text-DarkJungleGreen text-sm font-medium">
           {notification.title}
         </p>
-        {!isRead && (
+        {!isRead ? (
           <span
             className={`size-2 shrink-0 rounded-full bg-blue-500 ${isPending ? "animate-pulse" : ""}`}
           />
+        ) : (
+          <span className="size-2 shrink-0 rounded-full bg-gray-300" />
         )}
       </div>
       <p className="text-MediumGrey text-xs">{notification.message}</p>

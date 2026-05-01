@@ -48,9 +48,13 @@ export type Commission = {
   all_prescriptions: boolean;
   signed_prescriptions: boolean;
   cancelled_prescriptions: boolean;
+  declined_prescriptions: boolean;
+  on_hold_prescriptions: boolean;
+  approved_prescriptions: boolean;
   created_at: string;
   updated_at: string;
 };
+
 
 export type User = {
   id: string;

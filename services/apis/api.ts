@@ -71,7 +71,6 @@ export class Api {
 
   private static async handleResponse<R>(
     response: Response,
-    // retryCallback?: (overrideToken?: string) => Promise<Response>,
   ): Promise<ResponseType<R>> {
     if (response.ok) {
       return {
@@ -79,42 +78,7 @@ export class Api {
         status: response.status,
         body: (await response.json()) as R,
       };
-    }
-    // else if (
-    //   response.status === 401 &&
-    //   !response.url.includes("/auth/login/")
-    // ) {
-    //   console.log({ response });
-
-    //   const cookieStore = await cookies();
-    //   const allCookies = cookieStore
-    //     .getAll()
-    //     .map((c) => `${c.name}=${c.value}`)
-    //     .join("; ");
-
-    //   const refreshed = await fetch(`${this.API_BASE_URL}/api/auth/refresh`, {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       Cookie: allCookies,
-    //     },
-    //   });
-
-    //   if (!refreshed.ok) {
-    //     console.log("/api/auth/logout");
-
-    //     redirect("/api/auth/logout");
-    //   }
-
-    //   const refreshedResponse = await refreshed.json();
-
-    //   console.log({ refreshedResponse });
-
-    //   // Retry the original request — headers will pick up new session automatically
-    //   const retryResponse = await retryCallback(refreshedResponse.accessToken);
-    //   return this.handleResponse<R>(retryResponse, retryCallback);
-    // }
-    else {
+    } else {
       let errorMessage =
         response.status === 502 ? "Bad Gateway" : "An error occurred";
       let errorDescription = "";
@@ -184,25 +148,12 @@ export class Api {
     const headers = await this.getHeaders({ auth, customHeader });
     const body = this.getRequestBody(options, headers);
 
-    // console.log({ url: baseUrl + options.url, method: options.method });
-
-    // const makeRequest = (overrideToken?: string) => {
-    //   const finalHeaders = overrideToken
-    //     ? { ...headers, Authorization: `Bearer ${overrideToken}` }
-    //     : headers;
-
-    //   return fetch(baseUrl + options.url, {
-    //     method: options.method,
-    //     headers: finalHeaders,
-    //     body,
-    //   });
-    // };
-
     try {
       const response = await fetch(baseUrl + options.url, {
         method: options.method,
         headers,
         body,
+        cache: "no-cache",
       });
 
       return this.handleResponse<R>(response);

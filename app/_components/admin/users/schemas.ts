@@ -30,7 +30,10 @@ const commissionItemSchema = z.object({
   cancelled_appointments: z.boolean().optional(),
   all_prescriptions: z.boolean().optional(),
   signed_prescriptions: z.boolean().optional(),
-  cancelled_prescriptions: z.boolean().optional(),
+ 
+  declined_prescriptions: z.boolean().optional(),
+ 
+  approved_prescriptions: z.boolean().optional(),
 });
 
 export const updateUserDetailsFormSchema = z.object({
@@ -139,7 +142,10 @@ export const updateUserDetailsFormSchema = z.object({
         item.cancelled_appointments ||
         item.all_prescriptions ||
         item.signed_prescriptions ||
-        item.cancelled_prescriptions;
+     
+        item.declined_prescriptions ||
+       
+        item.approved_prescriptions;
 
       // ✅ CASE 1: Single row
       if (!isMultiple) {
