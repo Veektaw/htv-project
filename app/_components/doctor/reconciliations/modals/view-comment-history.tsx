@@ -6,6 +6,7 @@ import { formatDate } from "@/lib/utils";
 import { getDoctorReconciliationComments } from "@/services/apis/get-doctor-reconciliation-comments";
 import { Reconciliation } from "@/types/reconciliations";
 import { Spinner } from "@/app/_components/ui/spinner";
+import { ActiveModal } from "../table/columns/actions";
 import {
   Dialog,
   DialogContent,
@@ -17,13 +18,17 @@ import Image from "next/image";
 import arrowDown from "@/public/svgs/arrow-down.svg";
 
 type ViewCommentHistoryModalProps = {
-  children: ReactNode;
+  children?: ReactNode;
   reconciliation: Reconciliation;
+  activeModal?: ActiveModal;
+  setActiveModal?: (modal: ActiveModal) => void;
 };
 
 export default function ViewCommentHistoryModal({
   children,
   reconciliation,
+  activeModal,
+  setActiveModal,
 }: ViewCommentHistoryModalProps) {
   const [expandedCommentId, setExpandedCommentId] = useState<string | null>(
     null,
@@ -39,7 +44,12 @@ export default function ViewCommentHistoryModal({
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={activeModal === "viewComments"}
+      onOpenChange={(open) => {
+        if (!open) setActiveModal?.(null);
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
