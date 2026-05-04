@@ -25,7 +25,7 @@ export default async function page({ searchParams }: PageParams) {
         <Suspense fallback={<Loader text="Getting payments..." />}>
           <AdminPayments
             searchParamsValues={searchParamsValues}
-            key={`${searchParamsValues.page}-${searchParamsValues.platform}-${searchParamsValues.start_date}-${searchParamsValues.end_date}-${searchParamsValues.sortKey}-${searchParamsValues.sortDir}`}
+            key={`${searchParamsValues.page}-${searchParamsValues.platform}-${searchParamsValues.start_date}-${searchParamsValues.end_date}-${searchParamsValues.sortKey}-${searchParamsValues.sortDir}-${searchParamsValues.search}`}
           />
         </Suspense>
       </section>

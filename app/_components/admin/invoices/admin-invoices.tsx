@@ -43,26 +43,13 @@ export default async function AdminInvoices({
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-                No invoices yet
+                {search
+                  ? `No invoices found for "${search}"`
+                  : "No invoices yet"}
               </p>
             </EmptyContent>
           </Empty>
         </section>
-      </InvoicesProvider>
-    );
-  }
-
-  if (total === 0) {
-    return (
-      <InvoicesProvider data={result.body}>
-        <SearchWrapper />
-        <Empty className="flex size-full items-center justify-center p-2">
-          <EmptyContent>
-            <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-              No invoices yet
-            </p>
-          </EmptyContent>
-        </Empty>
       </InvoicesProvider>
     );
   }

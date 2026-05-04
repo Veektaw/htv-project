@@ -14,12 +14,13 @@ type AdminPaymentsProps = {
 export default async function AdminPayments({
   searchParamsValues,
 }: AdminPaymentsProps) {
-  const { page, platform, start_date, end_date } = searchParamsValues;
+  const { page, platform, start_date, end_date, search } = searchParamsValues;
   const res = await getAdminPaymentsApi({
     page,
     platform,
     start_date,
     end_date,
+    search,
   });
 
   if (!res.ok) {
@@ -35,17 +36,14 @@ export default async function AdminPayments({
     );
   }
 
-  // console.log({ res: res.body });
-
   const total = res.body.payments.length;
 
   if (platform && start_date && end_date && total === 0) {
     return (
       <PaymentsProvider data={res.body}>
-        <section className="flex size-full flex-col gap-y-4">
-          {/* <SortAndDateFilter /> */}
-
-          <Empty className="flex flex-1 items-center justify-center p-2">
+        <section className="flex w-full flex-col gap-y-4">
+          <SearchWrapper />
+          <Empty className="flex w-full items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
                 No payments found for{" "}
@@ -66,10 +64,9 @@ export default async function AdminPayments({
   if (start_date && end_date && total === 0) {
     return (
       <PaymentsProvider data={res.body}>
-        <section className="flex size-full flex-col gap-y-4">
-          {/* <SortAndDateFilter /> */}
-
-          <Empty className="flex flex-1 items-center justify-center p-2">
+        <section className="flex w-full flex-col gap-y-4">
+          <SearchWrapper />
+          <Empty className="flex w-full items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
                 No payments found in the date range of{" "}
@@ -88,9 +85,8 @@ export default async function AdminPayments({
   if (platform && total === 0) {
     return (
       <PaymentsProvider data={res.body}>
-        <section className="flex size-full flex-col gap-y-4">
-          {/* <SortAndDateFilter /> */}
-
+        <section className="flex w-full flex-col gap-y-4">
+          <SearchWrapper />
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
@@ -107,13 +103,16 @@ export default async function AdminPayments({
   if (total === 0) {
     return (
       <PaymentsProvider data={res.body}>
-        <Empty className="flex size-full items-center justify-center p-2">
-          <EmptyContent>
-            <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-              No payments yet
-            </p>
-          </EmptyContent>
-        </Empty>
+        <section className="flex w-full flex-col gap-y-4">
+          <SearchWrapper />
+          <Empty className="flex w-full items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No payments yet
+              </p>
+            </EmptyContent>
+          </Empty>
+        </section>
       </PaymentsProvider>
     );
   }
@@ -121,7 +120,7 @@ export default async function AdminPayments({
   const sortedPayments = sortData(res.body.payments, sortKey, sortDir);
   return (
     <PaymentsProvider data={{ ...res.body, payments: sortedPayments }}>
-      <section className="flex h-full flex-col gap-y-4">
+      <section className="flex min-h-full flex-col gap-y-4">
         <SearchWrapper />
 
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">

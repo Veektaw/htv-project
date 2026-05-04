@@ -7,6 +7,7 @@ export type GetAdminPaymentsParams = {
   platform?: string;
   start_date?: string;
   end_date?: string;
+  search?: string;
 };
 
 export type GetAdminPayments = {
