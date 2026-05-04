@@ -30,6 +30,7 @@ export const getAllInvoicesApi = ({
   page = "1",
   limit = "10",
   status,
+  search,
 }: GetDoctorInvoicesParams) => {
   const params: Record<string, string> = {
     page,
@@ -37,7 +38,7 @@ export const getAllInvoicesApi = ({
   };
 
   if (status) params.status = status;
-
+  if (search) params.keyword = search;
   const queryString = new URLSearchParams(params).toString();
 
   const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;

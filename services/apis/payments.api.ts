@@ -15,6 +15,7 @@ export const getAdminPaymentsApi = ({
   platform,
   start_date,
   end_date,
+  search,
 }: GetAdminPaymentsParams) => {
   const params: Record<string, string> = {
     page,
@@ -24,7 +25,7 @@ export const getAdminPaymentsApi = ({
   if (platform && platform.toLowerCase() !== "all") params.platform = platform;
   if (start_date) params.start_date = start_date;
   if (end_date) params.end_date = end_date;
-
+  if (search) params.keyword = search;
   const queryString = new URLSearchParams(params).toString();
   const url = `/admin/payments/${queryString ? `?${queryString}` : ""}`;
 
