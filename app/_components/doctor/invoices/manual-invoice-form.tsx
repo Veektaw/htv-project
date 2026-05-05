@@ -1,6 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { showToast } from "@/lib/toast";
+import { getDoctorPrescriptionsAction } from "@/services/actions/prescriptions.actions";
+import { getPlatformsActionTwo } from "@/services/actions/platforms.actions";
+import { createManualInvoiceAction } from "@/services/actions/invoices.actions";
+import { Reconciliation } from "@/types/reconciliations";
+import { UserSessionData } from "@/types/auth";
+import { Prescription } from "@/types/prescriptions";
 import { Controller } from "react-hook-form";
 import {
   Field,
@@ -8,9 +15,6 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/app/_components/ui/field";
-import { Reconciliation } from "@/types/reconciliations";
-import { UserSessionData } from "@/types/auth";
-import { brandPartners } from "@/lib/constants";
 import {
   Select,
   SelectContent,
@@ -18,13 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/_components/ui/select";
-
-import { Input } from "@/app/_components/ui/input";
-import { Button } from "@/app/_components/ui/button";
-import { Spinner } from "@/app/_components/ui/spinner";
-import { DialogClose } from "@/app/_components/ui/dialog";
-import Image from "next/image";
-import calendarIcon from "@/public/svgs/calendar.svg";
 import {
   Popover,
   PopoverContent,
@@ -38,14 +35,14 @@ import {
   TableHead,
   TableRow,
 } from "@/app/_components/ui/table";
+import { Input } from "@/app/_components/ui/input";
+import { Button } from "@/app/_components/ui/button";
+import { Spinner } from "@/app/_components/ui/spinner";
+import { DialogClose } from "@/app/_components/ui/dialog";
 import { Calendar } from "@/app/_components/ui/calendar";
-import { showToast } from "@/lib/toast";
-import { createManualInvoiceAction } from "@/services/actions/invoices.actions";
+import Image from "next/image";
 import useManualInvoice from "./hooks/use-manual-invoice";
-import { getDoctorPrescriptionsAction } from "@/services/actions/prescriptions.actions";
-import { getPlatformsActionTwo } from "@/services/actions/platforms.actions";
-import { Prescription } from "@/types/prescriptions";
-import { Platform } from "@/types/platforms";
+import calendarIcon from "@/public/svgs/calendar.svg";
 
 type InvoiceRow = {
   id: number;
@@ -150,7 +147,7 @@ export default function ManualInvoiceForm({
     defaultValues,
   });
 
-  console.log({ errors: form.formState.errors });
+  // console.log({ errors: form.formState.errors });
 
   const { handleSubmit, watch, setValue } = form;
   const [rows, setRows] = useState<InvoiceRow[]>(() => [
