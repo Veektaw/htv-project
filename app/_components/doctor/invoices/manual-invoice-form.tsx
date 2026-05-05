@@ -45,6 +45,7 @@ import useManualInvoice from "./hooks/use-manual-invoice";
 import { getDoctorPrescriptionsAction } from "@/services/actions/prescriptions.actions";
 import { getPlatformsActionTwo } from "@/services/actions/platforms.actions";
 import { Prescription } from "@/types/prescriptions";
+import { Platform } from "@/types/platforms";
 
 type InvoiceRow = {
   id: number;
@@ -155,6 +156,32 @@ export default function ManualInvoiceForm({
   const [rows, setRows] = useState<InvoiceRow[]>(() => [
     getInitialInvoiceRow(reconciliation),
   ]);
+  const [availablePlatforms, setAvailablePlatforms] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchPlatforms = async () => {
+      const res = await getPlatformsActionTwo();
+
+      if (res.data) {
+        const data = res.data as {
+          body?: {
+            platforms?: Array<{ brand_partner: string }>;
+          };
+        };
+
+        if (data.body?.platforms) {
+          const uniquePartners = Array.from(
+            new Set(data.body.platforms.map((p) => p.brand_partner)),
+          );
+          setAvailablePlatforms(uniquePartners);
+        }
+      } else {
+        console.error("Error fetching platforms:", res.error);
+      }
+    };
+
+    fetchPlatforms();
+  }, []);
 
   useEffect(() => {
     if (!reconciliation?.platform || !reconciliation?.period_month) return;
@@ -574,7 +601,7 @@ export default function ManualInvoiceForm({
                       <SelectValue placeholder="Select Platform" />
                     </SelectTrigger>
                     <SelectContent>
-                      {brandPartners.map((partner) => (
+                      {availablePlatforms.map((partner) => (
                         <SelectItem
                           key={partner}
                           value={partner}
