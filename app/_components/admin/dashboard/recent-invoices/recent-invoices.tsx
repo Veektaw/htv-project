@@ -4,7 +4,6 @@ import { statuses } from "../../invoices/table/columns/status";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import TableComponent from "../../../shared/table-component/table-component";
 import { InvoiceStatus } from "@/types/invoices";
-
 type InvoicesProps = {
   searchParamsValues: { [key: string]: string | undefined };
 };
