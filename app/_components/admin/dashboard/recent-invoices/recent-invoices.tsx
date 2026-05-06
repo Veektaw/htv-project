@@ -13,10 +13,12 @@ type InvoicesProps = {
 export default async function RecentInvoices({
   searchParamsValues,
 }: InvoicesProps) {
-  const { status } = searchParamsValues;
+  const { status, sort_by, sort_order } = searchParamsValues;
 
   const res = await getAllInvoicesApi({
     status,
+    sort_by,
+    sort_order: sort_order as "asc" | "desc" | undefined,
   });
 
   if (!res.ok) {
@@ -66,8 +68,8 @@ export default async function RecentInvoices({
   }
 
   // console.log({ res: res.body });
-  const { sortKey, sortDir } = searchParamsValues;
-  const sorted = sortData(res.body.invoices, sortKey, sortDir);
+
+  const sorted = sortData(res.body.invoices);
   const recent = sorted.slice(0, 5);
   return (
     <section className="h-full">
