@@ -19,7 +19,7 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Platform",
     key: "platform",
-    renderTitle: () => <SortableHeader label="Platform" sortKey="platform" />,
+    renderTitle: () => <SortableHeader label="Partner" sortKey="platform" />,
     render: (value) => value as string,
   },
   {

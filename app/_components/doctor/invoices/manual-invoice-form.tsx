@@ -1,13 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInView } from "react-intersection-observer";
+import { cn } from "@/lib/utils";
 import { showToast } from "@/lib/toast";
-import { getDoctorPrescriptionsAction } from "@/services/actions/prescriptions.actions";
-import { getPlatformsActionTwo } from "@/services/actions/platforms.actions";
 import { createManualInvoiceAction } from "@/services/actions/invoices.actions";
-import { Reconciliation } from "@/types/reconciliations";
+import { getPlatforms } from "@/services/apis/get-platforms";
+import { getDoctorPrescriptions } from "@/services/apis/get-doctor-prescriptions";
 import { UserSessionData } from "@/types/auth";
-import { Prescription } from "@/types/prescriptions";
+import { Reconciliation } from "@/types/reconciliations";
+import { GetPlatformsResponse, Platform } from "@/types/platforms";
+import { ManualInvoiceSchemaType } from "./schemas";
+import { GetDoctorPrescriptions } from "@/types/prescriptions";
+import { Loader2 } from "lucide-react";
 import { Controller } from "react-hook-form";
 import {
   Field,
@@ -43,6 +49,10 @@ import { Calendar } from "@/app/_components/ui/calendar";
 import Image from "next/image";
 import useManualInvoice from "./hooks/use-manual-invoice";
 import calendarIcon from "@/public/svgs/calendar.svg";
+import { format } from "date-fns";
+
+type QueryResponse = { status: number; data: GetPlatformsResponse };
+type QueryResponseTwo = { status: number; data: GetDoctorPrescriptions };
 
 type InvoiceRow = {
   id: number;
@@ -129,10 +139,14 @@ export default function ManualInvoiceForm({
   user?: UserSessionData;
   onSuccess?: () => void;
 }) {
+  const { ref, inView } = useInView({
+    threshold: 0,
+  });
+
   const defaultValues = {
     name: getUserName(reconciliation, user),
     address: user?.address ?? reconciliation?.user?.address ?? "",
-    invoiceId: "",
+    bill_from_address: "",
     dateTime: formatToDateTimeLocal(reconciliation?.created_at),
     platform: reconciliation?.platform ?? "",
     amount: reconciliation?.gross_amount ?? 0,
@@ -153,87 +167,137 @@ export default function ManualInvoiceForm({
   const [rows, setRows] = useState<InvoiceRow[]>(() => [
     getInitialInvoiceRow(reconciliation),
   ]);
-  const [availablePlatforms, setAvailablePlatforms] = useState<string[]>([]);
 
-  useEffect(() => {
-    const fetchPlatforms = async () => {
-      const res = await getPlatformsActionTwo();
+  const {
+    isLoading,
+    data,
+    isError,
+    hasNextPage,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery<
+    QueryResponse,
+    Error,
+    { allPlatforms: Platform[]; uniquePartners: string[] },
+    ["doctor-platforms"],
+    number
+  >({
+    queryKey: ["doctor-platforms"],
+    queryFn: ({ pageParam }) =>
+      getPlatforms({
+        page: pageParam.toString(),
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      // console.log({ lastPage, allPages, lastPageParam });
 
-      if (res.data) {
-        const data = res.data as {
-          body?: {
-            platforms?: Array<{ brand_partner: string }>;
-          };
-        };
+      const total = lastPage.data.total || 0;
 
-        if (data.body?.platforms) {
-          const uniquePartners = Array.from(
-            new Set(data.body.platforms.map((p) => p.brand_partner)),
-          );
-          setAvailablePlatforms(uniquePartners);
-        }
-      } else {
-        console.error("Error fetching platforms:", res.error);
+      if (total === 0) {
+        return undefined;
       }
-    };
 
-    fetchPlatforms();
-  }, []);
+      const perPage = Number(lastPage.data.page);
+
+      if (allPages.length * perPage < total) {
+        return lastPageParam + 1;
+      }
+
+      return undefined;
+    },
+    select: (data) => {
+      const allPlatforms = data.pages.flatMap((page) => page.data.platforms);
+
+      // console.log({ allPlatforms });
+
+      const uniquePartners = Array.from(
+        new Set(allPlatforms.map((p) => p.brand_partner)),
+      );
+
+      // console.log({ uniquePartners });
+
+      return { allPlatforms, uniquePartners };
+    },
+  });
+
+  const { data: prescriptionsData } = useInfiniteQuery<
+    QueryResponseTwo,
+    Error,
+    {
+      pageParams: number[];
+      pages: QueryResponseTwo[];
+      totalPrescriptions: string;
+    },
+    ["doctor-prescriptions", string | undefined],
+    number
+  >({
+    queryKey: ["doctor-prescriptions", reconciliation?.platform],
+    queryFn: ({ pageParam }) =>
+      getDoctorPrescriptions({
+        page: pageParam.toString(),
+        platform: reconciliation?.platform,
+        ...(reconciliation?.period_month
+          ? {
+              start_date: format(
+                getPeriodDates(reconciliation.period_month).periodFrom!,
+                "yyyy-MM-dd",
+              ),
+              end_date: format(
+                getPeriodDates(reconciliation.period_month).periodTo!,
+                "yyyy-MM-dd",
+              ),
+            }
+          : {}),
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, allPages, lastPageParam) => {
+      // console.log({ lastPage, allPages, lastPageParam });
+
+      const total = lastPage.data.total || 0;
+
+      if (total === 0) {
+        return undefined;
+      }
+
+      const perPage = Number(lastPage.data.page);
+
+      if (allPages.length * perPage < total) {
+        return lastPageParam + 1;
+      }
+
+      return undefined;
+    },
+    select: (data) => {
+      const all = data.pages.flatMap((p) => p.data.prescriptions);
+
+      const total = all.reduce((sum, p) => sum + p.prescription_count, 0);
+
+      return {
+        ...data,
+        totalPrescriptions: String(total),
+      };
+    },
+  });
+
+  const totalPrescriptions = prescriptionsData?.totalPrescriptions ?? "";
 
   useEffect(() => {
-    if (!reconciliation?.platform || !reconciliation?.period_month) return;
+    if (inView && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [inView, hasNextPage, fetchNextPage]);
 
-    const { periodFrom, periodTo } = getPeriodDates(
-      reconciliation.period_month,
+  useEffect(() => {
+    if (!data || !reconciliation) return;
+
+    const match = data.allPlatforms.find(
+      (p) => p.brand_partner === reconciliation.platform,
     );
-    if (!periodFrom || !periodTo) return;
 
-    getDoctorPrescriptionsAction({
-      platform: reconciliation.platform,
-      start_date: periodFrom.toISOString().split("T")[0],
-      end_date: periodTo.toISOString().split("T")[0],
-    }).then((res) => {
-      const prescriptions = (
-        res?.data as { body?: { prescriptions?: Prescription[] } }
-      )?.body?.prescriptions;
-      const total = prescriptions?.reduce(
-        (sum: number, p: Prescription) => sum + p.prescription_count,
-        0,
-      );
-      console.log("3. computed total", total);
-      if (total !== undefined) {
-        setRows((current) =>
-          current.map((row) =>
-            row.id === 1 ? { ...row, totalPrescriptions: String(total) } : row,
-          ),
-        );
-      }
-    });
-  }, [reconciliation?.platform, reconciliation?.period_month]);
-
-  useEffect(() => {
-    if (!reconciliation?.platform || !reconciliation?.doctor_id) return;
-
-    getPlatformsActionTwo().then((res) => {
-      const platforms = (
-        res?.data as {
-          body?: {
-            platforms?: Array<{ address: string; brand_partner: string }>;
-          };
-        }
-      )?.body?.platforms;
-      if (!platforms) return;
-
-      const match = platforms.find(
-        (p) => p.brand_partner === reconciliation.platform,
-      );
-
-      if (match?.address) {
-        setValue("invoiceId", match.address);
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [reconciliation?.platform, reconciliation?.doctor_id]);
+    if (match?.address) {
+      setValue("bill_from_address", match.address);
+    }
+  }, [data, reconciliation, setValue]);
 
   const updateRow = (
     id: number,
@@ -252,7 +316,20 @@ export default function ManualInvoiceForm({
     );
 
     if (id === 1) {
-      if (field === "platform") setValue("platform", value as string);
+      if (field === "platform") {
+        setValue("platform", value as string);
+
+        if (!data || (data && data.allPlatforms.length === 0)) return;
+
+        const match = data.allPlatforms.find(
+          (p) => p.brand_partner === (value as string),
+        );
+
+        if (match?.address) {
+          setValue("bill_from_address", match.address);
+        }
+      }
+
       if (field === "amount") setValue("amount", Number(value));
 
       if (field === "periodFrom" || field === "periodTo") {
@@ -295,7 +372,7 @@ export default function ManualInvoiceForm({
   );
   const grossTotal = sumTotal - (Number.isFinite(adyenPaid) ? adyenPaid : 0);
 
-  const handleFormSubmit = async () => {
+  const onSubmit = async (data: ManualInvoiceSchemaType) => {
     const row = rows[0];
     const period_month = getPeriodMonth(row);
 
@@ -309,15 +386,13 @@ export default function ManualInvoiceForm({
       return;
     }
 
-    const formValues = form.getValues();
-
     const payload = {
       period_month,
       platform: row.platform,
       amount: sumTotal,
-      full_name: formValues.name,
-      address: formValues.address,
-      bill_from_address: formValues.invoiceId,
+      full_name: data.name,
+      address: data.address,
+      bill_from_address: data.bill_from_address,
     };
 
     try {
@@ -340,7 +415,7 @@ export default function ManualInvoiceForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <FieldGroup className="grid grid-cols-2 gap-y-4 sm:grid-cols-2 sm:gap-x-10.5">
         <Controller
           name="name"
@@ -377,7 +452,7 @@ export default function ManualInvoiceForm({
         />
 
         <Controller
-          name="invoiceId"
+          name="bill_from_address"
           control={form.control}
           disabled={!!reconciliation}
           render={({ field, fieldState }) => (
@@ -586,34 +661,72 @@ export default function ManualInvoiceForm({
                   </div>
                 </TableCell>
 
-                <TableCell>
+                <TableCell className="flex flex-col gap-1">
                   <Select
+                    name={`platform-${index}`}
                     value={row.platform}
                     onValueChange={(value) =>
                       updateRow(row.id, "platform", value)
                     }
                     disabled={!!reconciliation}
                   >
-                    <SelectTrigger className="h-9 w-full text-xs text-black">
+                    <SelectTrigger
+                      className={cn(
+                        "h-9 w-full text-xs text-black",
+                        isLoading && "cursor-progress",
+                      )}
+                    >
                       <SelectValue placeholder="Select Platform" />
                     </SelectTrigger>
+
                     <SelectContent>
-                      {availablePlatforms.map((partner) => (
+                      {data && data.uniquePartners.length > 0 ? (
+                        data.uniquePartners.map((partner) => (
+                          <SelectItem
+                            key={partner}
+                            value={partner}
+                            className="text-xs capitalize"
+                          >
+                            {partner}
+                          </SelectItem>
+                        ))
+                      ) : (
                         <SelectItem
-                          key={partner}
-                          value={partner}
-                          className="text-xs capitalize"
+                          value="no-platform"
+                          disabled
+                          className="text-xs"
                         >
-                          {partner}
+                          No platform added
                         </SelectItem>
-                      ))}
+                      )}
+
+                      {hasNextPage && (
+                        <div
+                          ref={ref}
+                          className="flex h-10 items-center justify-center"
+                        >
+                          {isFetchingNextPage && (
+                            <Loader2 className="animate-spin" />
+                          )}
+                        </div>
+                      )}
                     </SelectContent>
                   </Select>
+
+                  {!data && isError && (
+                    <p className="text-[0.625rem] text-red-600">
+                      Error getting platforms
+                    </p>
+                  )}
                 </TableCell>
 
                 <TableCell className="px-3 py-3">
                   <Input
-                    value={row.totalPrescriptions}
+                    value={
+                      reconciliation && row.id === 1
+                        ? String(totalPrescriptions)
+                        : row.totalPrescriptions
+                    }
                     onChange={(event) =>
                       updateRow(
                         row.id,

@@ -21,6 +21,7 @@ export type Prescription = {
   batch_id: string;
   created_at: string;
   updated_at: string;
+  total_prescription: number | null;
 };
 
 export type GetDoctorPrescriptions = Pagination & {

@@ -1,11 +1,11 @@
 import { getAllPrescriptionsApi } from "@/services/apis/prescriptions.api";
 import { format } from "date-fns";
+import { sortData } from "@/lib/sort-data";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import PrescriptionsProvider from "@/app/_components/doctor/prescriptions/contexts/prescriptions-provider";
 import SortAndDateFilter from "@/app/_components/doctor/prescriptions/sort-and-date-filter";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
-import { sortData } from "@/lib/sort-data";
 
 type DoctorPrescriptionsProps = {
   searchParamsValues: { [key: string]: string | undefined };
