@@ -70,7 +70,7 @@ export default async function AllUsers({
       </UsersProvider>
     );
   }
-  // const sortedUsers = sortData(res.body.users, sortKey, sortDir);
+
   return (
     <UsersProvider data={res.body}>
       <section className="space-y-4">
