@@ -6,9 +6,7 @@ import {
   getPlatformsApi,
   updatePlatformApi,
 } from "../apis/platforms.api";
-import { getPlatformsApi as getDoctorPlatformsApi } from "../apis/doctor-platforms.api";
 import { CreatePlatformPayload } from "@/types/platforms";
-import { GetPlatformsParams } from "@/types/doctor-platforms";
 
 export const getPlatformsAction = async () => {
   const user = await getUser();
@@ -83,15 +81,4 @@ export const updatePlatformAction = async (
     error: false,
     message: "Platform updated successfully",
   };
-};
-
-export const getPlatformsActionTwo = async (
-  params: GetPlatformsParams = {},
-) => {
-  try {
-    const res = await getDoctorPlatformsApi(params);
-    return { data: res, error: null };
-  } catch {
-    return { data: null, error: "Failed to fetch platforms" };
-  }
 };
