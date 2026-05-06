@@ -37,7 +37,7 @@ export const prescriptionColumns: Column<ColumnType>[] = [
     renderTitle: () => (
       <SortableHeader label="Prescriptions" sortKey="total_prescription" />
     ),
-    render: (value) => value as string,
+    render: (value) => (value as number) ?? 0,
   },
   {
     title: "Batch ID",

@@ -23,6 +23,8 @@ export default async function DoctorReconciliations({
     end_date,
   });
 
+  // console.log({ res: res.body });
+
   if (!res.ok) {
     const { message } = res.body;
     return (
@@ -35,8 +37,6 @@ export default async function DoctorReconciliations({
       </div>
     );
   }
-
-  // console.log({ res: res.body });
 
   const total = res.body.reconciliations.length;
 
@@ -124,6 +124,7 @@ export default async function DoctorReconciliations({
     sortKey,
     sortDir,
   );
+
   return (
     <ReconciliationProvider
       data={{ ...res.body, reconciliations: sortedReconciliations }}
