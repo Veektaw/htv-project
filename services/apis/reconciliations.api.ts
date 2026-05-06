@@ -38,6 +38,8 @@ export const getAllReconciliationsApi = ({
   start_date,
   end_date,
   search,
+  sort_by,
+  sort_order,
 }: GetDoctorReconciliationsParams) => {
   const params: Record<string, string> = {
     page,
@@ -48,9 +50,12 @@ export const getAllReconciliationsApi = ({
   if (start_date) params.start_date = start_date;
   if (end_date) params.end_date = end_date;
   if (search) params.keyword = search;
-
+if (sort_by) params.sort_by = sort_by;
+if (sort_order) params.sort_order = sort_order;
   const queryString = new URLSearchParams(params).toString();
   const url = `/admin/reconciliation/${queryString ? `?${queryString}` : ""}`;
+
+  console.log({ url });
 
   return Api.get<GetDoctorReconciliations>(url, true);
 };

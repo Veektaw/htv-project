@@ -1,12 +1,14 @@
 "use client";
 
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useTransition } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { addDoctorCommentAction } from "@/services/actions/invoices.actions";
 import { showSuccessToast, showErrorToast } from "@/lib/toast";
 import { Reconciliation } from "@/types/reconciliations";
 import { Spinner } from "@/app/_components/ui/spinner";
 import { Button } from "@/app/_components/ui/button";
+import { ActiveModal } from "../table/columns/actions";
+import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -17,19 +19,23 @@ import {
 import { Textarea } from "@/app/_components/ui/textarea";
 
 type AddNewCommentModalProps = {
-  children: ReactNode;
+  children?: ReactNode;
   reconciliation: Reconciliation;
+  activeModal?: ActiveModal;
+  setActiveModal?: (modal: ActiveModal) => void;
 };
 
 export default function AddNewCommentModal({
-  children,
   reconciliation,
+  activeModal,
+  children,
+  setActiveModal,
 }: AddNewCommentModalProps) {
+  const { refresh } = useRouter();
+  const [isPending, startTransition] = useTransition();
   const queryClient = useQueryClient();
 
-  const [open, setOpen] = useState(false);
   const [comment, setComment] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
 
   const handleAddComment = async () => {
     if (!comment.trim()) {
@@ -37,33 +43,34 @@ export default function AddNewCommentModal({
       return;
     }
 
-    try {
-      setIsLoading(true);
-      const result = await addDoctorCommentAction(
-        reconciliation.id,
-        comment,
-        "reconciliation",
-      );
-
-      if (result.success) {
-        queryClient.invalidateQueries({
-          queryKey: ["doctor-reconciliation-comments", reconciliation.id],
-        });
-        showSuccessToast("Comment was added successfully");
-        setComment("");
-        setOpen(false);
-      } else {
-        showErrorToast(result.error || "Failed to add comment");
+    startTransition(async () => {
+      try {
+        const result = await addDoctorCommentAction(reconciliation.id, comment);
+        if (result.success) {
+          refresh();
+          queryClient.invalidateQueries({
+            queryKey: ["reconciliation-comments", reconciliation.id],
+          });
+          showSuccessToast("Comment added successfully");
+          setActiveModal?.(null);
+          setComment("");
+        } else {
+          showErrorToast(result.error || "Failed to add comment");
+        }
+      } catch (error) {
+        showErrorToast("Failed to add comment");
+        console.error("Error adding comment:", error);
       }
-    } catch {
-      showErrorToast("An error occurred while adding the comment");
-    } finally {
-      setIsLoading(false);
-    }
+    });
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog
+      open={activeModal === "addComment"}
+      onOpenChange={(open) => {
+        if (!open) setActiveModal?.(null);
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
@@ -80,10 +87,10 @@ export default function AddNewCommentModal({
         <div className="space-y-4">
           <Textarea
             placeholder="Add a comment"
-            className="min-h-34.75 resize-none overflow-y-auto px-3.5 py-4"
+            className="resize-none px-3.5 py-4"
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            disabled={isLoading}
+            rows={20}
           />
           <div className="flex justify-end gap-2">
             <Button
@@ -91,9 +98,8 @@ export default function AddNewCommentModal({
               className="font-inter rounded-[44px] border border-[#BEC0CA] bg-white px-13 py-3 text-black hover:text-white"
               onClick={() => {
                 setComment("");
-                setOpen(false);
               }}
-              disabled={isLoading}
+              disabled={!comment.trim() || isPending}
             >
               Cancel
             </Button>
@@ -101,10 +107,9 @@ export default function AddNewCommentModal({
               className="font-inter flex items-center gap-2 rounded-[44px] bg-black p-3 px-13"
               variant="secondary"
               onClick={handleAddComment}
-              disabled={isLoading}
+              disabled={!comment.trim() || isPending}
             >
-              {isLoading && <Spinner className="h-4 w-4" />}
-              Add Comment
+              Add Comment {isPending && <Spinner />}
             </Button>
           </div>
         </div>

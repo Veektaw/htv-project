@@ -1,11 +1,11 @@
 import { getAllPrescriptionsApi } from "@/services/apis/prescriptions.api";
 import { format } from "date-fns";
+
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import PrescriptionsProvider from "@/app/_components/doctor/prescriptions/contexts/prescriptions-provider";
 import SortAndDateFilter from "@/app/_components/doctor/prescriptions/sort-and-date-filter";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
-import { sortData } from "@/lib/sort-data";
 
 type DoctorPrescriptionsProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -14,12 +14,15 @@ type DoctorPrescriptionsProps = {
 export default async function DoctorPrescriptions({
   searchParamsValues,
 }: DoctorPrescriptionsProps) {
-  const { page, platform, start_date, end_date } = searchParamsValues;
+  const { page, platform, start_date, end_date, sort_by, sort_order } =
+    searchParamsValues;
   const res = await getAllPrescriptionsApi({
     page,
     platform,
     start_date,
     end_date,
+    sort_by,
+    sort_order: sort_order as "asc" | "desc" | undefined,
   });
 
   if (!res.ok) {
@@ -117,16 +120,9 @@ export default async function DoctorPrescriptions({
       </PrescriptionsProvider>
     );
   }
-  const { sortKey, sortDir } = searchParamsValues;
-  const sortedPrescriptions = sortData(
-    res.body.prescriptions,
-    sortKey,
-    sortDir,
-  );
+
   return (
-    <PrescriptionsProvider
-      data={{ ...res.body, prescriptions: sortedPrescriptions }}
-    >
+    <PrescriptionsProvider data={res.body}>
       <section className="flex h-full flex-col gap-y-4">
         <SortAndDateFilter />
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">

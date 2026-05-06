@@ -14,7 +14,7 @@ export const userColumns: Column<ColumnType>[] = [
     title: "First Name",
     key: "first_name",
     renderTitle: () => (
-      <SortableHeader label="First Name" sortKey="first_name" />
+      <SortableHeader label="First Name" sort_by="first_name" />
     ),
     render: (value, record) => (
       <span className={cn(record.is_deactivated && "opacity-50")}>
@@ -25,7 +25,7 @@ export const userColumns: Column<ColumnType>[] = [
   {
     title: "Last Name",
     key: "last_name",
-    renderTitle: () => <SortableHeader label="Last Name" sortKey="last_name" />,
+    renderTitle: () => <SortableHeader label="Last Name" sort_by="last_name" />,
     render: (value, record) => (
       <span className={cn(record.is_deactivated && "opacity-50")}>
         {value as string}
@@ -35,7 +35,7 @@ export const userColumns: Column<ColumnType>[] = [
   {
     title: "Email",
     key: "email",
-    renderTitle: () => <SortableHeader label="Email" sortKey="email" />,
+    renderTitle: () => <SortableHeader label="Email" sort_by="email" />,
 
     render: (value, record) => (
       <span className={cn(record.is_deactivated && "opacity-50")}>
@@ -46,7 +46,7 @@ export const userColumns: Column<ColumnType>[] = [
   {
     title: "Role",
     key: "role",
-    renderTitle: () => <SortableHeader label="Role" sortKey="role" />,
+    renderTitle: () => <SortableHeader label="Role" sort_by="role" />,
     render: (value, record) => (
       <span className={cn("capitalize", record.is_deactivated && "opacity-50")}>
         {value as string}
@@ -57,7 +57,7 @@ export const userColumns: Column<ColumnType>[] = [
     title: "Status",
     key: "is_deactivated",
     renderTitle: () => (
-      <SortableHeader label="Status" sortKey="is_deactivated" />
+      <SortableHeader label="Status" sort_by="is_deactivated" />
     ),
     render: (value) => <UserStatus deactivatedStatus={value as boolean} />,
   },

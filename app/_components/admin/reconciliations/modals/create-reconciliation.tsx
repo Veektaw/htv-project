@@ -157,7 +157,7 @@ export default function CreateReconciliationModal({}: {
         outstanding: parseFloat(rest.outstanding),
         manual_paid: parseFloat(rest.manual_paid),
         advance_amount: parseFloat(rest.advance_amount),
-        prescription_count: parseInt(rest.prescription_count),
+        prescription_count: parseFloat(rest.prescription_count),
         period_month: rest.period_month,
         period_month_end: rest.period_month_end,
         note: rest.note || "",
@@ -397,7 +397,31 @@ export default function CreateReconciliationModal({}: {
                         </th>
                       </tr>
                     </thead>
-                    <tbody></tbody>
+                    <tbody>
+                      <tr
+                        key={"prescription_count"}
+                        className="border-b border-gray-100 last:border-0"
+                      >
+                        <td className="px-4 py-3 text-sm text-gray-600">
+                          {"Prescription Count"}
+                        </td>
+                        <td className="px-4 py-3 text-right">
+                          <Input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            {...register("prescription_count")}
+                            placeholder="0.00"
+                            className="ml-auto h-8 w-36 rounded-lg border-gray-200 text-right text-sm focus:ring-2 focus:ring-black"
+                          />
+                          {errors["prescription_count"] && (
+                            <p className="mt-1 text-xs text-red-500">
+                              {errors["prescription_count"]?.message}
+                            </p>
+                          )}
+                        </td>
+                      </tr>
+                    </tbody>
                   </table>
                 </div>
                 <div>

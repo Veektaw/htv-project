@@ -1,10 +1,9 @@
-import { getAllInvoicesApi } from "@/services/apis/invoices.api";
+import { getAdminInvoicesApi } from "@/services/apis/invoices.api";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import InvoicesProvider from "./contexts/invoices-provider";
 import SearchWrapper from "./search-wrapper";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
-import { sortData } from "@/lib/sort-data";
 
 type AdminInvoicesProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -13,11 +12,13 @@ type AdminInvoicesProps = {
 export default async function AdminInvoices({
   searchParamsValues,
 }: AdminInvoicesProps) {
-  const { page, search, sortKey, sortDir } = searchParamsValues;
+  const { page, search, sort_by, sort_order } = searchParamsValues;
 
-  const result = await getAllInvoicesApi({
+  const result = await getAdminInvoicesApi({
     page,
     search,
+    sort_by,
+    sort_order: sort_order as "asc" | "desc" | undefined,
   });
 
   if (!result.ok) {
@@ -37,9 +38,7 @@ export default async function AdminInvoices({
     return (
       <InvoicesProvider data={result.body}>
         <section className="flex size-full flex-col gap-y-4">
-          {" "}
-          {/* Added flex-col */}
-          <SearchWrapper /> {/* Added missing SearchWrapper */}
+          <SearchWrapper />
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
@@ -53,10 +52,9 @@ export default async function AdminInvoices({
       </InvoicesProvider>
     );
   }
-  const sortedInvoices = sortData(result.body.invoices, sortKey, sortDir);
 
   return (
-    <InvoicesProvider data={{ ...result.body, invoices: sortedInvoices }}>
+    <InvoicesProvider data={result.body}>
       <section className="flex min-h-full flex-col gap-y-4">
         <SearchWrapper />
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">

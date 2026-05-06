@@ -4,24 +4,23 @@ import UsersProvider from "./contexts/users-provider";
 import SearchWrapper from "./search-wrapper";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
-import { sortData } from "@/lib/sort-data";
 
 type AllUsersProps = {
   search?: string;
   page?: string;
   role?: string;
-  sortKey?: string;
-  sortDir?: string;
+  sort_by?: string;
+  sort_order?: string;
 };
 
 export default async function AllUsers({
   search,
   page,
   role,
-  sortKey,
-  sortDir,
+  sort_by,
+  sort_order,
 }: AllUsersProps) {
-  const res = await getUsersApi({ search, page, role });
+  const res = await getUsersApi({ search, page, role, sort_by, sort_order });
 
   if (!res.ok) {
     const { message } = res.body;
@@ -71,9 +70,9 @@ export default async function AllUsers({
       </UsersProvider>
     );
   }
-  const sortedUsers = sortData(res.body.users, sortKey, sortDir);
+  // const sortedUsers = sortData(res.body.users, sortKey, sortDir);
   return (
-    <UsersProvider data={{ ...res.body, users: sortedUsers }}>
+    <UsersProvider data={res.body}>
       <section className="space-y-4">
         <SearchWrapper />
         <TableWrapper />

@@ -15,15 +15,20 @@ import {
 } from "@/app/_components/ui/dialog";
 import Image from "next/image";
 import arrowDown from "@/public/svgs/arrow-down.svg";
+import { ActiveModal } from "../table/columns/actions";
 
 type ViewCommentHistoryModalProps = {
-  children: ReactNode;
+  children?: ReactNode;
   invoice: Invoice;
+  activeModal?: ActiveModal;
+  setActiveModal?: (modal: ActiveModal) => void;
 };
 
 export default function ViewCommentHistoryModal({
   children,
   invoice,
+  activeModal,
+  setActiveModal,
 }: ViewCommentHistoryModalProps) {
   const [expandedCommentId, setExpandedCommentId] = useState<string | null>(
     null,
@@ -39,7 +44,12 @@ export default function ViewCommentHistoryModal({
   };
 
   return (
-    <Dialog>
+    <Dialog
+      open={activeModal === "viewComments"}
+      onOpenChange={(open) => {
+        if (!open) setActiveModal?.(null);
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent
         aria-describedby={undefined}
@@ -57,13 +67,13 @@ export default function ViewCommentHistoryModal({
               <Spinner className="size-6" />
               <span className="text-sm text-gray-600">Loading comments...</span>
             </div>
-          ) : isSuccess && data.data.length === 0 ? (
+          ) : isSuccess && data && data.data.length === 0 ? (
             <div className="flex items-center justify-center py-8">
               <p className="text-sm text-gray-500">
-                No comments found for this invoice.
+                No comments found for this Invoice.
               </p>
             </div>
-          ) : isSuccess ? (
+          ) : isSuccess && data ? (
             <div className="flex flex-col gap-1.5">
               {data.data.map((comment) => {
                 const isExpanded = expandedCommentId === comment.id;

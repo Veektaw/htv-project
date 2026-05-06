@@ -15,14 +15,6 @@ export default function useManualInvoice({
   const form = useForm<ManualInvoiceSchemaType>({
     resolver: zodResolver(manualInvoiceFormSchema),
     defaultValues: {
-      name: "",
-      address: "",
-      invoiceId: "",
-      dateTime: "",
-      platform: "",
-      amount: 0,
-      adyenPaid: "",
-      period_month: "",
       ...defaultValues,
     },
   });

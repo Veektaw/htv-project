@@ -5,34 +5,34 @@ import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 
 export default function SortableHeader({
   label,
-  sortKey,
+  sort_by,
 }: {
   label: string;
-  sortKey: string;
+  sort_by: string;
 }) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const currentSortKey = searchParams.get("sortKey");
-  const currentSortDir = searchParams.get("sortDir");
+  const currentSortKey = searchParams.get("sort_by");
+  const currentSortDir = searchParams.get("sort_order");
 
   const handleSort = () => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (currentSortKey === sortKey) {
+    if (currentSortKey === sort_by) {
       // Toggle direction
-      params.set("sortDir", currentSortDir === "asc" ? "desc" : "asc");
+      params.set("sort_order", currentSortDir === "asc" ? "desc" : "asc");
     } else {
       // New column — default to asc
-      params.set("sortKey", sortKey);
-      params.set("sortDir", "asc");
+      params.set("sort_by", sort_by);
+      params.set("sort_order", "asc");
     }
 
     router.push(`${pathname}?${params.toString()}`);
   };
 
-  const isActive = currentSortKey === sortKey;
+  const isActive = currentSortKey === sort_by;
 
   return (
     <button

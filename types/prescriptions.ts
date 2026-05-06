@@ -7,6 +7,9 @@ export type GetDoctorPrescriptionsParams = {
   platform?: string;
   start_date?: string;
   end_date?: string;
+  search?: string;
+  sort_by?: string;
+  sort_order?: "asc" | "desc";
 };
 
 export type Prescription = {
@@ -21,6 +24,7 @@ export type Prescription = {
   batch_id: string;
   created_at: string;
   updated_at: string;
+  total_prescription: number | null;
 };
 
 export type GetDoctorPrescriptions = Pagination & {

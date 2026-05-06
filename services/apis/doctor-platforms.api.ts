@@ -7,7 +7,7 @@ import {
 export const getPlatformsApi = ({
   page = "1",
   limit = "10",
-}: GetPlatformsParams = {}) => {
+}: GetPlatformsParams) => {
   const params: Record<string, string> = {
     page,
   };
