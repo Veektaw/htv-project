@@ -12,9 +12,10 @@ type ColumnType = Reconciliation & { actions?: ReactNode };
 export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Name",
-    key: "name",
-    renderTitle: () => <SortableHeader label="Name" sortKey="full_name" />,
+    key: "full_name",
+    renderTitle: () => <SortableHeader label="Name" sortKey="first_name" />,
     render: (_, record) => record.user.full_name,
+    // render: (value) => value as string,
   },
   {
     title: "Date",

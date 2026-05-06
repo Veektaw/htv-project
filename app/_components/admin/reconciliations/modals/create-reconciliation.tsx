@@ -62,6 +62,12 @@ const createReconciliationSchema = z.object({
     .refine((v) => !isNaN(Number(v)) && Number(v) >= 0, {
       message: "Must be a positive number",
     }),
+  prescription_count: z
+    .string()
+    .min(1, "Prescription count is required")
+    .refine((v) => Number.isInteger(Number(v)) && Number(v) >= 0, {
+      message: "Must be a positive integer",
+    }),
   period_month: z.string().min(1, "Period month is required"),
   period_month_end: z.string().min(1, "Period month end is required"),
   note: z.string(),
@@ -96,6 +102,7 @@ export default function CreateReconciliationModal({}: {
       advance_amount: "0",
       outstanding: "0",
       manual_paid: "0",
+      prescription_count: "0",
       period_month: format(new Date(), "yyyy-MM"),
       period_month_end: format(new Date(), "yyyy-MM"),
     },
@@ -150,6 +157,7 @@ export default function CreateReconciliationModal({}: {
         outstanding: parseFloat(rest.outstanding),
         manual_paid: parseFloat(rest.manual_paid),
         advance_amount: parseFloat(rest.advance_amount),
+        prescription_count: parseInt(rest.prescription_count),
         period_month: rest.period_month,
         period_month_end: rest.period_month_end,
         note: rest.note || "",
@@ -376,6 +384,22 @@ export default function CreateReconciliationModal({}: {
                 <hr className="border-gray-200" />
 
                 {/* Amounts Table */}
+
+                <div>
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-gray-50">
+                        <th className="rounded-tl-lg px-4 py-3 text-left text-xs font-medium text-gray-600">
+                          Prescription
+                        </th>
+                        <th className="rounded-tr-lg px-4 py-3 text-right text-xs font-medium text-gray-600">
+                          Count
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
                 <div>
                   <table className="w-full text-sm">
                     <thead>
