@@ -68,8 +68,8 @@ export default async function RecentInvoices({
 
   // console.log({ res: res.body });
 
-  const sorted = res.body.invoices;
-  const recent = sorted.slice(0, 5);
+  const recent = res.body.invoices.slice(0, 5);
+
   return (
     <section className="h-full">
       <TableComponent
