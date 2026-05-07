@@ -80,7 +80,6 @@ export default function AccountInformation({
               brand_partner: p.brand_partner,
               address: p.address,
               id: p.id,
-              // external_user_id: p.external_user_id,
               platform_account_recipient_email:
                 p.platform_account_recipient_email ?? "",
             })),

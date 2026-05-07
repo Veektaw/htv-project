@@ -12,10 +12,12 @@ type InvoicesProps = {
 export default async function RecentInvoices({
   searchParamsValues,
 }: InvoicesProps) {
-  const { status } = searchParamsValues;
+  const { status, sort_by, sort_order } = searchParamsValues;
 
   const res = await getDoctorInvoicesApi({
     status,
+    sort_by,
+    sort_order: sort_order as "asc" | "desc" | undefined,
   });
 
   if (!res.ok) {

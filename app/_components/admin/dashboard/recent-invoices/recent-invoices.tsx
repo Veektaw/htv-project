@@ -4,8 +4,6 @@ import { statuses } from "../../invoices/table/columns/status";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import TableComponent from "../../../shared/table-component/table-component";
 import { InvoiceStatus } from "@/types/invoices";
-import { sortData } from "@/lib/sort-data";
-
 type InvoicesProps = {
   searchParamsValues: { [key: string]: string | undefined };
 };
@@ -13,10 +11,12 @@ type InvoicesProps = {
 export default async function RecentInvoices({
   searchParamsValues,
 }: InvoicesProps) {
-  const { status } = searchParamsValues;
+  const { status, sort_by, sort_order } = searchParamsValues;
 
   const res = await getAllInvoicesApi({
     status,
+    sort_by,
+    sort_order: sort_order as "asc" | "desc" | undefined,
   });
 
   if (!res.ok) {
@@ -66,9 +66,9 @@ export default async function RecentInvoices({
   }
 
   // console.log({ res: res.body });
-  const { sortKey, sortDir } = searchParamsValues;
-  const sorted = sortData(res.body.invoices, sortKey, sortDir);
-  const recent = sorted.slice(0, 5);
+
+  const recent = res.body.invoices.slice(0, 5);
+
   return (
     <section className="h-full">
       <TableComponent

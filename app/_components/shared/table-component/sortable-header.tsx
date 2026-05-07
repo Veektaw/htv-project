@@ -6,21 +6,21 @@ import { cn } from "@/lib/utils";
 
 interface SortableHeaderProps {
   label: string;
-  sortKey: string;
+  sort_by: string;
 }
 
 export default function SortableHeader({
   label,
-  sortKey,
+  sort_by,
 }: SortableHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const currentSortKey = searchParams.get("sortKey");
-  const currentSortDir = searchParams.get("sortDir");
+  const currentSortKey = searchParams.get("sort_by");
+  const currentSortDir = searchParams.get("sort_order");
 
-  const isActive = currentSortKey === sortKey;
+  const isActive = currentSortKey === sort_by;
   const isAsc = isActive && currentSortDir === "asc";
   const isDesc = isActive && currentSortDir === "desc";
 
@@ -29,16 +29,16 @@ export default function SortableHeader({
 
     if (!isActive || currentSortDir === null) {
       // Start with asc
-      params.set("sortKey", sortKey);
-      params.set("sortDir", "asc");
+      params.set("sort_by", sort_by);
+      params.set("sort_order", "asc");
     } else if (isAsc) {
       // Move to desc
-      params.set("sortKey", sortKey);
-      params.set("sortDir", "desc");
+      params.set("sort_by", sort_by);
+      params.set("sort_order", "desc");
     } else {
       // Reset — remove sort params
-      params.delete("sortKey");
-      params.delete("sortDir");
+      params.delete("sort_by");
+      params.delete("sort_order");
     }
 
     router.push(`${pathname}?${params.toString()}`);

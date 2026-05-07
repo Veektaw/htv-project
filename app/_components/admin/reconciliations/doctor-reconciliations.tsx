@@ -6,7 +6,6 @@ import TableWrapper from "./table/table-wrapper";
 import SearchWrapper from "./search-wrapper";
 import SortAndDateFilter from "../../doctor/prescriptions/sort-and-date-filter";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
-import { sortData } from "@/lib/sort-data";
 
 type DoctorPrescriptionsProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -15,13 +14,16 @@ type DoctorPrescriptionsProps = {
 export default async function DoctorReconciliations({
   searchParamsValues,
 }: DoctorPrescriptionsProps) {
-  const { page, platform, start_date, end_date, search } = searchParamsValues;
+  const { page, platform, start_date, end_date, search, sort_by, sort_order } =
+    searchParamsValues;
   const res = await getAllReconciliationsApi({
     page,
     platform,
     start_date,
     end_date,
     search,
+    sort_by,
+    sort_order: sort_order as "asc" | "desc" | undefined,
   });
 
   if (!res.ok) {
@@ -228,16 +230,9 @@ export default async function DoctorReconciliations({
       </ReconciliationsProvider>
     );
   }
-  const { sortKey, sortDir } = searchParamsValues;
-  const sortedReconciliations = sortData(
-    res.body.reconciliations,
-    sortKey,
-    sortDir,
-  );
+
   return (
-    <ReconciliationsProvider
-      data={{ ...res.body, reconciliations: sortedReconciliations }}
-    >
+    <ReconciliationsProvider data={res.body}>
       <section className="flex h-full flex-col gap-y-4">
         <div className="flex justify-between gap-3">
           <SortAndDateFilter />

@@ -3,7 +3,6 @@ import TablePaginationWrapper from "./table/table-pagination-wrapper";
 import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import PaymentsProvider from "./contexts/payments-provider";
 import { getDoctorPaymentsApi } from "@/services/apis/doctors-payments.api";
-import { sortData } from "@/lib/sort-data";
 
 type PaymentsListProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -12,9 +11,13 @@ type PaymentsListProps = {
 export default async function PaymentsList({
   searchParamsValues,
 }: PaymentsListProps) {
-  const { page, user_id, sortKey, sortDir } = searchParamsValues;
+  const { page, user_id, sort_by, sort_order } = searchParamsValues;
 
-  const res = await getDoctorPaymentsApi({ page });
+  const res = await getDoctorPaymentsApi({
+    page,
+    sort_by,
+    sort_order: sort_order as "asc" | "desc" | undefined,
+  });
 
   if (!res.ok) {
     const { message } = res.body;
@@ -61,10 +64,8 @@ export default async function PaymentsList({
     );
   }
 
-  const sortedPayments = sortData(res.body.payments, sortKey, sortDir);
-
   return (
-    <PaymentsProvider data={{ ...res.body, payments: sortedPayments }}>
+    <PaymentsProvider data={res.body}>
       <section className="flex h-full flex-col gap-y-4">
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">
           <TableWrapper />

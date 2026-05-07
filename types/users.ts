@@ -11,6 +11,8 @@ export type GetUsersParams = {
   search?: string;
   page?: string;
   role?: string;
+  sort_by?: string;
+  sort_order?: string;
 };
 
 export type GetUsersResponse = Pagination & {

@@ -9,16 +9,18 @@ import {
   UpdateUserProfilePayload,
 } from "@/types/users";
 
-export const getUsersApi = ({ search, page = "1", role }: GetUsersParams) => {
+export const getUsersApi = ({ search, page = "1", role, sort_by, sort_order }: GetUsersParams) => {
   const params: Record<string, string> = {
     page,
   };
 
   if (search) params.keyword = search;
   if (role) params.role = role;
-
+  if (sort_by) params.sort_by = sort_by;
+  if (sort_order) params.sort_order = sort_order;
   const queryString = new URLSearchParams(params).toString();
   const url = `/admin/users/${queryString ? `?${queryString}` : ""}`;
+  console.log({ url });
 
   return Api.get<GetUsersResponse>(url, true);
 };
