@@ -3,7 +3,6 @@ import { Empty, EmptyContent } from "@/app/_components/ui/empty";
 import InvoicesProvider from "./contexts/invoices-provider";
 import TableWrapper from "./table/table-wrapper";
 import TablePaginationWrapper from "./table/table-pagination-wrapper";
-import { sortData } from "@/lib/sort-data";
 
 type InvoicesListProps = {
   searchParamsValues: { [key: string]: string | undefined };
@@ -12,10 +11,13 @@ type InvoicesListProps = {
 export default async function DoctorInvoices({
   searchParamsValues,
 }: InvoicesListProps) {
-  const { page, user_id, sortKey, sortDir } = searchParamsValues;
+  const { page, user_id, sort_by, sort_order } = searchParamsValues;
 
-  const res = await getDoctorInvoicesApi({ page, user_id });
-
+  const res = await getDoctorInvoicesApi({
+    page,
+    sort_by,
+    sort_order: sort_order as "asc" | "desc" | undefined,
+  });
   if (!res.ok) {
     const { message } = res.body;
     return (
@@ -61,10 +63,8 @@ export default async function DoctorInvoices({
     );
   }
 
-  const sortedInvoices = sortData(res.body.invoices, sortKey, sortDir);
-
   return (
-    <InvoicesProvider data={{ ...res.body, invoices: sortedInvoices }}>
+    <InvoicesProvider data={res.body}>
       <section className="flex h-full flex-col gap-y-4">
         <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">
           <TableWrapper />

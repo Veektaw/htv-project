@@ -33,6 +33,8 @@ export type GetInvoicesParams = {
   invoice_id?: string;
   search?: string;
   status?: string;
+  sort_by?: string;
+  sort_order?: "asc" | "desc";
 };
 
 export type GetInvoicesResponse = {
@@ -52,6 +54,8 @@ export type GetDoctorInvoicesParams = {
   end_date?: string;
   search?: string;
   status?: string;
+  sort_by?: string;
+  sort_order?: "asc" | "desc";
 };
 
 export type CreateManualInvoicePayload = {

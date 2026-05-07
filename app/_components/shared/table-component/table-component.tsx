@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, Suspense } from "react";
 import { cn, generateRandomId } from "@/lib/utils";
 import {
   Table,
@@ -35,7 +35,7 @@ export default function TableComponent<T extends Record<string, any>>(
     <>
       <Table
         className={cn(
-          "min-w-200 text-sm font-medium group-has-data-[datefilterpending=true]:animate-pulse group-has-data-[paginationpending=true]:animate-pulse group-has-data-[platformfilterpending=true]:animate-pulse group-has-data-[rolefilterpending=true]:animate-pulse group-has-data-[searchpending=true]:animate-pulse group-has-data-[statusfilterpending=true]:animate-pulse",
+          "min-w-200 text-sm font-medium group-has-data-[datefilterpending=true]:animate-pulse group-has-data-[paginationpending=true]:animate-pulse group-has-data-[platformfilterpending=true]:animate-pulse group-has-data-[rolefilterpending=true]:animate-pulse group-has-data-[searchpending=true]:animate-pulse group-has-data-[sortbypending=true]:animate-pulse group-has-data-[statusfilterpending=true]:animate-pulse",
           className,
         )}
       >
@@ -45,7 +45,9 @@ export default function TableComponent<T extends Record<string, any>>(
           <TableRow>
             {columns.map((column, index) => (
               <TableHead key={index} className="px-8 py-4 text-left text-black">
-                {column.renderTitle ? column.renderTitle() : column.title}
+                <Suspense fallback={<span>{column.title}</span>}>
+                  {column.renderTitle ? column.renderTitle() : column.title}
+                </Suspense>
               </TableHead>
             ))}
           </TableRow>
@@ -96,7 +98,9 @@ function MobileCards<T extends Record<string, any>>({
           key={index}
           className="bg-DesertStorm-100 p-3 text-xs font-medium"
         >
-          {column.renderTitle ? column.renderTitle() : column.title}
+          <Suspense fallback={<span>{column.title}</span>}>
+            {column.renderTitle ? column.renderTitle() : column.title}
+          </Suspense>
         </header>
       ))}
 

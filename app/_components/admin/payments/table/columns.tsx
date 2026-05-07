@@ -12,26 +12,26 @@ type ColumnType = GetAdminPayments & { actions?: ReactNode };
 export const paymentColumns: Column<ColumnType>[] = [
   {
     title: "Name",
-    key: "doctor",
-    renderTitle: () => <SortableHeader label="Name" sortKey="doctor" />,
+    key: "full_name",
+    renderTitle: () => <SortableHeader label="Name" sort_by="full_name" />,
     render: (_, record) => record.user.full_name,
   },
   {
     title: "Log Date",
     key: "created_at",
-    renderTitle: () => <SortableHeader label="Log Date" sortKey="created_at" />,
+    renderTitle: () => <SortableHeader label="Log Date" sort_by="created_at" />,
     render: (_, record) => format(new Date(record.created_at), "dd/MM/yyyy"),
   },
   {
-    title: "Platform",
+    title: "Partner",
     key: "platform",
-    renderTitle: () => <SortableHeader label="Platform" sortKey="platform" />,
+    renderTitle: () => <SortableHeader label="Partner" sort_by="platform" />,
     render: (_, record) => record.platform,
   },
   {
     title: "Amount",
     key: "amount",
-    renderTitle: () => <SortableHeader label="Amount" sortKey="amount" />,
+    renderTitle: () => <SortableHeader label="Amount" sort_by="amount" />,
     render: (_, record) =>
       `${record.amount_paid.toLocaleString("en-US", { style: "currency", currency: "EUR" })}`,
   },
@@ -40,7 +40,7 @@ export const paymentColumns: Column<ColumnType>[] = [
     title: "Payment Date",
     key: "payment_date",
     renderTitle: () => (
-      <SortableHeader label="Payment Date" sortKey="payment_date" />
+      <SortableHeader label="Payment Date" sort_by="payment_date" />
     ),
     render: (_, record) =>
       record.payment_date
@@ -51,21 +51,21 @@ export const paymentColumns: Column<ColumnType>[] = [
   {
     title: "Status",
     key: "status",
-    renderTitle: () => <SortableHeader label="Status" sortKey="status" />,
+    renderTitle: () => <SortableHeader label="Status" sort_by="status" />,
     render: (value) => <Status value={value as InvoiceStatus} />,
   },
   {
     title: "Payment Method",
     key: "payment_method",
     renderTitle: () => (
-      <SortableHeader label="Payment Method" sortKey="payment_method" />
+      <SortableHeader label="Payment Method" sort_by="payment_method" />
     ),
     render: (_, record) => record.payment_type || "N/A",
   },
   {
     title: "Batch ID",
     key: "batch_id",
-    renderTitle: () => <SortableHeader label="Batch ID" sortKey="batch_id" />,
+    renderTitle: () => <SortableHeader label="Batch ID" sort_by="batch_id" />,
     render: (_, record) => record.batch_id || "N/A",
   },
 

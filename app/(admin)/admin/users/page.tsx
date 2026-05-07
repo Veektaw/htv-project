@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default async function page({ searchParams }: PageParams) {
-  const { search, page, role, sortKey, sortDir } = await searchParams;
+  const { search, page, role, sort_by, sort_order } = await searchParams;
 
   return (
     <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6">
@@ -28,8 +28,8 @@ export default async function page({ searchParams }: PageParams) {
             search={search}
             page={page}
             role={role}
-            sortDir={sortDir}
-            sortKey={sortKey}
+            sort_by={sort_by}
+            sort_order={sort_order}
           />
         </Suspense>
       </section>

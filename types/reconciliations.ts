@@ -8,6 +8,8 @@ export type GetDoctorReconciliationsParams = {
   start_date?: string;
   end_date?: string;
   search?: string;
+  sort_by?: string;
+  sort_order?: "asc" | "desc";
 };
 
 export type ReconciliationStatus =
@@ -43,6 +45,7 @@ export type AdminCreateReconciliationParams = {
   note: string;
   comment: string;
   period_month: string;
+  prescription_count: number;
   period_month_end: string;
 };
 export type GetDoctorReconciliations = Pagination & {

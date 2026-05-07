@@ -16,6 +16,8 @@ export type GetDoctorPaymentsParams = {
   end_date?: string;
   search?: string;
   status?: string;
+  sort_by?: string;
+  sort_order?: "asc" | "desc";
 };
 
 export type Payment = {

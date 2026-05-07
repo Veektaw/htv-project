@@ -49,6 +49,7 @@ import Image from "next/image";
 import ActivateUserModal from "@/app/_components/admin/users/modals/activate-user";
 import plus from "@/public/svgs/plus.svg";
 import minus from "@/public/svgs/minus.svg";
+import { cn } from "@/lib/utils";
 
 export default function UserDetails({ user }: { user: User }) {
   const [canEdit, setCanEdit] = useState(false);
@@ -650,7 +651,15 @@ export default function UserDetails({ user }: { user: User }) {
                                 control={form.control}
                                 render={({ field, fieldState }) => {
                                   return (
-                                    <FieldSet className="gap-2">
+                                    <FieldSet
+                                      className={cn(
+                                        "gap-2",
+                                        commissionOptionIndex ===
+                                          commissionOptions.length - 1 &&
+                                          commissionOptions.length % 2 !== 0 &&
+                                          "lg:col-start-2",
+                                      )}
+                                    >
                                       <Field
                                         key={commissionOptionIndex}
                                         orientation="horizontal"

@@ -13,20 +13,20 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Date",
     key: "period_month",
-    renderTitle: () => <SortableHeader label="Date" sortKey="period_month" />,
+    renderTitle: () => <SortableHeader label="Date" sort_by="period_month" />,
     render: (value) => formatPrescriptionDate(value as string),
   },
   {
-    title: "Platform",
+    title: "Partner",
     key: "platform",
-    renderTitle: () => <SortableHeader label="Partner" sortKey="platform" />,
+    renderTitle: () => <SortableHeader label="Partner" sort_by="platform" />,
     render: (value) => value as string,
   },
   {
     title: "Est. Commissions",
     key: "gross_amount",
     renderTitle: () => (
-      <SortableHeader label="Est. Commissions" sortKey="gross_amount" />
+      <SortableHeader label="Est. Commissions" sort_by="gross_amount" />
     ),
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
@@ -37,7 +37,7 @@ export const reconciliationColumns: Column<ColumnType>[] = [
     title: "Adyen Paid",
     key: "adyen_paid",
     renderTitle: () => (
-      <SortableHeader label="Adyen Paid" sortKey="adyen_paid" />
+      <SortableHeader label="Adyen Paid" sort_by="adyen_paid" />
     ),
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
@@ -48,21 +48,21 @@ export const reconciliationColumns: Column<ColumnType>[] = [
     title: "Manual Paid",
     key: "manual_paid",
     renderTitle: () => (
-      <SortableHeader label="Manual Paid" sortKey="manual_paid" />
+      <SortableHeader label="Manual Paid" sort_by="manual_paid" />
     ),
     render: () => "€0.00",
   },
   {
     title: "Date paid",
     key: "date_paid",
-    renderTitle: () => <SortableHeader label="Date paid" sortKey="date_paid" />,
+    renderTitle: () => <SortableHeader label="Date paid" sort_by="date_paid" />,
     render: () => "--",
   },
   {
     title: "Outstanding",
     key: "outstanding",
     renderTitle: () => (
-      <SortableHeader label="Outstanding" sortKey="outstanding" />
+      <SortableHeader label="Outstanding" sort_by="outstanding" />
     ),
     render: (value) =>
       `€${(value as number).toLocaleString("en-US", {
@@ -72,7 +72,7 @@ export const reconciliationColumns: Column<ColumnType>[] = [
   {
     title: "Status",
     key: "status",
-    renderTitle: () => <SortableHeader label="Status" sortKey="status" />,
+    renderTitle: () => <SortableHeader label="Status" sort_by="status" />,
     render: (value) => <Status value={value as ReconciliationStatus} />,
   },
   {
