@@ -11,7 +11,7 @@ export const getDoctorPrescriptionsApi = ({
   start_date,
   end_date,
   sort_by,
-  sort_order
+  sort_order,
 }: GetDoctorPrescriptionsParams) => {
   const params: Record<string, string> = {
     page,
@@ -37,7 +37,7 @@ export const getAllPrescriptionsApi = ({
   end_date,
   search,
   sort_by,
-  sort_order
+  sort_order,
 }: GetDoctorPrescriptionsParams) => {
   const params: Record<string, string> = {
     page,
