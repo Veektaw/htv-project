@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { ArrowUp, ArrowDown, ArrowUpDown } from "lucide-react";
 
@@ -10,6 +11,7 @@ export default function SortableHeader({
   label: string;
   sort_by: string;
 }) {
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,13 +31,16 @@ export default function SortableHeader({
       params.set("sort_order", "asc");
     }
 
-    router.push(`${pathname}?${params.toString()}`);
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
   };
 
   const isActive = currentSortKey === sort_by;
 
   return (
     <button
+      data-sortbypending={isPending}
       onClick={handleSort}
       className="flex items-center gap-1 font-medium"
     >
