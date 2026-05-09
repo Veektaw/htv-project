@@ -63,7 +63,7 @@ export default function LogOutModal({ children }: { children: ReactNode }) {
               className="h-12 w-53"
               disabled={isPending}
             >
-              Yes, Log me out
+              Yes, log me out
               {isPending && <Spinner data-icon="inline-start" />}
             </Button>
           </form>

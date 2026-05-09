@@ -1,8 +1,9 @@
-import { AuthorizationHeader, OptionsType, ResponseType } from "@/types/api";
 import { getUserSession } from "../auth";
+import { AuthorizationHeader, OptionsType, ResponseType } from "@/types/api";
 
 export class Api {
   static baseUrl = process.env.BASE_URL!;
+  static API_BASE_URL = process.env.APP_URL!;
 
   private static async getToken() {
     const userSession = await getUserSession();
@@ -147,13 +148,12 @@ export class Api {
     const headers = await this.getHeaders({ auth, customHeader });
     const body = this.getRequestBody(options, headers);
 
-    // console.log({ url: baseUrl + options.url, method: options.method });
-
     try {
       const response = await fetch(baseUrl + options.url, {
         method: options.method,
         headers,
         body,
+        cache: "no-cache",
       });
 
       return this.handleResponse<R>(response);

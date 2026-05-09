@@ -1,5 +1,6 @@
 import { Button } from "../../ui/button";
 import CreateNewUserModal from "./modals/create-new-user";
+import RoleFilter from "./role-filter";
 
 export default function SubHeader() {
   return (
@@ -13,6 +14,8 @@ export default function SubHeader() {
           </Button>
         </CreateNewUserModal>
       </div>
+
+      <RoleFilter />
     </div>
   );
 }

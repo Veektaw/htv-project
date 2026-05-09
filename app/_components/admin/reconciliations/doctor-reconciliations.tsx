@@ -1,0 +1,249 @@
+import { getAllReconciliationsApi } from "@/services/apis/reconciliations.api";
+import { format } from "date-fns";
+import { Empty, EmptyContent } from "@/app/_components/ui/empty";
+import ReconciliationsProvider from "../../doctor/reconciliations/contexts/reconciliations-provider";
+import TableWrapper from "./table/table-wrapper";
+import SearchWrapper from "./search-wrapper";
+import SortAndDateFilter from "../../doctor/prescriptions/sort-and-date-filter";
+import TablePaginationWrapper from "./table/table-pagination-wrapper";
+
+type DoctorPrescriptionsProps = {
+  searchParamsValues: { [key: string]: string | undefined };
+};
+
+export default async function DoctorReconciliations({
+  searchParamsValues,
+}: DoctorPrescriptionsProps) {
+  const { page, platform, start_date, end_date, search, sort_by, sort_order } =
+    searchParamsValues;
+  const res = await getAllReconciliationsApi({
+    page,
+    platform,
+    start_date,
+    end_date,
+    search,
+    sort_by,
+    sort_order: sort_order as "asc" | "desc" | undefined,
+  });
+
+  if (!res.ok) {
+    const { message } = res.body;
+    return (
+      <div className="flex size-full items-center justify-center p-2">
+        <div className="w-full max-w-150.25">
+          <p className="text-center text-sm font-medium text-black">
+            {message || "Error getting reconciliations"}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // console.log({ res: res.body.reconciliations });
+
+  const total = res.body.reconciliations.length;
+
+  if (platform && start_date && end_date && search && total === 0) {
+    return (
+      <ReconciliationsProvider data={res.body}>
+        <section className="flex size-full flex-col gap-y-4">
+          <div className="flex justify-between gap-3">
+            <SortAndDateFilter />
+            <SearchWrapper />
+          </div>
+
+          <Empty className="flex flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No reconciliations found for{" "}
+                <span className="font-medium">&quot;{platform}&quot;</span> or{" "}
+                <span className="font-medium">&quot;{search}&quot;</span> in the
+                date range of{" "}
+                <span className="font-medium">
+                  {format(new Date(start_date), "dd/MM/yyyy")} to{" "}
+                  {format(new Date(end_date), "dd/MM/yyyy")}
+                </span>
+              </p>
+            </EmptyContent>
+          </Empty>
+        </section>
+      </ReconciliationsProvider>
+    );
+  }
+
+  if (platform && start_date && end_date && total === 0) {
+    return (
+      <ReconciliationsProvider data={res.body}>
+        <section className="flex size-full flex-col gap-y-4">
+          <div className="flex justify-between gap-3">
+            <SortAndDateFilter />
+            <SearchWrapper />
+          </div>
+
+          <Empty className="flex flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No reconciliations found for{" "}
+                <span className="font-medium">&quot;{platform}&quot;</span> in
+                the date range of{" "}
+                <span className="font-medium">
+                  {format(new Date(start_date), "dd/MM/yyyy")} to{" "}
+                  {format(new Date(end_date), "dd/MM/yyyy")}
+                </span>
+              </p>
+            </EmptyContent>
+          </Empty>
+        </section>
+      </ReconciliationsProvider>
+    );
+  }
+
+  if (search && start_date && end_date && total === 0) {
+    return (
+      <ReconciliationsProvider data={res.body}>
+        <section className="flex size-full flex-col gap-y-4">
+          <div className="flex justify-between gap-3">
+            <SortAndDateFilter />
+            <SearchWrapper />
+          </div>
+
+          <Empty className="flex flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No reconciliations found for{" "}
+                <span className="font-medium">&quot;{search}&quot;</span> in the
+                date range of{" "}
+                <span className="font-medium">
+                  {format(new Date(start_date), "dd/MM/yyyy")} to{" "}
+                  {format(new Date(end_date), "dd/MM/yyyy")}
+                </span>
+              </p>
+            </EmptyContent>
+          </Empty>
+        </section>
+      </ReconciliationsProvider>
+    );
+  }
+
+  if (search && platform && total === 0) {
+    return (
+      <ReconciliationsProvider data={res.body}>
+        <section className="flex size-full flex-col gap-y-4">
+          <div className="flex justify-between gap-3">
+            <SortAndDateFilter />
+            <SearchWrapper />
+          </div>
+
+          <Empty className="flex flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No reconciliations found for{" "}
+                <span className="font-medium">&quot;{platform}&quot;</span> or{" "}
+                <span className="font-medium">&quot;{search}&quot;</span>
+              </p>
+            </EmptyContent>
+          </Empty>
+        </section>
+      </ReconciliationsProvider>
+    );
+  }
+
+  if (start_date && end_date && total === 0) {
+    return (
+      <ReconciliationsProvider data={res.body}>
+        <section className="flex size-full flex-col gap-y-4">
+          <div className="flex justify-between gap-3">
+            <SortAndDateFilter />
+            <SearchWrapper />
+          </div>
+
+          <Empty className="flex flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No reconciliations found in the date range of{" "}
+                <span className="font-medium">
+                  {format(new Date(start_date), "dd/MM/yyyy")} to{" "}
+                  {format(new Date(end_date), "dd/MM/yyyy")}
+                </span>
+              </p>
+            </EmptyContent>
+          </Empty>
+        </section>
+      </ReconciliationsProvider>
+    );
+  }
+
+  if (platform && total === 0) {
+    return (
+      <ReconciliationsProvider data={res.body}>
+        <section className="flex size-full flex-col gap-y-4">
+          <div className="flex justify-between gap-3">
+            <SortAndDateFilter />
+            <SearchWrapper />
+          </div>
+
+          <Empty className="flex flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No reconciliations found for{" "}
+                <span className="font-medium">&quot;{platform}&quot;</span>
+              </p>
+            </EmptyContent>
+          </Empty>
+        </section>
+      </ReconciliationsProvider>
+    );
+  }
+
+  if (search && total === 0) {
+    return (
+      <ReconciliationsProvider data={res.body}>
+        <section className="flex size-full flex-col gap-y-4">
+          <div className="flex justify-between gap-3">
+            <SortAndDateFilter />
+            <SearchWrapper />
+          </div>
+
+          <Empty className="flex flex-1 items-center justify-center p-2">
+            <EmptyContent>
+              <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+                No reconciliations found for{" "}
+                <span className="font-medium">&quot;{search}&quot;</span>
+              </p>
+            </EmptyContent>
+          </Empty>
+        </section>
+      </ReconciliationsProvider>
+    );
+  }
+
+  if (total === 0) {
+    return (
+      <ReconciliationsProvider data={res.body}>
+        <Empty className="flex size-full items-center justify-center p-2">
+          <EmptyContent>
+            <p className="text-MistBlue w-full max-w-84 text-center text-sm">
+              No reconciliations yet
+            </p>
+          </EmptyContent>
+        </Empty>
+      </ReconciliationsProvider>
+    );
+  }
+
+  return (
+    <ReconciliationsProvider data={res.body}>
+      <section className="flex h-full flex-col gap-y-4">
+        <div className="flex justify-between gap-3">
+          <SortAndDateFilter />
+          <SearchWrapper />
+        </div>
+        <section className="flex flex-1 flex-col justify-between gap-y-4 pb-6">
+          <TableWrapper />
+
+          <TablePaginationWrapper />
+        </section>
+      </section>
+    </ReconciliationsProvider>
+  );
+}

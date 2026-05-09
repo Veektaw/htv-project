@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx";
+import { format, parse, parseISO } from "date-fns";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
@@ -21,4 +22,28 @@ export function debouncer<T>(func: (val: T) => void, delay: number) {
       func(val);
     }, delay);
   };
+}
+
+export function formatPrescriptionDate(dateString: string) {
+  const date = parse(dateString, "yyyy-MM", new Date());
+
+  const formattedDate = format(date, "MMMM, yyyy");
+
+  return formattedDate;
+}
+
+export function formatDate(dateString: string) {
+  const date = parseISO(dateString);
+
+  const formattedDate = format(date, "dd MMMM yyyy");
+
+  return formattedDate;
+}
+
+export function formatInvoiceCreatedAtDate(dateString: string) {
+  if (!dateString) return "--";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "--";
+
+  return format(date, "dd MMMM, yyyy");
 }

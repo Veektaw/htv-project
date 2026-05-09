@@ -76,6 +76,7 @@
 @theme {
   --color-RangoonGreen: #171717;
   --color-DarkJungleGreen: #1e1e1e;
+  --color-Mirage: #1d1e25;
   --color-BalticSea: #25282b;
   --color-Dune: #323232;
   --color-GreenWhite: #e9e9e9;
@@ -90,6 +91,7 @@
   --color-IronsideGrey: #666666;
   --color-BluishGrey: #7e8ca0;
   --color-GreySuit: #bec0ca;
+  --color-GreyChateau: #a6a8b1;
   --color-Gunmetal: #2b2f32;
   --color-Iron: #d7d7d7;
   --color-Linen: #fcedeb;
@@ -99,10 +101,12 @@
   --color-SoftPeach: #eeeeee;
   --color-ChiliPepper: #ca1515;
   --color-Geraldine: #ff8c7e;
-  --color-PortlandOrnage: #ff513b;
+  --color-PortlandOrange: #ff513b;
   --color-DeepSea: #048848;
   --color-GreenHaze: #02a461;
   --color-KellyGreen: #25b922;
+  --color-ResolutionBlue: #011d7e;
+  --color-LightMustard: #ffcf52;
 }
 
 @theme inline {
@@ -270,5 +274,15 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+}
+@layer utilities {
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
   }
 }

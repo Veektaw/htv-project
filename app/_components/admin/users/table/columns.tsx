@@ -5,43 +5,60 @@ import { cn } from "@/lib/utils";
 import MenuActions from "@/app/_components/shared/menu-actions";
 import Actions from "./columns/actions";
 import UserStatus from "./columns/status";
+import SortableHeader from "@/app/_components/shared/header/sortableHeader";
 
 type ColumnType = User & { actions?: ReactNode };
 
-export const usersColumns: Column<ColumnType>[] = [
+export const userColumns: Column<ColumnType>[] = [
   {
     title: "First Name",
     key: "first_name",
+    renderTitle: () => (
+      <SortableHeader label="First Name" sort_by="first_name" />
+    ),
     render: (value, record) => (
-      <span className={cn(record.is_deactivated && "opacity-50")}>{value}</span>
+      <span className={cn(record.is_deactivated && "opacity-50")}>
+        {value as string}
+      </span>
     ),
   },
   {
     title: "Last Name",
     key: "last_name",
+    renderTitle: () => <SortableHeader label="Last Name" sort_by="last_name" />,
     render: (value, record) => (
-      <span className={cn(record.is_deactivated && "opacity-50")}>{value}</span>
+      <span className={cn(record.is_deactivated && "opacity-50")}>
+        {value as string}
+      </span>
     ),
   },
   {
     title: "Email",
     key: "email",
+    renderTitle: () => <SortableHeader label="Email" sort_by="email" />,
+
     render: (value, record) => (
-      <span className={cn(record.is_deactivated && "opacity-50")}>{value}</span>
+      <span className={cn(record.is_deactivated && "opacity-50")}>
+        {value as string}
+      </span>
     ),
   },
   {
     title: "Role",
     key: "role",
+    renderTitle: () => <SortableHeader label="Role" sort_by="role" />,
     render: (value, record) => (
       <span className={cn("capitalize", record.is_deactivated && "opacity-50")}>
-        {value}
+        {value as string}
       </span>
     ),
   },
   {
     title: "Status",
     key: "is_deactivated",
+    renderTitle: () => (
+      <SortableHeader label="Status" sort_by="is_deactivated" />
+    ),
     render: (value) => <UserStatus deactivatedStatus={value as boolean} />,
   },
   {

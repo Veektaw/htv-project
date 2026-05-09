@@ -9,6 +9,7 @@ import usePagination from "@/hooks/use-pagination";
 type UsersContextType = {
   users: User[];
   useSearchValues: ReturnType<typeof useSetParam>;
+  useRoleFilterValues: ReturnType<typeof useSetParam>;
   pagination: ReturnType<typeof usePagination>;
   isPending: boolean;
 };
@@ -25,6 +26,7 @@ export default function UsersProvider({
   const { users, total, page, limit, total_page } = data;
 
   const useSearchValues = useSetParam("search");
+  const useRoleFilterValues = useSetParam("role");
 
   const pagination = usePagination({
     total,
@@ -33,12 +35,16 @@ export default function UsersProvider({
     total_page,
   });
 
-  const isPending = useSearchValues.isPending || pagination.isPending;
+  const isPending =
+    useSearchValues.isPending ||
+    useRoleFilterValues.isPending ||
+    pagination.isPending;
 
   const value: UsersContextType = {
     users,
     pagination,
     useSearchValues,
+    useRoleFilterValues,
     isPending,
   };
 
