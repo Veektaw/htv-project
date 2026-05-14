@@ -51,13 +51,13 @@ export async function setCookie(data: {
     expires,
     httpOnly: true,
     secure: isProductionEnv,
-    sameSite: "strict",
+    sameSite: "lax",
   });
 
   cookieStore.set(REFRESH_TOKEN, data.refreshToken, {
     httpOnly: true,
     secure: isProductionEnv,
-    sameSite: "strict",
+    sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60, // 7 days
     // path: "/api/auth/refresh", // scope it, optional but good practice
   });
@@ -147,10 +147,15 @@ export async function updateSession(request: NextRequest) {
     time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
   });
 
+  // Get the actual host from x-forwarded-host (set by Cloudflare worker) or fallback to request.url
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const protocol = request.headers.get("x-forwarded-proto") || "https";
+  const baseUrl = forwardedHost ? `${protocol}://${forwardedHost}` : request.url;
+
   // No session — redirect to sign in
   if ((!refreshToken || !userSession) && !isSignIn) {
     return NextResponse.redirect(
-      new URL(`/sign-in?redirect=${path}`, request.url),
+      new URL(`/sign-in?redirect=${path}`, baseUrl),
     );
   }
 
@@ -163,18 +168,18 @@ export async function updateSession(request: NextRequest) {
 
   // Has session — redirect away from sign in
   if (isSignIn && isAdmin) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
   }
 
   if (isSignIn && !isAdmin) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard", baseUrl));
   }
 
   if (
     userSession.data.user.must_change_password &&
     path !== "/create-new-password"
   ) {
-    return NextResponse.redirect(new URL("/create-new-password", request.url));
+    return NextResponse.redirect(new URL("/create-new-password", baseUrl));
   }
 
   if (
@@ -182,20 +187,20 @@ export async function updateSession(request: NextRequest) {
     path === "/create-new-password"
   ) {
     if (!isAdmin) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/dashboard", baseUrl));
     }
 
     if (isAdmin) {
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+      return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
     }
   }
 
   if (!isAdmin && isAdminRoute) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard", baseUrl));
   }
 
   if (isAdmin && !isAdminRoute) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
   }
 
   // Slide the session expiry forward
@@ -206,6 +211,8 @@ export async function updateSession(request: NextRequest) {
     name: USER_SESSION_KEY,
     value: await encrypt({ data: userSession.data, expires: newExpires }),
     httpOnly: true,
+    secure: isProductionEnv,
+    sameSite: "lax",
     expires: newExpires,
   });
 
