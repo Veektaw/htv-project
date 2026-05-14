@@ -51,13 +51,13 @@ export async function setCookie(data: {
     expires,
     httpOnly: true,
     secure: isProductionEnv,
-    sameSite: "strict",
+    sameSite: "lax",
   });
 
   cookieStore.set(REFRESH_TOKEN, data.refreshToken, {
     httpOnly: true,
     secure: isProductionEnv,
-    sameSite: "strict",
+    sameSite: "lax",
     maxAge: 7 * 24 * 60 * 60, // 7 days
     // path: "/api/auth/refresh", // scope it, optional but good practice
   });
@@ -179,7 +179,7 @@ export async function updateSession(request: NextRequest) {
     userSession.data.user.must_change_password &&
     path !== "/create-new-password"
   ) {
-    return NextResponse.redirect(new URL("/create-new-password", request.url));
+    return NextResponse.redirect(new URL("/create-new-password", baseUrl));
   }
 
   if (
@@ -187,11 +187,11 @@ export async function updateSession(request: NextRequest) {
     path === "/create-new-password"
   ) {
     if (!isAdmin) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+      return NextResponse.redirect(new URL("/dashboard", baseUrl));
     }
 
     if (isAdmin) {
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+      return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
     }
   }
 
@@ -211,6 +211,8 @@ export async function updateSession(request: NextRequest) {
     name: USER_SESSION_KEY,
     value: await encrypt({ data: userSession.data, expires: newExpires }),
     httpOnly: true,
+    secure: isProductionEnv,
+    sameSite: "lax",
     expires: newExpires,
   });
 
