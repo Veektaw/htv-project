@@ -147,10 +147,15 @@ export async function updateSession(request: NextRequest) {
     time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
   });
 
+  // Get the actual host from x-forwarded-host (set by Cloudflare worker) or fallback to request.url
+  const forwardedHost = request.headers.get("x-forwarded-host");
+  const protocol = request.headers.get("x-forwarded-proto") || "https";
+  const baseUrl = forwardedHost ? `${protocol}://${forwardedHost}` : request.url;
+
   // No session — redirect to sign in
   if ((!refreshToken || !userSession) && !isSignIn) {
     return NextResponse.redirect(
-      new URL(`/sign-in?redirect=${path}`, request.url),
+      new URL(`/sign-in?redirect=${path}`, baseUrl),
     );
   }
 
@@ -163,11 +168,11 @@ export async function updateSession(request: NextRequest) {
 
   // Has session — redirect away from sign in
   if (isSignIn && isAdmin) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
   }
 
   if (isSignIn && !isAdmin) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard", baseUrl));
   }
 
   if (
@@ -191,11 +196,11 @@ export async function updateSession(request: NextRequest) {
   }
 
   if (!isAdmin && isAdminRoute) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(new URL("/dashboard", baseUrl));
   }
 
   if (isAdmin && !isAdminRoute) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
   }
 
   // Slide the session expiry forward
