@@ -25,6 +25,37 @@ export type Permissions =
   | "view_notifications"
   | "mark_notifications_read";
 
+export type Platform = {
+  id: string;
+  user_id: string;
+  platform: string;
+  brand_partner: string;
+  external_user_id: string;
+  created_at: string;
+  updated_at: string;
+  platform_account_recipient_email: string | null;
+};
+
+export type Commission = {
+  id: string;
+  user_id: string;
+  platform: string;
+  amount_per_prescription: number;
+  currency: string;
+  scheduled_appointments: boolean;
+  completed_appointments: boolean;
+  cancelled_appointments: boolean;
+  all_prescriptions: boolean;
+  signed_prescriptions: boolean;
+  cancelled_prescriptions: boolean;
+  declined_prescriptions: boolean;
+  on_hold_prescriptions: boolean;
+  approved_prescriptions: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+
 export type User = {
   id: string;
   email: string;
@@ -33,6 +64,7 @@ export type User = {
   company_name: string;
   title: string | null;
   phone: string | null;
+  address: string | null;
   role: Roles;
   status: Status;
   must_change_password: boolean;
@@ -46,6 +78,21 @@ export type User = {
   created_by: null;
   full_name: string;
   permissions: Permissions[];
+  admin_profile: [];
+  creator_info: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    email: string;
+    status: Status;
+    role: Roles;
+    permissions: Permissions[];
+    company_name: string;
+  } | null;
+  platforms: Platform[];
+  commissions: Commission[];
+  all_platforms: string[];
+  all_brand_partners: string[];
 };
 
 export type SignInPayload = {
@@ -64,8 +111,10 @@ export type SignInResponse = {
   creator_info: null;
 };
 
+export type UserSessionData = Omit<User, "platforms" | "commissions">;
+
 export type UserDataAndAccessToken = {
-  user: User;
+  user: UserSessionData;
   accessToken: string;
 };
 
@@ -78,8 +127,22 @@ export type UserSession = {
   exp: number;
 };
 
-export type ResetPasswordPayload = {
+export type SetNewPasswordPayload = {
   old_password: string;
   new_password: string;
   confirm_new_password: string;
+};
+
+export type ForgotPasswordPayload = { email: string };
+
+export type ResetPasswordPayload = {
+  token: string;
+  password: string;
+  confirm_password: string;
+};
+
+export type RefreshTokensResponse = {
+  access_token: string;
+  refresh_token: string;
+  token_type: "bearer";
 };

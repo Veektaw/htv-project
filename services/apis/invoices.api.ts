@@ -1,0 +1,103 @@
+import { Api } from "./api";
+import {
+  GetInvoicesResponse,
+  GetInvoicesParams,
+  GetDoctorInvoices,
+  GetDoctorInvoicesParams,
+  Invoice,
+} from "@/types/invoices";
+
+export const getAdminInvoicesApi = ({
+  page = "1",
+  limit,
+  doctor_id,
+  search,
+  sort_by,
+  sort_order
+}: GetInvoicesParams = {}) => {
+  const params: Record<string, string> = {
+    page,
+  };
+
+  if (limit) params.limit = limit;
+  if (doctor_id) params.doctor_id = doctor_id;
+  if (search) params.keyword = search;
+  if (sort_by) params.sort_by = sort_by;
+  if (sort_order) params.sort_order = sort_order;
+  const queryString = new URLSearchParams(params).toString();
+  const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;
+  console.log({ url });
+  return Api.get<GetInvoicesResponse>(url, true);
+};
+
+export const getAllInvoicesApi = ({
+  page = "1",
+  limit = "10",
+  status,
+  search,
+  sort_by,
+  sort_order
+}: GetDoctorInvoicesParams) => {
+  const params: Record<string, string> = {
+    page,
+    limit,
+  };
+
+  if (status) params.status = status;
+  if (search) params.keyword = search;
+  if (sort_by) params.sort_by = sort_by;
+  if (sort_order) params.sort_order = sort_order;
+  const queryString = new URLSearchParams(params).toString();
+
+  const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;
+  console.log({ url });
+  return Api.get<GetDoctorInvoices>(url, true);
+};
+
+export const updateInvoiceStatusApi = (
+  invoiceId: string,
+  actionType: string,
+  disputeMessage?: string,
+) => {
+  const payload: { action_type: string; dispute_message?: string } = {
+    action_type: actionType,
+  };
+  if (disputeMessage) {
+    payload.dispute_message = disputeMessage;
+  }
+  return Api.put<typeof payload, Invoice>(
+    `/admin/invoices/${invoiceId}/`,
+    payload,
+    true,
+  );
+};
+
+export const addInvoiceCommentApi = (invoiceId: string, message: string) => {
+  const payload = {
+    message,
+    invoice_id: invoiceId,
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return Api.post<typeof payload, any>(
+    `/admin/invoices/${invoiceId}/comments/`,
+    payload,
+    true,
+  );
+};
+
+export const getInvoiceCommentsApi = (invoiceId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return Api.get<any>(`/admin/invoices/${invoiceId}/comments/`, true);
+};
+type ResendInvoiceEmailResponse = {
+  message: string;
+};
+
+export const resendmailInvoiceApi = (invoiceId: string) => {
+  return Api.post<Record<string, never>, ResendInvoiceEmailResponse>(
+    `/admin/invoices/${invoiceId}/resend-email/`,
+    {},
+    true,
+  );
+};

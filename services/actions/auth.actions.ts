@@ -1,8 +1,18 @@
 "use server";
 
 import { logout, setCookie } from "../auth";
-import { resetPasswordApi, signInApi } from "../apis/auth.api";
-import { ResetPasswordPayload, SignInPayload } from "@/types/auth";
+import {
+  forgotPasswordApi,
+  resetPasswordApi,
+  setNewPasswordApi,
+  signInApi,
+} from "../apis/auth.api";
+import {
+  ForgotPasswordPayload,
+  ResetPasswordPayload,
+  SetNewPasswordPayload,
+  SignInPayload,
+} from "@/types/auth";
 
 export const signInAction = async (data: SignInPayload) => {
   const response = await signInApi(data);
@@ -20,7 +30,10 @@ export const signInAction = async (data: SignInPayload) => {
     user,
   } = response.body;
 
-  await setCookie({ user, accessToken, refreshToken });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { platforms, commissions, ...rest } = user;
+
+  await setCookie({ user: rest, accessToken, refreshToken });
 
   return {
     error: false,
@@ -30,10 +43,8 @@ export const signInAction = async (data: SignInPayload) => {
   };
 };
 
-export const resetPasswordAction = async (data: ResetPasswordPayload) => {
-  const response = await resetPasswordApi(data);
-
-  console.log({ response: response.body });
+export const setNewPasswordAction = async (data: SetNewPasswordPayload) => {
+  const response = await setNewPasswordApi(data);
 
   if (!response.ok) {
     return {
@@ -43,6 +54,38 @@ export const resetPasswordAction = async (data: ResetPasswordPayload) => {
   }
 
   await logout();
+
+  return {
+    error: false,
+    message: response.body.message,
+  };
+};
+
+export const forgotPasswordAction = async (data: ForgotPasswordPayload) => {
+  const response = await forgotPasswordApi(data);
+
+  if (!response.ok) {
+    return {
+      error: true,
+      message: response.body.message,
+    };
+  }
+
+  return {
+    error: false,
+    message: response.body.message,
+  };
+};
+
+export const resetPasswordAction = async (data: ResetPasswordPayload) => {
+  const response = await resetPasswordApi(data);
+
+  if (!response.ok) {
+    return {
+      error: true,
+      message: response.body.message,
+    };
+  }
 
   return {
     error: false,

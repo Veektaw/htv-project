@@ -39,9 +39,14 @@ export type OptionsType<T> =
   | DeleteOptions<T>;
 
 export type ResponseType<R> =
-  | { ok: true; status: number; body: R }
+  | { ok: true; status: number; body: R; setCookieHeaders?: string[] }
   | {
       ok: false;
       status: number;
-      body: { code: number; message: string; description: string };
+      body: {
+        code: number;
+        message: string;
+        description: string;
+      };
+      setCookieHeaders?: string[];
     };

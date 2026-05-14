@@ -1,0 +1,97 @@
+import { ReactNode } from "react";
+import { Column } from "@/app/_components/shared/table-component/table-component";
+import { Reconciliation, ReconciliationStatus } from "@/types/reconciliations";
+import { formatPrescriptionDate } from "@/lib/utils";
+import Status from "@/app/_components/doctor/reconciliations/table/columns/status";
+import MenuActions from "@/app/_components/shared/menu-actions";
+import Actions from "./columns/actions";
+import SortableHeader from "@/app/_components/shared/header/sortableHeader";
+
+type ColumnType = Reconciliation & { actions?: ReactNode };
+
+export const reconciliationColumns: Column<ColumnType>[] = [
+  {
+    title: "Name",
+    key: "full_name",
+    renderTitle: () => <SortableHeader label="Name" sort_by="full_name" />,
+    render: (_, record) => record.user.full_name,
+  },
+  {
+    title: "Date",
+    key: "period_month",
+    renderTitle: () => <SortableHeader label="Date" sort_by="period_month" />,
+    render: (value) => formatPrescriptionDate(value as string),
+  },
+  {
+    title: "Partner",
+    key: "platform",
+    renderTitle: () => <SortableHeader label="Partner" sort_by="platform" />,
+    render: (value) => value as string,
+  },
+  {
+    title: "Est. Commissions",
+    key: "gross_amount",
+    renderTitle: () => (
+      <SortableHeader label="Est. Commissions" sort_by="gross_amount" />
+    ),
+    render: (value) =>
+      `€${(value as number).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}`,
+  },
+  {
+    title: "Adyen Paid",
+    key: "adyen_paid",
+    renderTitle: () => (
+      <SortableHeader label="Adyen Paid" sort_by="adyen_paid" />
+    ),
+    render: (value) =>
+      `€${(value as number).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}`,
+  },
+  {
+    title: "Manual Paid",
+    key: "manual_paid",
+    renderTitle: () => (
+      <SortableHeader label="Manual Paid" sort_by="manual_paid" />
+    ),
+    render: (value) =>
+      `€${(value as number).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}`,
+  },
+
+  {
+    title: "Date paid",
+    key: "date_paid",
+    renderTitle: () => <SortableHeader label="Date Paid" sort_by="date_paid" />,
+    render: () => "--",
+  },
+  {
+    title: "Outstanding",
+    key: "outstanding",
+    renderTitle: () => (
+      <SortableHeader label="Outstanding" sort_by="outstanding" />
+    ),
+    render: (value) =>
+      `€${(value as number).toLocaleString("en-US", {
+        maximumFractionDigits: 2,
+      })}`,
+  },
+  {
+    title: "Status",
+    key: "status",
+    renderTitle: () => <SortableHeader label="Status" sort_by="status" />,
+    render: (value) => <Status value={value as ReconciliationStatus} />,
+  },
+  {
+    title: "",
+    key: "actions",
+    render: (_, record) => (
+      <MenuActions>
+        <Actions reconciliation={record} />
+      </MenuActions>
+    ),
+  },
+];
