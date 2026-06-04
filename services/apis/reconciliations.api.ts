@@ -59,8 +59,6 @@ export const getAllReconciliationsApi = ({
   const queryString = new URLSearchParams(params).toString();
   const url = `/admin/reconciliation/${queryString ? `?${queryString}` : ""}`;
 
-  console.log({ url });
-
   return Api.get<GetDoctorReconciliations>(url, true);
 };
 

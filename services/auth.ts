@@ -142,10 +142,10 @@ export async function updateSession(request: NextRequest) {
   const path = request.nextUrl.pathname;
   const isSignIn = path === "/sign-in";
 
-  console.log({ path });
-  console.log({
-    time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
-  });
+  // console.log({ path });
+  // console.log({
+  //   time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
+  // });
 
   // No session — redirect to sign in
   if ((!refreshToken || !userSession) && !isSignIn) {
