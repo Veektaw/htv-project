@@ -45,11 +45,11 @@ import useUpdateUserDetails, {
   defaultCommissionValues,
   defaultPlatformValues,
 } from "./hooks/use-update-user-details";
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import ActivateUserModal from "@/app/_components/admin/users/modals/activate-user";
 import plus from "@/public/svgs/plus.svg";
 import minus from "@/public/svgs/minus.svg";
-import { cn } from "@/lib/utils";
 
 export default function UserDetails({ user }: { user: User }) {
   const [canEdit, setCanEdit] = useState(false);
