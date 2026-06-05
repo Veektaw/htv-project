@@ -13,7 +13,7 @@ export const getAdminInvoicesApi = ({
   doctor_id,
   search,
   sort_by,
-  sort_order
+  sort_order,
 }: GetInvoicesParams = {}) => {
   const params: Record<string, string> = {
     page,
@@ -26,7 +26,7 @@ export const getAdminInvoicesApi = ({
   if (sort_order) params.sort_order = sort_order;
   const queryString = new URLSearchParams(params).toString();
   const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;
-  console.log({ url });
+
   return Api.get<GetInvoicesResponse>(url, true);
 };
 
@@ -36,7 +36,7 @@ export const getAllInvoicesApi = ({
   status,
   search,
   sort_by,
-  sort_order
+  sort_order,
 }: GetDoctorInvoicesParams) => {
   const params: Record<string, string> = {
     page,
@@ -50,7 +50,6 @@ export const getAllInvoicesApi = ({
   const queryString = new URLSearchParams(params).toString();
 
   const url = `/admin/invoices/${queryString ? `?${queryString}` : ""}`;
-  console.log({ url });
   return Api.get<GetDoctorInvoices>(url, true);
 };
 

@@ -5,16 +5,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { AdvancedSettingsForm, advancedSettingsSchema } from "../schemas";
 import { showToast } from "@/lib/toast";
 import {
-  createPlatformAction,
-  updatePlatformAction,
+  adminCreatePlatformAction,
+  adminDeletePlatformAction,
+  adminUpdatePlatformAction,
 } from "@/services/actions/platforms.actions";
-import { CreatePlatformPayload, Platform } from "@/types/platforms";
+import { AdminCreatePlatformResponse } from "@/types/platforms";
 
 export const defaultPlatformValues = {
   id: "",
-  //   platform: "",
+  platform: "",
   brand_partner: "",
-  //   external_user_id: "",
   platform_account_recipient_email: "",
   address: "",
 };
@@ -22,16 +22,19 @@ export const defaultPlatformValues = {
 export default function useUpdateAdvanceSettings({
   platforms,
 }: {
-  platforms?: Platform[];
+  platforms: AdminCreatePlatformResponse[];
 }) {
   const { refresh } = useRouter();
 
-  const [canEditAdvanced, setCanEditAdvanced] = useState(false);
-  const [loadingPlatforms, setLoadingPlatforms] = useState(false);
+  const [pendingPlatformAction, setPendingPlatformAction] = useState<
+    string | null
+  >(null);
 
   const advancedForm = useForm<AdvancedSettingsForm>({
     resolver: zodResolver(advancedSettingsSchema),
-    defaultValues: { platforms: platforms || [] },
+    mode: "onChange",
+    reValidateMode: "onChange",
+    defaultValues: { platforms: platforms },
   });
 
   const {
@@ -41,71 +44,128 @@ export default function useUpdateAdvanceSettings({
   } = useFieldArray({
     control: advancedForm.control,
     name: "platforms",
+    keyName: "fieldId",
   });
 
-  const onSubmitAdvanced = async (
-    data: { platforms: CreatePlatformPayload[] } | AdvancedSettingsForm,
-  ) => {
+  const validatePlatforms = (index: number) =>
+    advancedForm.trigger(`platforms.${index}`);
+
+  const getPlatformPayload = (index: number) => {
+    const platform = advancedForm.getValues(`platforms.${index}`);
+
+    return {
+      platform: platform.platform,
+      brand_partner: platform.brand_partner,
+      platform_account_recipient_email:
+        platform.platform_account_recipient_email,
+      address: platform.address,
+    };
+  };
+
+  const createPlatform = async (index: number) => {
+    const isValid = await validatePlatforms(index);
+
+    if (!isValid) return;
+
     try {
-      if (data.platforms.length === 0) {
-        showToast("At least one platform is required", "error");
+      setPendingPlatformAction(`create-${index}`);
+
+      const res = await adminCreatePlatformAction(getPlatformPayload(index));
+
+      if (res.error) {
+        showToast(res.message, "error");
         return;
       }
 
-      if (
-        data.platforms.length === 1 &&
-        "id" in data.platforms[0] &&
-        !data.platforms[0].id
-      ) {
-        const res = await createPlatformAction(data.platforms[0]);
+      showToast(res.message);
 
-        if (!res.error) {
-          refresh();
-          setCanEditAdvanced(false);
-          advancedForm.reset(data);
-          showToast(res.message);
-        } else {
-          showToast(res.message, "error");
-        }
-
-        return;
+      if (res.data) {
+        advancedForm.setValue(`platforms.${index}`, res.data);
       }
 
-      const results = await Promise.all(
-        (data as AdvancedSettingsForm).platforms.map((platform) =>
-          updatePlatformAction(platform.id, {
-            // platform: platform.platform,
-            // external_user_id: platform.external_user_id,
-            brand_partner: platform.brand_partner,
-            address: platform.address,
-            platform_account_recipient_email:
-              platform.platform_account_recipient_email,
-          }),
-        ),
+      refresh();
+    } catch {
+      showToast("An error occurred while creating platform", "error");
+    } finally {
+      setPendingPlatformAction(null);
+    }
+  };
+
+  const updatePlatform = async (index: number) => {
+    const isValid = await validatePlatforms(index);
+
+    if (!isValid) return;
+
+    const platformId = advancedForm.getValues(`platforms.${index}.id`);
+
+    if (!platformId) {
+      showToast("Create this platform before editing it", "error");
+      return;
+    }
+
+    try {
+      setPendingPlatformAction(`update-${platformId}`);
+
+      const res = await adminUpdatePlatformAction(
+        platformId,
+        getPlatformPayload(index),
       );
 
-      const failed = results.find((r) => r.error);
-      if (failed) {
-        showToast(failed.message, "error");
-        console.log("Failed to update platforms:", failed.message);
-      } else {
-        showToast("Advanced settings updated successfully", "success");
-        setCanEditAdvanced(false);
+      if (res.error) {
+        showToast(res.message, "error");
+        return;
       }
+
+      showToast(res.message);
+
+      if (res.data) {
+        advancedForm.setValue(`platforms.${index}`, res.data);
+      }
+
+      refresh();
     } catch {
-      showToast("An error occurred while saving advanced settings", "error");
+      showToast("An error occurred while updating platform", "error");
+    } finally {
+      setPendingPlatformAction(null);
+    }
+  };
+
+  const deletePlatform = async (index: number) => {
+    const platformId = advancedForm.getValues(`platforms.${index}.id`);
+
+    if (!platformId) {
+      removePlatform(index);
+      return;
+    }
+
+    try {
+      setPendingPlatformAction(`delete-${platformId}`);
+
+      const res = await adminDeletePlatformAction(platformId);
+
+      if (res.error) {
+        showToast(res.message, "error");
+        return;
+      }
+
+      showToast(res.message);
+      removePlatform(index);
+      refresh();
+    } catch {
+      showToast("An error occurred while deleting platform", "error");
+    } finally {
+      setPendingPlatformAction(null);
     }
   };
 
   return {
     advancedForm,
     platformFields,
-    canEditAdvanced,
-    setCanEditAdvanced,
-    loadingPlatforms,
-    setLoadingPlatforms,
-    onSubmitAdvanced,
+    pendingPlatformAction,
     appendPlatform,
     removePlatform,
+    createPlatform,
+    updatePlatform,
+    deletePlatform,
   };
 }
