@@ -39,7 +39,7 @@ const adminLinks = [
   { name: "Users", href: "/admin/users", icon: UsersIcon },
   { name: "Invoices", href: "/admin/invoices", icon: InvoicesIcon },
   {
-    name: "Prescriptions",
+    name: "Cases",
     href: "/admin/prescriptions",
     icon: PrescriptionsIcon,
   },
@@ -61,7 +61,7 @@ const adminLinks = [
 const links = [
   { name: "Dashboard", href: "/dashboard", icon: DashboardIcon },
   { name: "Invoices", href: "/invoices", icon: InvoicesIcon },
-  { name: "Prescriptions", href: "/prescriptions", icon: PrescriptionsIcon },
+  { name: "Cases", href: "/prescriptions", icon: PrescriptionsIcon },
   { name: "Payments", href: "/payments", icon: PaymentsIcon },
   {
     name: "Reconciliations",

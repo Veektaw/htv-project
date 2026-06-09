@@ -9,7 +9,7 @@ type PageParams = {
 };
 
 export const metadata: Metadata = {
-  title: "Prescriptions",
+  title: "Cases",
 };
 
 export default async function page({ searchParams }: PageParams) {

@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Column } from "@/app/_components/shared/table-component/table-component";
 import { Payment } from "@/types/doctors-payments";
-import { formatDate } from "@/lib/utils";
+import { formatDate, formatPaymentDate } from "@/lib/utils";
 import { PaymentStatus } from "@/types/doctors-payments";
 import Status from "./columns/status";
 import SortableHeader from "@/app/_components/shared/header/sortableHeader";
@@ -29,11 +29,11 @@ export const PaymentColumns: Column<ColumnType>[] = [
   },
   {
     title: "Payment Date",
-    key: "updated_at",
+    key: "payment_date",
     renderTitle: () => (
-      <SortableHeader label="Payment Date" sort_by="updated_at" />
+      <SortableHeader label="Payment Date" sort_by="payment_date" />
     ),
-    render: (value) => (value ? formatDate(value as string) : "N/A"),
+    render: (value) => (value ? formatPaymentDate(value as string) : "N/A"),
   },
   {
     title: "Status",
