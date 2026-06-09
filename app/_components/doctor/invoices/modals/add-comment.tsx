@@ -95,7 +95,7 @@ export default function AddNewCommentModal({
           <div className="flex justify-end gap-2">
             <Button
               variant="secondary"
-              className="font-inter rounded-[44px] border border-[#BEC0CA] bg-white px-13 py-3 text-black hover:text-white"
+              className="font-inter border-GreySuit rounded-[44px] border bg-white px-13 py-3 text-black hover:text-white"
               onClick={() => {
                 setComment("");
               }}

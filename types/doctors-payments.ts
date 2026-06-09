@@ -33,6 +33,7 @@ export type Payment = {
   invoice_ref: string;
   created_at: string;
   updated_at: string;
+  payment_date: string;
 };
 
 export type GetDoctorPayments = Pagination & {

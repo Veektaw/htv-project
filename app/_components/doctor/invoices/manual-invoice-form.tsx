@@ -5,6 +5,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { cn } from "@/lib/utils";
 import { showToast } from "@/lib/toast";
+import { format } from "date-fns";
 import { createManualInvoiceAction } from "@/services/actions/invoices.actions";
 import { getPlatforms } from "@/services/apis/get-platforms";
 import { getDoctorPrescriptions } from "@/services/apis/get-doctor-prescriptions";
@@ -49,7 +50,6 @@ import { Calendar } from "@/app/_components/ui/calendar";
 import Image from "next/image";
 import useManualInvoice from "./hooks/use-manual-invoice";
 import calendarIcon from "@/public/svgs/calendar.svg";
-import { format } from "date-fns";
 
 type QueryResponse = { status: number; data: GetPlatformsResponse };
 type QueryResponseTwo = { status: number; data: GetDoctorPrescriptions };
@@ -105,8 +105,8 @@ const getInitialInvoiceRow = (reconciliation?: Reconciliation) => ({
       ? String(reconciliation.prescription_count)
       : "",
   amount:
-    reconciliation?.gross_amount !== undefined
-      ? String(reconciliation.gross_amount)
+    reconciliation?.outstanding !== undefined
+      ? String(reconciliation.outstanding)
       : "",
   ...getPeriodDates(reconciliation?.period_month),
 });
@@ -149,7 +149,7 @@ export default function ManualInvoiceForm({
     bill_from_address: "",
     dateTime: formatToDateTimeLocal(reconciliation?.created_at),
     platform: reconciliation?.platform ?? "",
-    amount: reconciliation?.gross_amount ?? 0,
+    amount: reconciliation?.outstanding ?? 0,
     adyenPaid:
       reconciliation?.adyen_paid !== undefined
         ? String(reconciliation.adyen_paid)
@@ -792,7 +792,7 @@ export default function ManualInvoiceForm({
           <Button
             type="button"
             variant="secondary"
-            className="font-inter rounded-[44px] border border-[#BEC0CA] px-13 py-3"
+            className="font-inter border-GreySuit rounded-[44px] border px-13 py-3"
           >
             Cancel
           </Button>
