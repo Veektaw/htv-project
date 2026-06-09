@@ -45,7 +45,11 @@ export default function AddNewCommentModal({
 
     startTransition(async () => {
       try {
-        const result = await addDoctorCommentAction(reconciliation.id, comment);
+        const result = await addDoctorCommentAction(
+          reconciliation.id,
+          comment,
+          "reconciliation",
+        );
         if (result.success) {
           refresh();
           queryClient.invalidateQueries({
@@ -80,7 +84,7 @@ export default function AddNewCommentModal({
           <DialogTitle className="font-inter text-Mirage text-2xl font-bold">
             Add comment
           </DialogTitle>
-          <p className="font-inter text-sm leading-5.5 font-normal text-[#6E7079]">
+          <p className="font-inter text-MistBlue text-sm leading-5.5 font-normal">
             Add a comment helps users better understand what needs to be done
           </p>
         </DialogHeader>
@@ -95,11 +99,12 @@ export default function AddNewCommentModal({
           <div className="flex justify-end gap-2">
             <Button
               variant="secondary"
-              className="font-inter rounded-[44px] border border-[#BEC0CA] bg-white px-13 py-3 text-black hover:text-white"
+              className="font-inter border-GreySuit rounded-[44px] border bg-white px-13 py-3 text-black hover:text-white"
               onClick={() => {
                 setComment("");
+                setActiveModal?.(null);
               }}
-              disabled={!comment.trim() || isPending}
+              disabled={isPending}
             >
               Cancel
             </Button>
