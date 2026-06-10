@@ -9,7 +9,7 @@ export default function TableWrapper() {
 
   return (
     <TableComponent
-      title="Doctors Prescriptions"
+      title="Doctors Cases"
       columns={prescriptionColumns}
       data={prescriptions}
     />
