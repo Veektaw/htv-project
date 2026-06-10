@@ -105,8 +105,8 @@ const getInitialInvoiceRow = (reconciliation?: Reconciliation) => ({
       ? String(reconciliation.prescription_count)
       : "",
   amount:
-    reconciliation?.outstanding !== undefined
-      ? String(reconciliation.outstanding)
+    reconciliation?.gross_amount !== undefined
+      ? String(reconciliation.gross_amount)
       : "",
   ...getPeriodDates(reconciliation?.period_month),
 });
@@ -149,7 +149,7 @@ export default function ManualInvoiceForm({
     bill_from_address: "",
     dateTime: formatToDateTimeLocal(reconciliation?.created_at),
     platform: reconciliation?.platform ?? "",
-    amount: reconciliation?.outstanding ?? 0,
+    amount: reconciliation?.gross_amount ?? 0,
     adyenPaid:
       reconciliation?.adyen_paid !== undefined
         ? String(reconciliation.adyen_paid)

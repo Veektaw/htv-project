@@ -31,7 +31,7 @@ export default async function DoctorPrescriptions({
       <div className="flex size-full items-center justify-center p-2">
         <div className="w-full max-w-150.25">
           <p className="text-center text-sm font-medium text-black">
-            {message || "Error getting prescriptions"}
+            {message || "Error getting cases"}
           </p>
         </div>
       </div>
@@ -51,7 +51,7 @@ export default async function DoctorPrescriptions({
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-                No prescriptions found for{" "}
+                No cases found for{" "}
                 <span className="font-medium">&quot;{platform}&quot;</span> in
                 the date range of{" "}
                 <span className="font-medium">
@@ -75,7 +75,7 @@ export default async function DoctorPrescriptions({
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-                No prescriptions found in the date range of{" "}
+                No cases found in the date range of{" "}
                 <span className="font-medium">
                   {format(new Date(start_date), "dd/MM/yyyy")} to{" "}
                   {format(new Date(end_date), "dd/MM/yyyy")}
@@ -97,7 +97,7 @@ export default async function DoctorPrescriptions({
           <Empty className="flex flex-1 items-center justify-center p-2">
             <EmptyContent>
               <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-                No prescriptions found for{" "}
+                No cases found for{" "}
                 <span className="font-medium">&quot;{platform}&quot;</span>
               </p>
             </EmptyContent>
@@ -113,7 +113,7 @@ export default async function DoctorPrescriptions({
         <Empty className="flex size-full items-center justify-center p-2">
           <EmptyContent>
             <p className="text-MistBlue w-full max-w-84 text-center text-sm">
-              No prescriptions yet
+              No cases yet
             </p>
           </EmptyContent>
         </Empty>
