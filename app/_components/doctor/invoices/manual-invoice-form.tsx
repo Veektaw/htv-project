@@ -389,10 +389,11 @@ export default function ManualInvoiceForm({
     const payload = {
       period_month,
       platform: row.platform,
-      amount: sumTotal,
+      amount: grossTotal,
       full_name: data.name,
       address: data.address,
       bill_from_address: data.bill_from_address,
+      reconciliation_id: reconciliation?.id,
     };
 
     try {
@@ -757,7 +758,7 @@ export default function ManualInvoiceForm({
         </Table>
       </div>
 
-      <div className="flex w-full max-w-107.5 flex-col gap-2.5 rounded-lg border border-[#A6A8B1] bg-white p-4 shadow-sm">
+      <div className="border-GreyChateau flex w-full max-w-107.5 flex-col gap-2.5 rounded-lg border bg-white p-4 shadow-sm">
         <div className="flex items-center justify-between text-sm">
           <span className="text-muted-foreground">Sum total</span>
           <span className="font-semibold text-black">
@@ -792,7 +793,7 @@ export default function ManualInvoiceForm({
           <Button
             type="button"
             variant="secondary"
-            className="font-inter border-GreySuit rounded-[44px] border px-13 py-3"
+            className="font-inter border-GreySuit w-38 rounded-[44px] border"
           >
             Cancel
           </Button>
@@ -801,7 +802,7 @@ export default function ManualInvoiceForm({
         <Button
           type="submit"
           disabled={formState.isSubmitting}
-          className="font-inter rounded-[44px] bg-black p-3 px-13"
+          className="font-inter w-38 rounded-[44px]"
           variant="secondary"
         >
           Submit {formState.isSubmitting && <Spinner />}
