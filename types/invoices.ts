@@ -62,6 +62,7 @@ export type CreateManualInvoicePayload = {
   period_month: string;
   platform: string;
   amount: number;
+  reconcilialtion_id?: string;
 };
 
 export type CreateManualInvoiceApiPayload = {
