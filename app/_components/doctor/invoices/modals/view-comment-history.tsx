@@ -67,7 +67,7 @@ export default function ViewCommentHistoryModal({
               <Spinner className="size-6" />
               <span className="text-sm text-gray-600">Loading comments...</span>
             </div>
-          ) : isSuccess && data && data.data.length === 0 ? (
+          ) : isSuccess && data && data.data?.length === 0 ? (
             <div className="flex items-center justify-center py-8">
               <p className="text-sm text-gray-500">
                 No comments found for this Invoice.
@@ -75,7 +75,7 @@ export default function ViewCommentHistoryModal({
             </div>
           ) : isSuccess && data ? (
             <div className="flex flex-col gap-1.5">
-              {data.data.map((comment) => {
+              {data.data?.map((comment) => {
                 const isExpanded = expandedCommentId === comment.id;
 
                 return (
