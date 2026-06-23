@@ -191,13 +191,13 @@ export default function ManualInvoiceForm({
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
       // console.log({ lastPage, allPages, lastPageParam });
 
-      const total = lastPage.data.total || 0;
+      const total = lastPage?.data?.total || 0;
 
       if (total === 0) {
         return undefined;
       }
 
-      const perPage = Number(lastPage.data.page);
+      const perPage = Number(lastPage?.data?.page);
 
       if (allPages.length * perPage < total) {
         return lastPageParam + 1;
@@ -251,15 +251,19 @@ export default function ManualInvoiceForm({
       }),
     initialPageParam: 1,
     getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      // console.log({ lastPage, allPages, lastPageParam });
+      // console.log({
+      //   lastPage2: lastPage,
+      //   allPages2: allPages,
+      //   lastPageParam2: lastPageParam,
+      // });
 
-      const total = lastPage.data.total || 0;
+      const total = lastPage?.data?.total || 0;
 
       if (total === 0) {
         return undefined;
       }
 
-      const perPage = Number(lastPage.data.page);
+      const perPage = Number(lastPage?.data?.page);
 
       if (allPages.length * perPage < total) {
         return lastPageParam + 1;
@@ -290,7 +294,7 @@ export default function ManualInvoiceForm({
   useEffect(() => {
     if (!data || !reconciliation) return;
 
-    const match = data.allPlatforms.find(
+    const match = data.allPlatforms?.find(
       (p) => p.brand_partner === reconciliation.platform,
     );
 
@@ -319,7 +323,7 @@ export default function ManualInvoiceForm({
       if (field === "platform") {
         setValue("platform", value as string);
 
-        if (!data || (data && data.allPlatforms.length === 0)) return;
+        if (!data || (data && data.allPlatforms?.length === 0)) return;
 
         const match = data.allPlatforms.find(
           (p) => p.brand_partner === (value as string),
@@ -681,7 +685,7 @@ export default function ManualInvoiceForm({
                     </SelectTrigger>
 
                     <SelectContent>
-                      {data && data.uniquePartners.length > 0 ? (
+                      {data && data.uniquePartners?.length > 0 ? (
                         data.uniquePartners.map((partner) => (
                           <SelectItem
                             key={partner}
