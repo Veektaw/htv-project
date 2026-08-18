@@ -15,6 +15,55 @@ import {
 } from "@/types/auth";
 
 export const signInAction = async (data: SignInPayload) => {
+  // Support mock / dummy login for pharmacy portal users
+  const isPharmacyDummy =
+    data.email.toLowerCase() === "pharmacy@htv.com" ||
+    data.email.toLowerCase() === "tunde@lagoscentralrx.com" ||
+    data.email.toLowerCase().includes("pharmacy");
+
+  if (isPharmacyDummy) {
+    const dummyUser = {
+      id: "ph_user_1",
+      email: data.email,
+      first_name: "Tunde",
+      last_name: "Bakare",
+      company_name: "Lagos Central Pharmacy",
+      title: "Mr.",
+      phone: "+234 801 234 5678",
+      address: "Lagos, Nigeria",
+      role: "pharmacy" as const,
+      status: "active" as const,
+      must_change_password: false,
+      language_pref: "en",
+      is_deactivated: false,
+      last_login: new Date().toISOString(),
+      failed_login_attempts: 0,
+      last_login_failed: null,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      created_by: null,
+      full_name: "Tunde Bakare",
+      permissions: [],
+      admin_profile: [] as [],
+      creator_info: null,
+      all_platforms: [],
+      all_brand_partners: [],
+    };
+
+    await setCookie({
+      user: dummyUser,
+      accessToken: "dummy_pharmacy_access_token",
+      refreshToken: "dummy_pharmacy_refresh_token",
+    });
+
+    return {
+      error: false,
+      message: "Sign in successful! (Pharmacy Portal)",
+      mustChangePassword: false,
+      role: "pharmacy" as const,
+    };
+  }
+
   const response = await signInApi(data);
 
   if (!response.ok) {

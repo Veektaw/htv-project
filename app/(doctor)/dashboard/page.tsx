@@ -26,12 +26,12 @@ export default async function page({ searchParams }: PageParams) {
   const searchParamsValues = await searchParams;
 
   return (
-    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6 shadow-[0px_9px_20px_0px_#101E730F]">
+    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-4 sm:px-6 lg:px-9 py-4 lg:py-6 shadow-[0px_9px_20px_0px_#101E730F]">
       <Header type="Doctor">
         <SubHeader />
       </Header>
 
-      <section className="flex flex-1 flex-col gap-y-6 overflow-y-auto rounded-sm bg-white px-8 py-8.5">
+      <section className="flex flex-1 flex-col gap-y-6 overflow-y-auto rounded-sm bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8.5">
         <div className="flex items-center justify-end">
           <FilterButton />
         </div>
@@ -44,7 +44,7 @@ export default async function page({ searchParams }: PageParams) {
         </div>
 
         <div className="flex flex-1 flex-col gap-4 lg:flex-row">
-          <div className="border-Iron w-[calc(100%-424px)] space-y-2 rounded-lg border px-2 py-3 lg:px-4 lg:py-6">
+          <div className="border-Iron w-full space-y-2 rounded-lg border px-2 py-3 lg:w-[calc(100%-424px)] lg:px-4 lg:py-6">
             <div className="flex items-center justify-between gap-4">
               <div className="space-y-2">
                 <h2 className="text-MediumGrey text-sm">Invoice</h2>

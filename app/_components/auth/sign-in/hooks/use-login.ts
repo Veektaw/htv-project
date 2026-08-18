@@ -35,6 +35,8 @@ export default function useLogin() {
             push(redirectPath);
           } else if (res.role === "admin") {
             push("/admin/dashboard");
+          } else if (res.role === "pharmacy") {
+            push("/pharmacy/dashboard");
           } else {
             push("/dashboard");
           }

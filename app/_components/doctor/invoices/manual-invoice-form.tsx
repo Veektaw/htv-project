@@ -421,7 +421,7 @@ export default function ManualInvoiceForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <FieldGroup className="grid grid-cols-2 gap-y-4 sm:grid-cols-2 sm:gap-x-10.5">
+      <FieldGroup className="grid grid-cols-1 gap-y-4 sm:grid-cols-2 sm:gap-x-10.5">
         <Controller
           name="name"
           disabled={!!reconciliation}

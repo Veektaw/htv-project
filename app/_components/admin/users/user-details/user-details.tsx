@@ -124,8 +124,8 @@ export default function UserDetails({ user }: { user: User }) {
               </AccordionTrigger>
 
               <AccordionContent className="border-GreyCloud rounded-xls space-y-3 border px-10 py-7">
-                <div className="flex items-center gap-3">
-                  <div className="flex w-1/2 items-center gap-3">
+                <div className="flex flex-col items-center gap-3 sm:flex-row">
+                  <div className="flex w-full items-center gap-3 sm:w-1/2">
                     <Controller
                       name="title"
                       control={form.control}
@@ -199,7 +199,7 @@ export default function UserDetails({ user }: { user: User }) {
                       return (
                         <Field
                           data-invalid={fieldState.invalid}
-                          className="w-1/2"
+                          className="w-full sm:w-1/2"
                         >
                           <FieldLabel htmlFor={field.name}>
                             Last Name

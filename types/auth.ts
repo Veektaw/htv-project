@@ -1,4 +1,4 @@
-export type Roles = "admin" | "doctor";
+export type Roles = "admin" | "doctor" | "pharmacy";
 
 export type Status = "active" | "inactive";
 

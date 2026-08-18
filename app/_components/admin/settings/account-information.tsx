@@ -73,7 +73,7 @@ export default function AccountInformation({
               </Button>
             </div>
             <div className="border-GreyChateau mt-6 rounded-[32px] border px-10 py-13.5">
-              <FieldGroup className="grid grid-cols-2 gap-x-10.5 gap-y-6">
+              <FieldGroup className="grid grid-cols-1 gap-x-10.5 gap-y-6 sm:grid-cols-2">
                 <Controller
                   name="title"
                   control={form.control}

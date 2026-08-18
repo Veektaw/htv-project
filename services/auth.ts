@@ -163,15 +163,19 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const isAdmin = userSession.data.user.role === "admin";
+  const role = userSession.data.user.role;
+  const isAdmin = role === "admin";
+  const isPharmacy = role === "pharmacy";
+  const isDoctor = role === "doctor" || (!isAdmin && !isPharmacy);
+
   const isAdminRoute = path.split("/")[1] === "admin";
+  const isPharmacyRoute = path.split("/")[1] === "pharmacy";
+  const isDoctorRoute = !isAdminRoute && !isPharmacyRoute;
 
   // Has session — redirect away from sign in
-  if (isSignIn && isAdmin) {
-    return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
-  }
-
-  if (isSignIn && !isAdmin) {
+  if (isSignIn) {
+    if (isAdmin) return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
+    if (isPharmacy) return NextResponse.redirect(new URL("/pharmacy/dashboard", baseUrl));
     return NextResponse.redirect(new URL("/dashboard", baseUrl));
   }
 
@@ -186,21 +190,21 @@ export async function updateSession(request: NextRequest) {
     !userSession.data.user.must_change_password &&
     path === "/create-new-password"
   ) {
-    if (!isAdmin) {
-      return NextResponse.redirect(new URL("/dashboard", baseUrl));
-    }
-
-    if (isAdmin) {
-      return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
-    }
-  }
-
-  if (!isAdmin && isAdminRoute) {
+    if (isAdmin) return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
+    if (isPharmacy) return NextResponse.redirect(new URL("/pharmacy/dashboard", baseUrl));
     return NextResponse.redirect(new URL("/dashboard", baseUrl));
   }
 
   if (isAdmin && !isAdminRoute) {
     return NextResponse.redirect(new URL("/admin/dashboard", baseUrl));
+  }
+
+  if (isPharmacy && !isPharmacyRoute) {
+    return NextResponse.redirect(new URL("/pharmacy/dashboard", baseUrl));
+  }
+
+  if (isDoctor && !isDoctorRoute) {
+    return NextResponse.redirect(new URL("/dashboard", baseUrl));
   }
 
   // Slide the session expiry forward

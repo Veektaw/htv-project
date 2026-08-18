@@ -3,8 +3,8 @@ import CreateReconciliationModal from "./modals/create-reconciliation";
 
 export default function SubHeader() {
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex items-center gap-16">
+    <div className="flex flex-wrap items-center gap-4">
+      <div className="flex flex-wrap items-center gap-3 sm:gap-8 lg:gap-16">
         <p className="py-2 text-base font-bold">Reconciliations</p>
 
         <CreateReconciliationModal>
