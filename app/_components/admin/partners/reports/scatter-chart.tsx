@@ -67,32 +67,32 @@ export default function ScatterChart({ products }: { products: Product[] }) {
   };
 
   return (
-    <div className="border-border rounded-2xl border bg-white p-6 shadow-[0_1px_2px_rgba(21,21,26,0.04),0_8px_24px_rgba(21,21,26,0.05)] space-y-3.5">
+    <div className="border-border space-y-3.5 rounded-2xl border bg-white p-6 shadow-[0_1px_2px_rgba(21,21,26,0.04),0_8px_24px_rgba(21,21,26,0.05)]">
       {/* Header Row */}
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
         <div>
-          <div className="text-[#8c91a4] text-xs font-semibold">
+          <div className="text-xs font-semibold text-[#8c91a4]">
             Pharmacy · Reporting
           </div>
-          <div className="flex items-center gap-2 mt-0.5">
+          <div className="mt-0.5 flex items-center gap-2">
             <h3 className="text-RangoonGreen text-lg font-extrabold">
               Markup vs. Volume Sold
             </h3>
-            <span className="bg-[#fdf3d8] text-[#a9790a] rounded px-1.5 py-0.5 text-[10px] font-extrabold tracking-wide">
+            <span className="rounded bg-[#fdf3d8] px-1.5 py-0.5 text-[10px] font-extrabold tracking-wide text-[#a9790a]">
               NET-NEW WIDGET
             </span>
           </div>
         </div>
 
-        <div className="bg-[#eef0f7] inline-flex rounded-full p-1">
+        <div className="inline-flex rounded-full bg-[#eef0f7] p-1">
           <button
             type="button"
             onClick={() => setViewMode("chart")}
             className={cn(
-              "rounded-full px-4 py-1.5 text-xs font-bold transition-all cursor-pointer",
+              "cursor-pointer rounded-full px-4 py-1.5 text-xs font-bold transition-all",
               viewMode === "chart"
-                ? "bg-white text-RangoonGreen shadow-xs"
-                : "text-MistBlue hover:text-RangoonGreen"
+                ? "text-RangoonGreen bg-white shadow-xs"
+                : "text-MistBlue hover:text-RangoonGreen",
             )}
           >
             Chart
@@ -101,10 +101,10 @@ export default function ScatterChart({ products }: { products: Product[] }) {
             type="button"
             onClick={() => setViewMode("table")}
             className={cn(
-              "rounded-full px-4 py-1.5 text-xs font-bold transition-all cursor-pointer",
+              "cursor-pointer rounded-full px-4 py-1.5 text-xs font-bold transition-all",
               viewMode === "table"
-                ? "bg-white text-RangoonGreen shadow-xs"
-                : "text-MistBlue hover:text-RangoonGreen"
+                ? "text-RangoonGreen bg-white shadow-xs"
+                : "text-MistBlue hover:text-RangoonGreen",
             )}
           >
             Table
@@ -113,16 +113,17 @@ export default function ScatterChart({ products }: { products: Product[] }) {
       </div>
 
       <p className="text-MistBlue text-xs">
-        Which products carry high markup but low volume vs. high volume but low markup — helps prioritize what to push vs. what to re-price.
+        Which products carry high markup but low volume vs. high volume but low
+        markup — helps prioritize what to push vs. what to re-price.
       </p>
 
       {viewMode === "chart" ? (
         <div className="space-y-2 pt-1">
-          <div className="relative h-[340px] rounded-[10px] border border-[#e1e0d9] bg-[#fcfcfb] overflow-hidden select-none">
+          <div className="relative h-85 overflow-hidden rounded-lg border border-[#e1e0d9] bg-[#fcfcfb] select-none">
             {/* Median split dashed lines and quadrant labels */}
-            <div className="absolute inset-0 pointer-events-none">
+            <div className="pointer-events-none absolute inset-0">
               <div
-                className="absolute left-0 right-0 border-t border-dashed border-[#c3c2b7]"
+                className="absolute right-0 left-0 border-t border-dashed border-[#c3c2b7]"
                 style={{ top: `${100 - medMarkupPct}%` }}
               />
               <div
@@ -131,16 +132,16 @@ export default function ScatterChart({ products }: { products: Product[] }) {
               />
 
               {/* Quadrant Labels */}
-              <div className="absolute left-[10px] top-[10px] text-[10.5px] font-bold uppercase tracking-wider text-[#898781]">
+              <div className="absolute top-2.5 left-2.5 text-[10.5px] font-bold tracking-wider text-[#898781] uppercase">
                 High markup · Low volume
               </div>
-              <div className="absolute right-[10px] top-[10px] text-right text-[10.5px] font-bold uppercase tracking-wider text-[#898781]">
+              <div className="absolute top-2.5 right-2.5 text-right text-[10.5px] font-bold tracking-wider text-[#898781] uppercase">
                 High markup · High volume
               </div>
-              <div className="absolute left-[10px] bottom-[24px] text-[10.5px] font-bold uppercase tracking-wider text-[#898781]">
+              <div className="absolute bottom-6 left-2.5 text-[10.5px] font-bold tracking-wider text-[#898781] uppercase">
                 Low markup · Low volume
               </div>
-              <div className="absolute right-[10px] bottom-[10px] text-right text-[10.5px] font-bold uppercase tracking-wider text-[#898781]">
+              <div className="absolute right-2.5 bottom-2.5 text-right text-[10.5px] font-bold tracking-wider text-[#898781] uppercase">
                 Low markup · High volume
               </div>
             </div>
@@ -162,18 +163,21 @@ export default function ScatterChart({ products }: { products: Product[] }) {
                     })
                   }
                   onMouseLeave={() => setHoveredProduct(null)}
-                  className="absolute size-[14px] rounded-full bg-[#f15b41] border-2 border-white shadow-[0_0_0_1px_rgba(0,0,0,0.08)] cursor-pointer hover:outline-2 hover:outline-[#c8432c] -translate-x-1/2 translate-y-1/2 transition-transform"
-                  style={{ left: `${x.toFixed(1)}%`, bottom: `${y.toFixed(1)}%` }}
+                  className="absolute size-3.5 -translate-x-1/2 translate-y-1/2 cursor-pointer rounded-full border-2 border-white bg-[#f15b41] shadow-[0_0_0_1px_rgba(0,0,0,0.08)] transition-transform hover:outline-2 hover:outline-[#c8432c]"
+                  style={{
+                    left: `${x.toFixed(1)}%`,
+                    bottom: `${y.toFixed(1)}%`,
+                  }}
                 />
               );
             })}
 
             {/* Axis Labels */}
-            <div className="absolute left-[12px] bottom-[4px] text-[11px] font-bold text-[#898781] pointer-events-none">
+            <div className="pointer-events-none absolute bottom-1 left-3 text-[11px] font-bold text-[#898781]">
               Volume sold (90d) →
             </div>
             <div
-              className="absolute left-[-2px] top-[10px] text-[11px] font-bold text-[#898781] pointer-events-none"
+              className="pointer-events-none absolute top-2.5 -left-0.5 text-[11px] font-bold text-[#898781]"
               style={{
                 writingMode: "vertical-rl",
                 transform: "rotate(180deg)",
@@ -185,14 +189,14 @@ export default function ScatterChart({ products }: { products: Product[] }) {
             {/* Hover Tooltip */}
             {hoveredProduct && (
               <div
-                className="absolute z-20 bg-[#15151a] text-white text-[11.5px] font-semibold px-3 py-2 rounded-lg pointer-events-none whitespace-nowrap shadow-xl -translate-x-1/2 -translate-y-[120%]"
+                className="pointer-events-none absolute z-20 -translate-x-1/2 -translate-y-[120%] rounded-lg bg-[#15151a] px-3 py-2 text-[11.5px] font-semibold whitespace-nowrap text-white shadow-xl"
                 style={{
                   left: `${hoveredProduct.x.toFixed(1)}%`,
                   bottom: `${hoveredProduct.y.toFixed(1)}%`,
                 }}
               >
                 <div className="font-bold">{hoveredProduct.product.name}</div>
-                <div className="text-gray-300 font-normal text-[11px]">
+                <div className="text-[11px] font-normal text-gray-300">
                   Markup: {hoveredProduct.markupPct.toFixed(0)}% · Volume:{" "}
                   {hoveredProduct.product.unitsSold90d.toLocaleString()} units
                 </div>
@@ -200,15 +204,18 @@ export default function ScatterChart({ products }: { products: Product[] }) {
             )}
           </div>
 
-          <div className="text-[#8c91a4] text-xs mt-2.5 leading-relaxed">
-            Dashed lines mark the median split. Hover a point for detail. Single-series scatter — no legend required per the dataviz standard; a table view is available via the toggle above for full accessibility.
+          <div className="mt-2.5 text-xs leading-relaxed text-[#8c91a4]">
+            Dashed lines mark the median split. Hover a point for detail.
+            Single-series scatter — no legend required per the dataviz standard;
+            a table view is available via the toggle above for full
+            accessibility.
           </div>
         </div>
       ) : (
-        <div className="overflow-x-auto w-full pt-1">
-          <table className="w-full text-left text-xs border-collapse">
+        <div className="w-full overflow-x-auto pt-1">
+          <table className="w-full border-collapse text-left text-xs">
             <thead>
-              <tr className="bg-[#eef0f7] text-[#5d6274] font-bold">
+              <tr className="bg-[#eef0f7] font-bold text-[#5d6274]">
                 <th className="px-4 py-3 font-bold">Product</th>
                 <th className="px-4 py-3 font-bold">Markup / unit</th>
                 <th className="px-4 py-3 font-bold">Markup %</th>
@@ -218,21 +225,24 @@ export default function ScatterChart({ products }: { products: Product[] }) {
             </thead>
             <tbody className="divide-y divide-[#e7e9f3]">
               {productStats.map((stat) => (
-                <tr key={stat.product.id} className="hover:bg-[#fafbff] transition-colors">
-                  <td className="px-4 py-3.5 font-bold text-RangoonGreen">
+                <tr
+                  key={stat.product.id}
+                  className="transition-colors hover:bg-[#fafbff]"
+                >
+                  <td className="text-RangoonGreen px-4 py-3.5 font-bold">
                     {stat.product.name}
                   </td>
-                  <td className="px-4 py-3.5 font-semibold text-RangoonGreen">
+                  <td className="text-RangoonGreen px-4 py-3.5 font-semibold">
                     {formatMoney(stat.markup)}
                   </td>
-                  <td className="px-4 py-3.5 font-bold text-RangoonGreen">
+                  <td className="text-RangoonGreen px-4 py-3.5 font-bold">
                     {stat.markupPct.toFixed(0)}%
                   </td>
-                  <td className="px-4 py-3.5 font-semibold text-RangoonGreen">
+                  <td className="text-RangoonGreen px-4 py-3.5 font-semibold">
                     {stat.vol.toLocaleString()}
                   </td>
                   <td className="px-4 py-3.5">
-                    <span className="bg-[#f0f2f7] text-[#5d6274] inline-flex rounded-full px-3 py-1 font-semibold text-xs">
+                    <span className="inline-flex rounded-full bg-[#f0f2f7] px-3 py-1 text-xs font-semibold text-[#5d6274]">
                       {getQuadrant(stat.markupPct, stat.vol)}
                     </span>
                   </td>

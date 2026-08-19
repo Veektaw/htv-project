@@ -72,7 +72,11 @@ function InventoryCsvWizard({
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [confirmedDuplicate, setConfirmedDuplicate] = useState(false);
 
-  const duplicateJob = checkDuplicateJob(pharmacy.id, "inventory", CURRENT_PERIOD);
+  const duplicateJob = checkDuplicateJob(
+    pharmacy.id,
+    "inventory",
+    CURRENT_PERIOD,
+  );
   const okRows = MOCK_INVENTORY_PREVIEW.filter((r) => r.status === "ok");
   const errRows = MOCK_INVENTORY_PREVIEW.filter((r) => r.status === "error");
   const okCount = okRows.length;
@@ -83,40 +87,39 @@ function InventoryCsvWizard({
     onClose();
   };
 
-  const cadenceLabel =
-    pharmacy.cadence === "biweekly" ? "Biweekly" : "Monthly";
+  const cadenceLabel = pharmacy.cadence === "biweekly" ? "Biweekly" : "Monthly";
 
   return (
     <div className="space-y-4 pt-1">
       {/* Steps bar */}
-      <div className="flex gap-0 mb-5">
+      <div className="mb-5 flex gap-0">
         <div
-          className={`flex-1 text-center text-xs font-bold pb-2.5 border-b-[3px] transition-colors ${
+          className={`flex-1 border-b-[3px] pb-2.5 text-center text-xs font-bold transition-colors ${
             step > 1
-              ? "text-[#1f9254] border-[#1f9254]"
+              ? "border-[#1f9254] text-[#1f9254]"
               : step === 1
-              ? "text-[#f15b41] border-[#f15b41]"
-              : "text-[#8c91a4] border-[#e7e9f3]"
+                ? "border-[#f15b41] text-[#f15b41]"
+                : "border-[#e7e9f3] text-[#8c91a4]"
           }`}
         >
           1. Upload
         </div>
         <div
-          className={`flex-1 text-center text-xs font-bold pb-2.5 border-b-[3px] transition-colors ${
+          className={`flex-1 border-b-[3px] pb-2.5 text-center text-xs font-bold transition-colors ${
             step > 2
-              ? "text-[#1f9254] border-[#1f9254]"
+              ? "border-[#1f9254] text-[#1f9254]"
               : step === 2
-              ? "text-[#f15b41] border-[#f15b41]"
-              : "text-[#8c91a4] border-[#e7e9f3]"
+                ? "border-[#f15b41] text-[#f15b41]"
+                : "border-[#e7e9f3] text-[#8c91a4]"
           }`}
         >
           2. Map &amp; Validate
         </div>
         <div
-          className={`flex-1 text-center text-xs font-bold pb-2.5 border-b-[3px] transition-colors ${
+          className={`flex-1 border-b-[3px] pb-2.5 text-center text-xs font-bold transition-colors ${
             step === 3
-              ? "text-[#f15b41] border-[#f15b41]"
-              : "text-[#8c91a4] border-[#e7e9f3]"
+              ? "border-[#f15b41] text-[#f15b41]"
+              : "border-[#e7e9f3] text-[#8c91a4]"
           }`}
         >
           3. Preview &amp; Commit
@@ -126,32 +129,39 @@ function InventoryCsvWizard({
       {/* Step 1: Upload */}
       {step === 1 && (
         <div>
-          <div className="border-2 border-dashed border-[#d8dcee] rounded-2xl p-10 text-center text-[#5d6274] bg-[#fafbff]">
-            <div className="text-[28px] mb-2.5">📁</div>
+          <div className="rounded-2xl border-2 border-dashed border-[#d8dcee] bg-[#fafbff] p-10 text-center text-[#5d6274]">
+            <div className="mb-2.5 text-[28px]">📁</div>
             <p className="text-[13.5px]">
-              <strong className="text-[#15151a]">Drag and drop your CSV file here</strong>, or click to browse.
+              <strong className="text-[#15151a]">
+                Drag and drop your CSV file here
+              </strong>
+              , or click to browse.
             </p>
-            <p className="text-[#8c91a4] text-xs mt-1">
-              Columns expected: Name, Quantity, Unit, Batch ID, Pharmaceutical ID, Barcode ID, Manufacturer Price, Pharmaceutical Price, HTV Price.
+            <p className="mt-1 text-xs text-[#8c91a4]">
+              Columns expected: Name, Quantity, Unit, Batch ID, Pharmaceutical
+              ID, Barcode ID, Manufacturer Price, Pharmaceutical Price, HTV
+              Price.
             </p>
           </div>
 
-          <div className="text-[#8c91a4] text-xs mt-3">
-            Cadence for this pharmacy: <strong className="text-[#15151a]">{cadenceLabel}</strong> — set on the pharmacy&apos;s Edit form.
+          <div className="mt-3 text-xs text-[#8c91a4]">
+            Cadence for this pharmacy:{" "}
+            <strong className="text-[#15151a]">{cadenceLabel}</strong> — set on
+            the pharmacy&apos;s Edit form.
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-6">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-full px-5 py-2.5 text-xs font-bold text-[#15151a] bg-white border border-[#d8dcee] hover:bg-gray-50 cursor-pointer"
+              className="cursor-pointer rounded-full border border-[#d8dcee] bg-white px-5 py-2.5 text-xs font-bold text-[#15151a] hover:bg-gray-50"
             >
               Cancel
             </button>
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="rounded-full px-6 py-2.5 text-xs font-bold text-white bg-[#15151a] hover:bg-black cursor-pointer shadow-xs"
+              className="cursor-pointer rounded-full bg-[#15151a] px-6 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-black"
             >
               Simulate Upload → inventory_july.csv
             </button>
@@ -162,14 +172,15 @@ function InventoryCsvWizard({
       {/* Step 2: Map & Validate */}
       {step === 2 && (
         <div>
-          <div className="text-[#8c91a4] text-xs mb-3">
-            Column mapping detected automatically from headers. {errCount} row(s) need attention before this batch can be committed.
+          <div className="mb-3 text-xs text-[#8c91a4]">
+            Column mapping detected automatically from headers. {errCount}{" "}
+            row(s) need attention before this batch can be committed.
           </div>
 
-          <div className="border border-[#e7e9f3] rounded-xl overflow-hidden">
-            <table className="w-full text-left text-xs border-collapse">
+          <div className="overflow-hidden rounded-xl border border-[#e7e9f3]">
+            <table className="w-full border-collapse text-left text-xs">
               <thead>
-                <tr className="bg-[#eef0f7] text-[#5d6274] font-bold">
+                <tr className="bg-[#eef0f7] font-bold text-[#5d6274]">
                   <th className="px-3.5 py-3">Row</th>
                   <th className="px-3.5 py-3">Name</th>
                   <th className="px-3.5 py-3">Qty</th>
@@ -181,7 +192,7 @@ function InventoryCsvWizard({
               <tbody className="divide-y divide-[#e7e9f3]">
                 {MOCK_INVENTORY_PREVIEW.map((r) => (
                   <tr key={r.row} className="hover:bg-[#fafbff]">
-                    <td className="px-3.5 py-3 text-[#8c91a4] font-medium">
+                    <td className="px-3.5 py-3 font-medium text-[#8c91a4]">
                       {r.row}
                     </td>
                     <td className="px-3.5 py-3 font-bold text-[#15151a]">
@@ -189,19 +200,21 @@ function InventoryCsvWizard({
                     </td>
                     <td className="px-3.5 py-3 text-[#15151a]">{r.qty}</td>
                     <td className="px-3.5 py-3 text-[#15151a]">{r.unit}</td>
-                    <td className="px-3.5 py-3 font-mono text-[#15151a]">{r.batchId}</td>
+                    <td className="px-3.5 py-3 font-mono text-[#15151a]">
+                      {r.batchId}
+                    </td>
                     <td className="px-3.5 py-3">
                       {r.status === "ok" ? (
-                        <span className="bg-[#e1f5ea] text-[#1f9254] inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold">
+                        <span className="inline-flex items-center rounded-full bg-[#e1f5ea] px-2.5 py-0.5 text-[11px] font-bold text-[#1f9254]">
                           Valid
                         </span>
                       ) : (
                         <div>
-                          <span className="bg-[#fbe2e1] text-[#c8382f] inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-bold">
+                          <span className="inline-flex items-center rounded-full bg-[#fbe2e1] px-2.5 py-0.5 text-[11px] font-bold text-[#c8382f]">
                             Error
                           </span>
                           {r.error && (
-                            <div className="text-[#c8382f] text-[10px] mt-0.5">
+                            <div className="mt-0.5 text-[10px] text-[#c8382f]">
                               {r.error}
                             </div>
                           )}
@@ -218,14 +231,14 @@ function InventoryCsvWizard({
             <button
               type="button"
               onClick={() => setStep(1)}
-              className="rounded-full px-5 py-2.5 text-xs font-bold text-[#15151a] bg-white border border-[#d8dcee] hover:bg-gray-50 cursor-pointer"
+              className="cursor-pointer rounded-full border border-[#d8dcee] bg-white px-5 py-2.5 text-xs font-bold text-[#15151a] hover:bg-gray-50"
             >
               Back
             </button>
             <button
               type="button"
               onClick={() => setStep(3)}
-              className="rounded-full px-6 py-2.5 text-xs font-bold text-white bg-[#15151a] hover:bg-black cursor-pointer shadow-xs"
+              className="cursor-pointer rounded-full bg-[#15151a] px-6 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-black"
             >
               Continue to Preview ({okCount} valid)
             </button>
@@ -236,11 +249,14 @@ function InventoryCsvWizard({
       {/* Step 3: Preview & Commit */}
       {step === 3 && (
         <div>
-          <div className="text-[#8c91a4] text-xs mb-3">
-            Ready to commit <strong className="text-[#15151a]">{okCount} valid rows</strong>. {errCount} row(s) will be skipped and flagged for correction — they will not be committed.
+          <div className="mb-3 text-xs text-[#8c91a4]">
+            Ready to commit{" "}
+            <strong className="text-[#15151a]">{okCount} valid rows</strong>.{" "}
+            {errCount} row(s) will be skipped and flagged for correction — they
+            will not be committed.
           </div>
 
-          <div className="border border-[#e7e9f3] rounded-xl bg-[#f9fafc] p-4 space-y-2 text-xs">
+          <div className="space-y-2 rounded-xl border border-[#e7e9f3] bg-[#f9fafc] p-4 text-xs">
             <div className="flex justify-between">
               <span className="text-[#5d6274]">Rows to import</span>
               <strong className="text-[#15151a]">{okCount}</strong>
@@ -252,14 +268,16 @@ function InventoryCsvWizard({
           </div>
 
           {duplicateJob && (
-            <div className="bg-[#fff2ef] text-[#c8432c] rounded-xl p-3.5 mt-3.5 text-xs">
-              ⚠️ {pharmacy.name} already has a committed inventory upload for {CURRENT_PERIOD} ({duplicateJob.rowCount} rows, committed {duplicateJob.committedAt}). This looks like a duplicate.
-              <label className="flex items-center gap-2 mt-2 font-semibold cursor-pointer">
+            <div className="mt-3.5 rounded-xl bg-[#fff2ef] p-3.5 text-xs text-[#c8432c]">
+              ⚠️ {pharmacy.name} already has a committed inventory upload for{" "}
+              {CURRENT_PERIOD} ({duplicateJob.rowCount} rows, committed{" "}
+              {duplicateJob.committedAt}). This looks like a duplicate.
+              <label className="mt-2 flex cursor-pointer items-center gap-2 font-semibold">
                 <input
                   type="checkbox"
                   checked={confirmedDuplicate}
                   onChange={(e) => setConfirmedDuplicate(e.target.checked)}
-                  className="rounded accent-PortlandOrange size-3.5"
+                  className="accent-PortlandOrange size-3.5 rounded"
                 />
                 <span>Yes, re-upload and replace it anyway</span>
               </label>
@@ -270,7 +288,7 @@ function InventoryCsvWizard({
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="rounded-full px-5 py-2.5 text-xs font-bold text-[#15151a] bg-white border border-[#d8dcee] hover:bg-gray-50 cursor-pointer"
+              className="cursor-pointer rounded-full border border-[#d8dcee] bg-white px-5 py-2.5 text-xs font-bold text-[#15151a] hover:bg-gray-50"
             >
               Back
             </button>
@@ -278,7 +296,7 @@ function InventoryCsvWizard({
               type="button"
               disabled={Boolean(duplicateJob && !confirmedDuplicate)}
               onClick={handleCommit}
-              className="rounded-full px-6 py-2.5 text-xs font-bold text-white bg-[#15151a] hover:bg-black disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-xs"
+              className="cursor-pointer rounded-full bg-[#15151a] px-6 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-black disabled:cursor-not-allowed disabled:opacity-50"
             >
               Commit Import
             </button>
@@ -296,9 +314,12 @@ export default function InventoryCsvModal({
 }: InventoryCsvModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto w-full sm:max-w-[640px] rounded-[20px] p-8 bg-white border border-[#e7e9f3] shadow-2xl">
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[90vh] w-full overflow-y-auto rounded-4xl border border-[#e7e9f3] bg-white p-8 shadow-2xl sm:max-w-160"
+      >
         <DialogHeader className="pb-2">
-          <DialogTitle className="text-xl font-extrabold text-[#15151a] text-left">
+          <DialogTitle className="text-left text-xl font-extrabold text-[#15151a]">
             Import Inventory CSV
           </DialogTitle>
         </DialogHeader>

@@ -8,7 +8,13 @@ import {
   DialogTitle,
 } from "@/app/_components/ui/dialog";
 import { usePartners } from "../../contexts/partners-context";
-import { Pharmacy, FulfillmentType, FeeType, CadenceType, PharmacyStatus } from "@/types/partners";
+import {
+  Pharmacy,
+  FulfillmentType,
+  FeeType,
+  CadenceType,
+  PharmacyStatus,
+} from "@/types/partners";
 import { showErrorToast } from "@/lib/toast";
 
 type AddPharmacyModalProps = {
@@ -28,23 +34,23 @@ function PharmacyForm({
 
   const [name, setName] = useState(editingPharmacy?.name || "");
   const [status, setStatus] = useState<PharmacyStatus>(
-    editingPharmacy?.status || "active"
+    editingPharmacy?.status || "active",
   );
   const [city, setCity] = useState(editingPharmacy?.city || "");
   const [country, setCountry] = useState(editingPharmacy?.country || "Nigeria");
   const [email, setEmail] = useState(editingPharmacy?.email || "");
   const [phone, setPhone] = useState(editingPharmacy?.phone || "");
   const [fulfillment, setFulfillment] = useState<FulfillmentType>(
-    editingPharmacy?.fulfillment || "delivery"
+    editingPharmacy?.fulfillment || "delivery",
   );
   const [feeType, setFeeType] = useState<FeeType>(
-    editingPharmacy?.feeType || "volume_based"
+    editingPharmacy?.feeType || "volume_based",
   );
   const [flatFeeAmount, setFlatFeeAmount] = useState<string>(
-    editingPharmacy?.flatFeeAmount ? String(editingPharmacy.flatFeeAmount) : ""
+    editingPharmacy?.flatFeeAmount ? String(editingPharmacy.flatFeeAmount) : "",
   );
   const [cadence, setCadence] = useState<CadenceType>(
-    editingPharmacy?.cadence || "monthly"
+    editingPharmacy?.cadence || "monthly",
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -86,7 +92,7 @@ function PharmacyForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4 text-xs">
+      <div className="grid grid-cols-1 gap-x-5 gap-y-4 text-xs sm:grid-cols-2">
         <div className="space-y-1.5">
           <label className="block text-[12.5px] font-bold text-[#5d6274]">
             Pharmacy Name*
@@ -96,7 +102,7 @@ function PharmacyForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Type in pharmacy name"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -108,7 +114,7 @@ function PharmacyForm({
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as PharmacyStatus)}
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none cursor-pointer focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full cursor-pointer rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none"
           >
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
@@ -124,7 +130,7 @@ function PharmacyForm({
             value={city}
             onChange={(e) => setCity(e.target.value)}
             placeholder="e.g. Lagos"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -138,7 +144,7 @@ function PharmacyForm({
             value={country}
             onChange={(e) => setCountry(e.target.value)}
             placeholder="e.g. Nigeria"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -152,7 +158,7 @@ function PharmacyForm({
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="contact@pharmacy.com"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -166,7 +172,7 @@ function PharmacyForm({
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             placeholder="+234 801 234 5678"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
           />
         </div>
 
@@ -177,7 +183,7 @@ function PharmacyForm({
           <select
             value={fulfillment}
             onChange={(e) => setFulfillment(e.target.value as FulfillmentType)}
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none cursor-pointer focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full cursor-pointer rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none"
           >
             <option value="pickup">Pickup</option>
             <option value="delivery">Delivery</option>
@@ -191,7 +197,7 @@ function PharmacyForm({
           <select
             value={feeType}
             onChange={(e) => setFeeType(e.target.value as FeeType)}
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none cursor-pointer focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full cursor-pointer rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none"
           >
             <option value="volume_based">Volume-based (tiered schedule)</option>
             <option value="flat">Flat fee</option>
@@ -199,7 +205,7 @@ function PharmacyForm({
         </div>
 
         {feeType === "flat" && (
-          <div className="col-span-1 sm:col-span-2 space-y-1.5">
+          <div className="col-span-1 space-y-1.5 sm:col-span-2">
             <label className="block text-[12.5px] font-bold text-[#5d6274]">
               Flat Fee Amount (€/month)*
             </label>
@@ -209,26 +215,27 @@ function PharmacyForm({
               value={flatFeeAmount}
               onChange={(e) => setFlatFeeAmount(e.target.value)}
               placeholder="e.g. 15000"
-              className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+              className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
               required
             />
           </div>
         )}
 
-        <div className="col-span-1 sm:col-span-2 space-y-1.5">
+        <div className="col-span-1 space-y-1.5 sm:col-span-2">
           <label className="block text-[12.5px] font-bold text-[#5d6274]">
             Inventory Upload Cadence*
           </label>
           <select
             value={cadence}
             onChange={(e) => setCadence(e.target.value as CadenceType)}
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none cursor-pointer focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full cursor-pointer rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none"
           >
             <option value="monthly">Monthly</option>
             <option value="biweekly">Biweekly</option>
           </select>
           <p className="text-[11px] text-[#8c91a4]">
-            How often this pharmacy uploads its inventory and orders-fulfilled CSVs.
+            How often this pharmacy uploads its inventory and orders-fulfilled
+            CSVs.
           </p>
         </div>
       </div>
@@ -237,13 +244,13 @@ function PharmacyForm({
         <button
           type="button"
           onClick={onClose}
-          className="rounded-full px-5 py-2.5 text-xs font-bold text-[#15151a] bg-white border border-[#d8dcee] hover:bg-gray-50 cursor-pointer"
+          className="cursor-pointer rounded-full border border-[#d8dcee] bg-white px-5 py-2.5 text-xs font-bold text-[#15151a] hover:bg-gray-50"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="rounded-full px-6 py-2.5 text-xs font-bold text-white bg-[#15151a] hover:bg-black cursor-pointer shadow-xs"
+          className="cursor-pointer rounded-full bg-[#15151a] px-6 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-black"
         >
           {editingPharmacy ? "Save Changes" : "Submit"}
         </button>
@@ -259,9 +266,12 @@ export default function AddPharmacyModal({
 }: AddPharmacyModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto w-full sm:max-w-[620px] rounded-[20px] p-8 bg-white border border-[#e7e9f3] shadow-2xl">
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[90vh] w-full overflow-y-auto rounded-4xl border border-[#e7e9f3] bg-white p-8 shadow-2xl sm:max-w-155"
+      >
         <DialogHeader className="pb-2">
-          <DialogTitle className="text-xl font-extrabold text-[#15151a] text-left">
+          <DialogTitle className="text-left text-xl font-extrabold text-[#15151a]">
             {editingPharmacy ? "Edit Pharmacy" : "New Pharmacy"}
           </DialogTitle>
         </DialogHeader>

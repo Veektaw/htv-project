@@ -52,14 +52,22 @@ function CreateInvoiceForm({
       const filtered = prev.filter((_, i) => i !== index);
       return filtered.length > 0
         ? filtered
-        : [{ desc: "", qty: null, unitPrice: null, amount: 0, type: "product" }];
+        : [
+            {
+              desc: "",
+              qty: null,
+              unitPrice: null,
+              amount: 0,
+              type: "product",
+            },
+          ];
     });
   };
 
   const handleLineChange = (
     index: number,
     field: keyof InvoiceLineItem,
-    value: string | number | null
+    value: string | number | null,
   ) => {
     setLines((prev) => {
       const copy = [...prev];
@@ -116,7 +124,7 @@ function CreateInvoiceForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4 pt-2">
       {/* 2-Column Form Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4 text-xs">
+      <div className="grid grid-cols-1 gap-x-5 gap-y-4 text-xs sm:grid-cols-2">
         <div className="space-y-1.5">
           <label className="block text-[12.5px] font-bold text-[#5d6274]">
             Month*
@@ -126,7 +134,7 @@ function CreateInvoiceForm({
             value={month}
             onChange={(e) => setMonth(e.target.value)}
             placeholder="July, 2026"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -138,7 +146,7 @@ function CreateInvoiceForm({
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value as PartnerInvoiceStatus)}
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none cursor-pointer focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full cursor-pointer rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none"
           >
             <option value="under_review">Under Review</option>
             <option value="paid">Paid</option>
@@ -148,35 +156,28 @@ function CreateInvoiceForm({
 
       {/* Dynamic Line Items */}
       <div>
-        <div className="text-[#8c91a4] font-bold text-xs mt-3.5 mb-2">
+        <div className="mt-3.5 mb-2 text-xs font-bold text-[#8c91a4]">
           Line items
         </div>
 
         <div className="space-y-2">
           {lines.map((line, idx) => (
-            <div
-              key={idx}
-              className="flex items-center gap-2"
-            >
+            <div key={idx} className="flex items-center gap-2">
               <input
                 type="text"
                 value={line.desc}
-                onChange={(e) =>
-                  handleLineChange(idx, "desc", e.target.value)
-                }
+                onChange={(e) => handleLineChange(idx, "desc", e.target.value)}
                 placeholder="Description"
-                className="flex-2 min-w-0 h-10 px-3 border border-[#d8dcee] rounded-lg text-xs text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+                className="focus:border-PortlandOrange h-10 min-w-0 flex-2 rounded-lg border border-[#d8dcee] bg-white px-3 text-xs text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
                 required
               />
 
               <input
                 type="number"
                 value={line.qty === null ? "" : line.qty}
-                onChange={(e) =>
-                  handleLineChange(idx, "qty", e.target.value)
-                }
+                onChange={(e) => handleLineChange(idx, "qty", e.target.value)}
                 placeholder="Qty"
-                className="w-[70px] shrink-0 h-10 px-3 border border-[#d8dcee] rounded-lg text-xs text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+                className="focus:border-PortlandOrange h-10 w-17.5 shrink-0 rounded-lg border border-[#d8dcee] bg-white px-3 text-xs text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
               />
 
               <input
@@ -187,7 +188,7 @@ function CreateInvoiceForm({
                   handleLineChange(idx, "unitPrice", e.target.value)
                 }
                 placeholder="Unit price"
-                className="w-[100px] shrink-0 h-10 px-3 border border-[#d8dcee] rounded-lg text-xs text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+                className="focus:border-PortlandOrange h-10 w-25 shrink-0 rounded-lg border border-[#d8dcee] bg-white px-3 text-xs text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
               />
 
               <input
@@ -198,14 +199,14 @@ function CreateInvoiceForm({
                   handleLineChange(idx, "amount", e.target.value)
                 }
                 placeholder="Amount"
-                className="w-[100px] shrink-0 h-10 px-3 border border-[#d8dcee] rounded-lg text-xs font-bold text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+                className="focus:border-PortlandOrange h-10 w-25 shrink-0 rounded-lg border border-[#d8dcee] bg-white px-3 text-xs font-bold text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
                 required
               />
 
               <button
                 type="button"
                 onClick={() => handleRemoveLine(idx)}
-                className="size-10 shrink-0 flex items-center justify-center rounded-lg border border-[#d8dcee] bg-white hover:bg-gray-50 text-base text-[#15151a] cursor-pointer"
+                className="flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-[#d8dcee] bg-white text-base text-[#15151a] hover:bg-gray-50"
               >
                 &times;
               </button>
@@ -216,13 +217,19 @@ function CreateInvoiceForm({
         <button
           type="button"
           onClick={handleAddLine}
-          className="mt-2 inline-flex items-center rounded-full border border-[#d8dcee] bg-white px-3.5 py-1.5 text-xs font-bold text-[#15151a] hover:bg-gray-50 cursor-pointer"
+          className="mt-2 inline-flex cursor-pointer items-center rounded-full border border-[#d8dcee] bg-white px-3.5 py-1.5 text-xs font-bold text-[#15151a] hover:bg-gray-50"
         >
           + Add Line Item
         </button>
 
-        <div className="text-right mt-3.5 font-extrabold text-sm text-[#15151a]">
-          Total: <span>€{totalAmount % 1 === 0 ? totalAmount.toLocaleString() : totalAmount.toFixed(2)}</span>
+        <div className="mt-3.5 text-right text-sm font-extrabold text-[#15151a]">
+          Total:{" "}
+          <span>
+            €
+            {totalAmount % 1 === 0
+              ? totalAmount.toLocaleString()
+              : totalAmount.toFixed(2)}
+          </span>
         </div>
       </div>
 
@@ -230,13 +237,13 @@ function CreateInvoiceForm({
         <button
           type="button"
           onClick={onClose}
-          className="rounded-full px-5 py-2.5 text-xs font-bold text-[#15151a] bg-white border border-[#d8dcee] hover:bg-gray-50 cursor-pointer"
+          className="cursor-pointer rounded-full border border-[#d8dcee] bg-white px-5 py-2.5 text-xs font-bold text-[#15151a] hover:bg-gray-50"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="rounded-full px-6 py-2.5 text-xs font-bold text-white bg-[#15151a] hover:bg-black cursor-pointer shadow-xs"
+          className="cursor-pointer rounded-full bg-[#15151a] px-6 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-black"
         >
           Create Invoice
         </button>
@@ -258,9 +265,12 @@ export default function CreateInvoiceModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto w-full sm:max-w-[640px] rounded-[20px] p-8 bg-white border border-[#e7e9f3] shadow-2xl">
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[90vh] w-full overflow-y-auto rounded-4xl border border-[#e7e9f3] bg-white p-8 shadow-2xl sm:max-w-160"
+      >
         <DialogHeader className="pb-2">
-          <DialogTitle className="text-xl font-extrabold text-[#15151a] text-left">
+          <DialogTitle className="text-left text-xl font-extrabold text-[#15151a]">
             New Invoice — {directionTitle}
           </DialogTitle>
         </DialogHeader>

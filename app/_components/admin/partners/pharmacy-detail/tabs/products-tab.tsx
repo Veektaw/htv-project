@@ -33,15 +33,18 @@ export default function ProductsTab({
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [adjustingProduct, setAdjustingProduct] = useState<Product | null>(null);
-  const [deleteTargetProduct, setDeleteTargetProduct] = useState<Product | null>(null);
+  const [adjustingProduct, setAdjustingProduct] = useState<Product | null>(
+    null,
+  );
+  const [deleteTargetProduct, setDeleteTargetProduct] =
+    useState<Product | null>(null);
   const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
 
   const pharmacyProducts = useMemo(() => {
     return products.filter(
       (p) =>
         p.pharmacyId === pharmacy.id &&
-        (categoryFilter === "all" || p.category === categoryFilter)
+        (categoryFilter === "all" || p.category === categoryFilter),
     );
   }, [products, pharmacy.id, categoryFilter]);
 
@@ -57,7 +60,7 @@ export default function ProductsTab({
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="border-border-strong rounded-full border bg-white px-4 py-2 text-xs font-bold text-RangoonGreen outline-none cursor-pointer"
+            className="border-border-strong text-RangoonGreen cursor-pointer rounded-full border bg-white px-4 py-2 text-xs font-bold outline-none"
           >
             <option value="all">All categories</option>
             {CATEGORIES.map((c) => (
@@ -71,7 +74,7 @@ export default function ProductsTab({
             variant="outline"
             size="sm"
             onClick={() => setIsCsvModalOpen(true)}
-            className="border-border-strong rounded-full px-4 py-2 text-xs font-bold text-RangoonGreen hover:bg-gray-50 cursor-pointer"
+            className="border-border-strong text-RangoonGreen cursor-pointer rounded-full px-4 py-2 text-xs font-bold hover:bg-gray-50"
           >
             ↑ Import Inventory CSV
           </Button>
@@ -82,7 +85,7 @@ export default function ProductsTab({
               setEditingProduct(null);
               setIsProductModalOpen(true);
             }}
-            className="bg-RangoonGreen hover:bg-black rounded-full px-4 py-2 text-xs font-bold text-white shadow-xs cursor-pointer"
+            className="bg-RangoonGreen cursor-pointer rounded-full px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-black"
           >
             + Add Product / Program
           </Button>
@@ -90,16 +93,18 @@ export default function ProductsTab({
       </div>
 
       {portalMode && (
-        <div className="bg-[#fde7e2] text-[#c8432c] rounded-xl px-4 py-2.5 text-xs font-semibold">
-          ⓘ Whether pharmacy users can edit pricing directly (vs. admin-exclusive) is an open question — see open-questions doc. Editing is enabled here for demo purposes.
+        <div className="rounded-xl bg-[#fde7e2] px-4 py-2.5 text-xs font-semibold text-[#c8432c]">
+          ⓘ Whether pharmacy users can edit pricing directly (vs.
+          admin-exclusive) is an open question — see open-questions doc. Editing
+          is enabled here for demo purposes.
         </div>
       )}
 
       {/* Direct Products Table */}
       <div className="w-full overflow-x-auto">
-        <table className="w-full text-left text-[13px] border-collapse whitespace-nowrap">
+        <table className="w-full border-collapse text-left text-[13px] whitespace-nowrap">
           <thead>
-            <tr className="bg-[#eef0f7] text-[#5d6274] text-xs font-bold">
+            <tr className="bg-[#eef0f7] text-xs font-bold text-[#5d6274]">
               <th className="px-3.5 py-3 font-bold">Name</th>
               <th className="px-3.5 py-3 font-bold">Type</th>
               <th className="px-3.5 py-3 font-bold">Category</th>
@@ -112,13 +117,16 @@ export default function ProductsTab({
               <th className="px-3.5 py-3 font-bold">Manufacturer</th>
               <th className="px-3.5 py-3 font-bold">Pharmaceutical</th>
               <th className="px-3.5 py-3 font-bold">HTV Markup</th>
-              <th className="px-1 py-3 text-right w-8"></th>
+              <th className="w-8 px-1 py-3 text-right"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-[#e7e9f3]">
             {pharmacyProducts.length === 0 ? (
               <tr>
-                <td colSpan={13} className="text-MistBlue py-12 text-center text-xs">
+                <td
+                  colSpan={13}
+                  className="text-MistBlue py-12 text-center text-xs"
+                >
                   No products in this category.
                 </td>
               </tr>
@@ -127,11 +135,14 @@ export default function ProductsTab({
                 const canSeeMarkup = !portalMode || p.markupVisible;
 
                 return (
-                  <tr key={p.id} className="hover:bg-[#fafbff] transition-colors">
-                    <td className="px-3.5 py-3.5 font-bold text-RangoonGreen">
+                  <tr
+                    key={p.id}
+                    className="transition-colors hover:bg-[#fafbff]"
+                  >
+                    <td className="text-RangoonGreen px-3.5 py-3.5 font-bold">
                       <div>{p.name}</div>
                       {p.productType === "program" && p.components && (
-                        <div className="text-MistBlue text-xs font-normal mt-0.5">
+                        <div className="text-MistBlue mt-0.5 text-xs font-normal">
                           {p.components.length} component(s)
                         </div>
                       )}
@@ -147,40 +158,46 @@ export default function ProductsTab({
                         {p.productType === "program" ? "Program" : "Single"}
                       </span>
                     </td>
-                    <td className="px-3.5 py-3.5 text-RangoonGreen font-medium">{p.category}</td>
-                    <td className="px-3.5 py-3.5 text-RangoonGreen whitespace-nowrap">{p.dateCreated}</td>
-                    <td className="px-3.5 py-3.5 text-RangoonGreen font-semibold">
+                    <td className="text-RangoonGreen px-3.5 py-3.5 font-medium">
+                      {p.category}
+                    </td>
+                    <td className="text-RangoonGreen px-3.5 py-3.5 whitespace-nowrap">
+                      {p.dateCreated}
+                    </td>
+                    <td className="text-RangoonGreen px-3.5 py-3.5 font-semibold">
                       {p.qty.toLocaleString()}
                     </td>
-                    <td className="px-3.5 py-3.5 text-RangoonGreen">{p.unit}</td>
-                    <td className="px-3.5 py-3.5 text-RangoonGreen font-semibold">
+                    <td className="text-RangoonGreen px-3.5 py-3.5">
+                      {p.unit}
+                    </td>
+                    <td className="text-RangoonGreen px-3.5 py-3.5 font-semibold">
                       {formatMoney(p.pricePerUnit)}
                     </td>
-                    <td className="px-3.5 py-3.5 text-RangoonGreen font-semibold whitespace-nowrap">
+                    <td className="text-RangoonGreen px-3.5 py-3.5 font-semibold whitespace-nowrap">
                       <div>{formatMoney(p.aggregatePrice)}</div>
                       <div className="mt-0.5">
-                        <span className="bg-[#fdf3d8] text-[#a9790a] rounded px-1.5 py-0.5 text-[9px] font-extrabold tracking-wide">
+                        <span className="rounded bg-[#fdf3d8] px-1.5 py-0.5 text-[9px] font-extrabold tracking-wide text-[#a9790a]">
                           ×qty
                         </span>
                       </div>
                     </td>
-                    <td className="px-3.5 py-3.5 font-mono text-RangoonGreen whitespace-nowrap">
+                    <td className="text-RangoonGreen px-3.5 py-3.5 font-mono whitespace-nowrap">
                       {p.batchId}
                     </td>
-                    <td className="px-3.5 py-3.5 text-RangoonGreen font-semibold">
+                    <td className="text-RangoonGreen px-3.5 py-3.5 font-semibold">
                       {formatMoney(p.manufacturerPrice)}
                     </td>
-                    <td className="px-3.5 py-3.5 text-RangoonGreen font-semibold">
+                    <td className="text-RangoonGreen px-3.5 py-3.5 font-semibold">
                       {formatMoney(p.pharmaceuticalPrice)}
                     </td>
                     <td className="px-3.5 py-3.5 whitespace-nowrap">
                       {canSeeMarkup ? (
                         <div>
                           <div className="text-xs">
-                            <span className="font-bold text-RangoonGreen">
+                            <span className="text-RangoonGreen font-bold">
                               {formatMoney(p.htvMarkup)}
                             </span>{" "}
-                            <span className="text-[#8c91a4] font-normal text-xs">
+                            <span className="text-xs font-normal text-[#8c91a4]">
                               (HTV price {formatMoney(p.htvPrice)})
                             </span>
                           </div>
@@ -193,13 +210,13 @@ export default function ProductsTab({
                                   onChange={() => toggleMarkupVisible(p.id)}
                                   className="peer sr-only"
                                 />
-                                <div className="peer h-4 w-7 rounded-full bg-gray-300 peer-checked:bg-PortlandOrange after:absolute after:top-[2px] after:left-[2px] after:size-3 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-3"></div>
+                                <div className="peer peer-checked:bg-PortlandOrange h-4 w-7 rounded-full bg-gray-300 after:absolute after:top-0.5 after:left-0.5 after:size-3 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-3"></div>
                               </label>
                             </div>
                           )}
                         </div>
                       ) : (
-                        <span className="text-MistBlue text-xs flex items-center gap-1 font-normal">
+                        <span className="text-MistBlue flex items-center gap-1 text-xs font-normal">
                           <span>🔒</span> Hidden by HTV admin
                         </span>
                       )}
@@ -210,31 +227,34 @@ export default function ProductsTab({
                           <Button
                             variant="ghost"
                             size="icon"
-                            className="size-7 rounded-full text-MistBlue hover:bg-gray-100 hover:text-RangoonGreen cursor-pointer"
+                            className="text-MistBlue hover:text-RangoonGreen size-7 cursor-pointer rounded-full hover:bg-gray-100"
                           >
                             <MoreVertical className="size-4" />
                           </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-36 rounded-xl shadow-lg border-border">
+                        <DropdownMenuContent
+                          align="end"
+                          className="border-border w-36 rounded-xl shadow-lg"
+                        >
                           <DropdownMenuItem
                             onClick={() => {
                               setEditingProduct(p);
                               setIsProductModalOpen(true);
                             }}
-                            className="cursor-pointer text-xs font-semibold py-2"
+                            className="cursor-pointer py-2 text-xs font-semibold"
                           >
                             Edit
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             onClick={() => setAdjustingProduct(p)}
-                            className="cursor-pointer text-xs font-semibold py-2"
+                            className="cursor-pointer py-2 text-xs font-semibold"
                           >
                             Adjust Stock
                           </DropdownMenuItem>
                           {!portalMode && (
                             <DropdownMenuItem
                               onClick={() => setDeleteTargetProduct(p)}
-                              className="text-ChiliPepper cursor-pointer text-xs font-semibold py-2 hover:bg-red-50"
+                              className="text-ChiliPepper cursor-pointer py-2 text-xs font-semibold hover:bg-red-50"
                             >
                               Delete
                             </DropdownMenuItem>

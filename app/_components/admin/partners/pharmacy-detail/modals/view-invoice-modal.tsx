@@ -49,18 +49,26 @@ export default function ViewInvoiceModal({
   const handlePostComment = (e: React.FormEvent) => {
     e.preventDefault();
     if (!commentText.trim()) return;
-    addComment("invoice", invoice.id, "Dr. Adaora Isaac (Admin)", commentText.trim());
+    addComment(
+      "invoice",
+      invoice.id,
+      "Dr. Adaora Isaac (Admin)",
+      commentText.trim(),
+    );
     setCommentText("");
   };
 
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[760px]">
+        <DialogContent
+          aria-describedby={undefined}
+          className="max-h-[90vh] overflow-y-auto sm:max-w-190"
+        >
           <DialogHeader>
             <div className="flex flex-wrap items-center justify-between gap-2 pr-6">
               <div>
-                <DialogTitle className="text-xl font-bold text-RangoonGreen">
+                <DialogTitle className="text-RangoonGreen text-xl font-bold">
                   {invoice.number}
                 </DialogTitle>
                 <p className="text-MistBlue text-xs">
@@ -76,15 +84,15 @@ export default function ViewInvoiceModal({
                   invoice.status === "paid"
                     ? "bg-[#e1f5ea] text-[#1f9254]"
                     : invoice.status === "under_review"
-                    ? "bg-[#fdf3d8] text-[#a9790a]"
-                    : "bg-[#e4eefb] text-[#2a6fc9]"
+                      ? "bg-[#fdf3d8] text-[#a9790a]"
+                      : "bg-[#e4eefb] text-[#2a6fc9]"
                 }`}
               >
                 {invoice.status === "under_review"
                   ? "Under Review"
                   : invoice.status === "paid"
-                  ? "Paid"
-                  : "Pending"}
+                    ? "Paid"
+                    : "Pending"}
               </span>
             </div>
           </DialogHeader>
@@ -93,7 +101,7 @@ export default function ViewInvoiceModal({
             {/* Line Items Table */}
             <div className="border-Iron overflow-hidden rounded-xl border bg-white">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#eef0f7] text-CloudyGrey font-bold uppercase">
+                <thead className="text-CloudyGrey bg-[#eef0f7] font-bold uppercase">
                   <tr>
                     <th className="px-4 py-3">Line Item Description</th>
                     <th className="px-4 py-3">Qty</th>
@@ -107,7 +115,7 @@ export default function ViewInvoiceModal({
                       <td className="text-RangoonGreen px-4 py-3 font-medium">
                         {line.desc}
                         {line.type === "platform_fee" && (
-                          <span className="bg-[#fdf3d8] text-[#a9790a] ml-2 inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold">
+                          <span className="ml-2 inline-flex rounded-full bg-[#fdf3d8] px-2 py-0.5 text-[10px] font-bold text-[#a9790a]">
                             Platform Fee
                           </span>
                         )}
@@ -119,32 +127,50 @@ export default function ViewInvoiceModal({
                         {line.unitPrice ? `€${line.unitPrice.toFixed(2)}` : "—"}
                       </td>
                       <td className="text-RangoonGreen px-4 py-3 text-right font-bold">
-                        €{line.amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                        €
+                        {line.amount.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}
                       </td>
                     </tr>
                   ))}
                   <tr className="bg-GhostWhite/50 text-MistBlue">
-                    <td colSpan={3} className="px-4 py-2 text-right font-medium">
+                    <td
+                      colSpan={3}
+                      className="px-4 py-2 text-right font-medium"
+                    >
                       Subtotal (Net)
                     </td>
                     <td className="px-4 py-2 text-right font-medium">
-                      €{net.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      €
+                      {net.toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      })}
                     </td>
                   </tr>
                   <tr className="bg-GhostWhite/50 text-MistBlue">
-                    <td colSpan={3} className="px-4 py-2 text-right font-medium">
+                    <td
+                      colSpan={3}
+                      className="px-4 py-2 text-right font-medium"
+                    >
                       VAT ({VAT_RATE}% Standard)
                     </td>
                     <td className="px-4 py-2 text-right font-medium">
-                      €{vat.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                      €
+                      {vat.toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      })}
                     </td>
                   </tr>
-                  <tr className="bg-GhostWhite text-RangoonGreen font-extrabold text-sm border-t">
+                  <tr className="bg-GhostWhite text-RangoonGreen border-t text-sm font-extrabold">
                     <td colSpan={3} className="px-4 py-3 text-right">
                       Total (Gross)
                     </td>
-                    <td className="px-4 py-3 text-right text-PortlandOrange">
-                      €{invoice.amount.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                    <td className="text-PortlandOrange px-4 py-3 text-right">
+                      €
+                      {invoice.amount.toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      })}
                     </td>
                   </tr>
                 </tbody>
@@ -157,7 +183,8 @@ export default function ViewInvoiceModal({
                 <div className="flex items-center gap-2">
                   <CreditCard className="text-PortlandOrange size-4" />
                   <h4 className="text-RangoonGreen font-bold">
-                    Recorded Payments (€{paid.toLocaleString()} of €{invoice.amount.toLocaleString()})
+                    Recorded Payments (€{paid.toLocaleString()} of €
+                    {invoice.amount.toLocaleString()})
                   </h4>
                 </div>
 
@@ -179,7 +206,7 @@ export default function ViewInvoiceModal({
               ) : (
                 <div className="border-Iron overflow-hidden rounded-lg border">
                   <table className="w-full text-left text-xs">
-                    <thead className="bg-[#eef0f7] text-CloudyGrey font-bold uppercase">
+                    <thead className="text-CloudyGrey bg-[#eef0f7] font-bold uppercase">
                       <tr>
                         <th className="px-3.5 py-2">Method</th>
                         <th className="px-3.5 py-2">Amount</th>
@@ -198,10 +225,10 @@ export default function ViewInvoiceModal({
                           <td className="px-3.5 py-2 font-bold text-[#1f9254]">
                             €{p.amount.toLocaleString()}
                           </td>
-                          <td className="px-3.5 py-2 text-MistBlue">
+                          <td className="text-MistBlue px-3.5 py-2">
                             {p.paidAt}
                           </td>
-                          <td className="px-3.5 py-2 font-mono text-[11px] text-MistBlue">
+                          <td className="text-MistBlue px-3.5 py-2 font-mono text-[11px]">
                             {p.reference || "—"}
                           </td>
                         </tr>
@@ -226,10 +253,10 @@ export default function ViewInvoiceModal({
                   {comments.map((c) => (
                     <div
                       key={c.id}
-                      className="border-Iron rounded-lg border bg-GhostWhite p-3"
+                      className="border-Iron bg-GhostWhite rounded-lg border p-3"
                     >
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="font-bold text-RangoonGreen">
+                        <span className="text-RangoonGreen font-bold">
                           {c.author}
                         </span>
                         <span className="text-MistBlue">{c.date}</span>
@@ -250,7 +277,7 @@ export default function ViewInvoiceModal({
                 <Button
                   type="submit"
                   disabled={!commentText.trim()}
-                  className="bg-RangoonGreen hover:bg-black rounded-full px-4 text-xs font-bold text-white"
+                  className="bg-RangoonGreen rounded-full px-4 text-xs font-bold text-white hover:bg-black"
                 >
                   <Send className="mr-1 size-3.5" /> Post
                 </Button>

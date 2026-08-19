@@ -18,20 +18,17 @@ import ConfirmCautionModal from "../shared/confirm-caution-modal";
 
 export default function PharmacyList() {
   const router = useRouter();
-  const {
-    pharmacies,
-    users,
-    products,
-    togglePharmacyStatus,
-    deletePharmacy,
-  } = usePartners();
+  const { pharmacies, users, products, togglePharmacyStatus, deletePharmacy } =
+    usePartners();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingPharmacy, setEditingPharmacy] = useState<Pharmacy | null>(null);
-  const [statusTargetPharmacy, setStatusTargetPharmacy] = useState<Pharmacy | null>(null);
-  const [deleteTargetPharmacy, setDeleteTargetPharmacy] = useState<Pharmacy | null>(null);
+  const [statusTargetPharmacy, setStatusTargetPharmacy] =
+    useState<Pharmacy | null>(null);
+  const [deleteTargetPharmacy, setDeleteTargetPharmacy] =
+    useState<Pharmacy | null>(null);
 
   const filteredPharmacies = useMemo(() => {
     return pharmacies.filter((p) => {
@@ -39,8 +36,7 @@ export default function PharmacyList() {
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.city.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.country.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchesStatus =
-        statusFilter === "all" || p.status === statusFilter;
+      const matchesStatus = statusFilter === "all" || p.status === statusFilter;
       return matchesSearch && matchesStatus;
     });
   }, [pharmacies, searchQuery, statusFilter]);
@@ -57,30 +53,30 @@ export default function PharmacyList() {
             setEditingPharmacy(null);
             setIsAddModalOpen(true);
           }}
-          className="bg-RangoonGreen hover:bg-black rounded-full px-5 py-2.5 text-xs font-bold text-white shadow-xs cursor-pointer"
+          className="bg-RangoonGreen cursor-pointer rounded-full px-5 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-black"
         >
           + Add Pharmacy
         </Button>
       </div>
 
       {/* Table Card Container */}
-      <div className="border-border bg-card rounded-2xl border bg-white shadow-[0_1px_2px_rgba(21,21,26,0.04),0_8px_24px_rgba(21,21,26,0.05)] overflow-hidden">
+      <div className="border-border bg-card overflow-hidden rounded-2xl border shadow-[0_1px_2px_rgba(21,21,26,0.04),0_8px_24px_rgba(21,21,26,0.05)]">
         {/* Table Toolbar */}
         <div className="flex flex-wrap items-center justify-between gap-3 p-5">
-          <div className="border-border-strong flex min-w-[260px] flex-1 items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm text-MistBlue sm:max-w-xs">
-            <Search className="size-4 text-MistBlue shrink-0" />
+          <div className="border-border-strong text-MistBlue flex min-w-65 flex-1 items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm sm:max-w-xs">
+            <Search className="text-MistBlue size-4 shrink-0" />
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search pharmacies"
-              className="w-full bg-transparent text-sm text-RangoonGreen outline-none placeholder:text-MistBlue"
+              className="text-RangoonGreen placeholder:text-MistBlue w-full bg-transparent text-sm outline-none"
             />
           </div>
 
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="border-border-strong rounded-full border bg-white px-4 py-2 text-xs font-bold text-RangoonGreen outline-none cursor-pointer"
+            className="border-border-strong text-RangoonGreen cursor-pointer rounded-full border bg-white px-4 py-2 text-xs font-bold outline-none"
           >
             <option value="all">All statuses</option>
             <option value="active">Active</option>
@@ -90,57 +86,61 @@ export default function PharmacyList() {
 
         {/* Table */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm border-collapse">
+          <table className="w-full border-collapse text-left text-sm">
             <thead>
-              <tr className="bg-[#eef0f7] text-[#5d6274] text-xs font-bold">
+              <tr className="bg-[#eef0f7] text-xs font-bold text-[#5d6274]">
                 <th className="px-5 py-3.5">
-                  Name <span className="text-MistBlue text-[11px] ml-1">⇅</span>
+                  Name <span className="text-MistBlue ml-1 text-[11px]">⇅</span>
                 </th>
                 <th className="px-5 py-3.5">Location</th>
                 <th className="px-5 py-3.5">Fulfillment</th>
                 <th className="px-5 py-3.5">Users</th>
                 <th className="px-5 py-3.5">Products</th>
                 <th className="px-5 py-3.5">
-                  Status <span className="text-MistBlue text-[11px] ml-1">⇅</span>
+                  Status{" "}
+                  <span className="text-MistBlue ml-1 text-[11px]">⇅</span>
                 </th>
-                <th className="px-5 py-3.5 text-right w-12"></th>
+                <th className="w-12 px-5 py-3.5 text-right"></th>
               </tr>
             </thead>
             <tbody className="divide-border divide-y">
               {filteredPharmacies.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="text-MistBlue py-12 text-center text-sm">
+                  <td
+                    colSpan={7}
+                    className="text-MistBlue py-12 text-center text-sm"
+                  >
                     No pharmacies match your search.
                   </td>
                 </tr>
               ) : (
                 filteredPharmacies.map((ph) => {
                   const userCount = users.filter(
-                    (u) => u.pharmacyId === ph.id
+                    (u) => u.pharmacyId === ph.id,
                   ).length;
                   const prodCount = products.filter(
-                    (p) => p.pharmacyId === ph.id
+                    (p) => p.pharmacyId === ph.id,
                   ).length;
 
                   return (
                     <tr
                       key={ph.id}
                       onClick={() => router.push(`/admin/partners/${ph.id}`)}
-                      className="hover:bg-[#fafbff] cursor-pointer transition-colors"
+                      className="cursor-pointer transition-colors hover:bg-[#fafbff]"
                     >
-                      <td className="px-5 py-4 font-bold text-RangoonGreen">
+                      <td className="text-RangoonGreen px-5 py-4 font-bold">
                         {ph.name}
                       </td>
-                      <td className="px-5 py-4 text-RangoonGreen text-sm">
+                      <td className="text-RangoonGreen px-5 py-4 text-sm">
                         {ph.city}, {ph.country}
                       </td>
-                      <td className="px-5 py-4 text-RangoonGreen text-sm capitalize">
+                      <td className="text-RangoonGreen px-5 py-4 text-sm capitalize">
                         {ph.fulfillment}
                       </td>
-                      <td className="px-5 py-4 text-RangoonGreen text-sm font-semibold">
+                      <td className="text-RangoonGreen px-5 py-4 text-sm font-semibold">
                         {userCount}
                       </td>
-                      <td className="px-5 py-4 text-RangoonGreen text-sm font-semibold">
+                      <td className="text-RangoonGreen px-5 py-4 text-sm font-semibold">
                         {prodCount}
                       </td>
                       <td className="px-5 py-4">
@@ -163,15 +163,20 @@ export default function PharmacyList() {
                             <Button
                               variant="ghost"
                               size="icon"
-                              className="size-8 rounded-full text-MistBlue hover:bg-gray-100 hover:text-RangoonGreen"
+                              className="text-MistBlue hover:text-RangoonGreen size-8 rounded-full hover:bg-gray-100"
                             >
                               <MoreVertical className="size-4" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="w-36 rounded-xl shadow-lg border-border">
+                          <DropdownMenuContent
+                            align="end"
+                            className="border-border w-36 rounded-xl shadow-lg"
+                          >
                             <DropdownMenuItem
-                              onClick={() => router.push(`/admin/partners/${ph.id}`)}
-                              className="cursor-pointer text-xs font-semibold py-2"
+                              onClick={() =>
+                                router.push(`/admin/partners/${ph.id}`)
+                              }
+                              className="cursor-pointer py-2 text-xs font-semibold"
                             >
                               View
                             </DropdownMenuItem>
@@ -180,19 +185,21 @@ export default function PharmacyList() {
                                 setEditingPharmacy(ph);
                                 setIsAddModalOpen(true);
                               }}
-                              className="cursor-pointer text-xs font-semibold py-2"
+                              className="cursor-pointer py-2 text-xs font-semibold"
                             >
                               Edit
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => setStatusTargetPharmacy(ph)}
-                              className="cursor-pointer text-xs font-semibold py-2"
+                              className="cursor-pointer py-2 text-xs font-semibold"
                             >
-                              {ph.status === "active" ? "Deactivate" : "Reactivate"}
+                              {ph.status === "active"
+                                ? "Deactivate"
+                                : "Reactivate"}
                             </DropdownMenuItem>
                             <DropdownMenuItem
                               onClick={() => setDeleteTargetPharmacy(ph)}
-                              className="text-ChiliPepper cursor-pointer text-xs font-semibold py-2 hover:bg-red-50"
+                              className="text-ChiliPepper cursor-pointer py-2 text-xs font-semibold hover:bg-red-50"
                             >
                               Delete
                             </DropdownMenuItem>
@@ -208,11 +215,11 @@ export default function PharmacyList() {
         </div>
 
         {/* Pagination Toolbar */}
-        <div className="flex items-center gap-2 px-5 py-4 border-t border-border">
-          <span className="size-7.5 bg-RangoonGreen text-white font-bold rounded-lg flex items-center justify-center text-xs">
+        <div className="border-border flex items-center gap-2 border-t px-5 py-4">
+          <span className="bg-RangoonGreen flex size-7.5 items-center justify-center rounded-lg text-xs font-bold text-white">
             1
           </span>
-          <span className="text-xs text-MistBlue">of 1 page</span>
+          <span className="text-MistBlue text-xs">of 1 page</span>
         </div>
       </div>
 

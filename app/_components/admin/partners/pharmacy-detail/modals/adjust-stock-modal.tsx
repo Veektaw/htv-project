@@ -54,14 +54,17 @@ export default function AdjustStockModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[550px]">
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[90vh] overflow-y-auto sm:max-w-137.5"
+      >
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-RangoonGreen">
+          <DialogTitle className="text-RangoonGreen text-xl font-bold">
             Adjust Stock — {product.name}
           </DialogTitle>
         </DialogHeader>
 
-        <div className="border-Iron rounded-xl border bg-GhostWhite p-4 text-xs">
+        <div className="border-Iron bg-GhostWhite rounded-xl border p-4 text-xs">
           <p className="text-MistBlue">Current Inventory Level</p>
           <p className="text-RangoonGreen text-xl font-extrabold">
             {product.qty.toLocaleString()} {product.unit}
@@ -71,7 +74,7 @@ export default function AdjustStockModal({
         <form onSubmit={handleSubmit} className="space-y-4 py-2 text-xs">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-CloudyGrey">
+              <Label className="text-CloudyGrey text-xs font-bold">
                 Quantity Change (+ or -)*
               </Label>
               <Input
@@ -84,7 +87,9 @@ export default function AdjustStockModal({
             </div>
 
             <div className="space-y-1.5">
-              <Label className="text-xs font-bold text-CloudyGrey">Reason*</Label>
+              <Label className="text-CloudyGrey text-xs font-bold">
+                Reason*
+              </Label>
               <Select value={reason} onValueChange={setReason}>
                 <SelectTrigger>
                   <SelectValue />
@@ -106,7 +111,7 @@ export default function AdjustStockModal({
             </h4>
             <div className="border-Iron max-h-48 overflow-y-auto rounded-xl border bg-white">
               <table className="w-full text-left text-xs">
-                <thead className="bg-[#eef0f7] text-CloudyGrey sticky top-0 font-bold uppercase tracking-wider">
+                <thead className="text-CloudyGrey sticky top-0 bg-[#eef0f7] font-bold tracking-wider uppercase">
                   <tr>
                     <th className="px-3.5 py-2.5">Date</th>
                     <th className="px-3.5 py-2.5">Change</th>
@@ -115,22 +120,29 @@ export default function AdjustStockModal({
                   </tr>
                 </thead>
                 <tbody className="divide-Iron divide-y">
-                  {(product.stockLog || []).slice().reverse().map((log, i) => (
-                    <tr key={i} className="hover:bg-GhostWhite">
-                      <td className="text-MistBlue px-3.5 py-2">{log.date}</td>
-                      <td
-                        className={`px-3.5 py-2 font-bold ${
-                          log.change >= 0 ? "text-[#1f9254]" : "text-[#c8382f]"
-                        }`}
-                      >
-                        {log.change >= 0 ? `+${log.change}` : log.change}
-                      </td>
-                      <td className="text-RangoonGreen px-3.5 py-2 font-medium">
-                        {log.reason}
-                      </td>
-                      <td className="text-MistBlue px-3.5 py-2">{log.by}</td>
-                    </tr>
-                  ))}
+                  {(product.stockLog || [])
+                    .slice()
+                    .reverse()
+                    .map((log, i) => (
+                      <tr key={i} className="hover:bg-GhostWhite">
+                        <td className="text-MistBlue px-3.5 py-2">
+                          {log.date}
+                        </td>
+                        <td
+                          className={`px-3.5 py-2 font-bold ${
+                            log.change >= 0
+                              ? "text-[#1f9254]"
+                              : "text-[#c8382f]"
+                          }`}
+                        >
+                          {log.change >= 0 ? `+${log.change}` : log.change}
+                        </td>
+                        <td className="text-RangoonGreen px-3.5 py-2 font-medium">
+                          {log.reason}
+                        </td>
+                        <td className="text-MistBlue px-3.5 py-2">{log.by}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
@@ -147,7 +159,7 @@ export default function AdjustStockModal({
             </Button>
             <Button
               type="submit"
-              className="bg-RangoonGreen hover:bg-black rounded-full px-6 font-bold text-white"
+              className="bg-RangoonGreen rounded-full px-6 font-bold text-white hover:bg-black"
             >
               Apply Adjustment
             </Button>

@@ -39,23 +39,27 @@ export default function ReconciliationCommentModal({
       "reconciliation",
       pharmacy.id,
       "Dr. Adaora Isaac (Admin)",
-      commentText.trim()
+      commentText.trim(),
     );
     setCommentText("");
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-[620px]">
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[90vh] overflow-y-auto sm:max-w-155"
+      >
         <DialogHeader>
           <div className="flex items-center gap-2">
             <MessageSquare className="text-PortlandOrange size-5" />
             <div>
-              <DialogTitle className="text-xl font-bold text-RangoonGreen">
+              <DialogTitle className="text-RangoonGreen text-xl font-bold">
                 Reconciliation Notes — {pharmacy.name}
               </DialogTitle>
               <p className="text-MistBlue text-xs">
-                Raise discrepancy queries or document manual adjustments regarding this pharmacy&apos;s settlement.
+                Raise discrepancy queries or document manual adjustments
+                regarding this pharmacy&apos;s settlement.
               </p>
             </div>
           </div>
@@ -71,10 +75,10 @@ export default function ReconciliationCommentModal({
               {comments.map((c) => (
                 <div
                   key={c.id}
-                  className="border-Iron rounded-xl border bg-GhostWhite p-3.5"
+                  className="border-Iron bg-GhostWhite rounded-xl border p-3.5"
                 >
                   <div className="flex items-center justify-between text-[11px]">
-                    <span className="font-bold text-RangoonGreen">
+                    <span className="text-RangoonGreen font-bold">
                       {c.author}
                     </span>
                     <span className="text-MistBlue">{c.date}</span>
@@ -97,7 +101,7 @@ export default function ReconciliationCommentModal({
             <Button
               type="submit"
               disabled={!commentText.trim()}
-              className="bg-RangoonGreen hover:bg-black rounded-full px-5 text-xs font-bold text-white"
+              className="bg-RangoonGreen rounded-full px-5 text-xs font-bold text-white hover:bg-black"
             >
               <Send className="mr-1 size-3.5" /> Post
             </Button>

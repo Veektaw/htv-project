@@ -32,35 +32,35 @@ function ProductForm({
 
   const [name, setName] = useState(editingProduct?.name || "");
   const [category, setCategory] = useState(
-    editingProduct?.category || CATEGORIES[0]
+    editingProduct?.category || CATEGORIES[0],
   );
   const [productType, setProductType] = useState<ProductType>(
-    editingProduct?.productType || "single"
+    editingProduct?.productType || "single",
   );
   const [qty, setQty] = useState<string>(
-    editingProduct ? String(editingProduct.qty) : ""
+    editingProduct ? String(editingProduct.qty) : "",
   );
   const [unit, setUnit] = useState(editingProduct?.unit || "");
   const [pricePerUnit, setPricePerUnit] = useState<string>(
-    editingProduct ? String(editingProduct.pricePerUnit) : ""
+    editingProduct ? String(editingProduct.pricePerUnit) : "",
   );
   const [pharmaId, setPharmaId] = useState(editingProduct?.pharmaId || "");
   const [batchId, setBatchId] = useState(editingProduct?.batchId || "");
   const [barcode, setBarcode] = useState(editingProduct?.barcode || "");
   const [manufacturerPrice, setManufacturerPrice] = useState<string>(
-    editingProduct ? String(editingProduct.manufacturerPrice) : ""
+    editingProduct ? String(editingProduct.manufacturerPrice) : "",
   );
   const [pharmaceuticalPrice, setPharmaceuticalPrice] = useState<string>(
-    editingProduct ? String(editingProduct.pharmaceuticalPrice) : ""
+    editingProduct ? String(editingProduct.pharmaceuticalPrice) : "",
   );
   const [htvMarkup, setHtvMarkup] = useState<string>(
-    editingProduct ? String(editingProduct.htvMarkup) : ""
+    editingProduct ? String(editingProduct.htvMarkup) : "",
   );
   const [markupVisible, setMarkupVisible] = useState(
-    editingProduct ? editingProduct.markupVisible : true
+    editingProduct ? editingProduct.markupVisible : true,
   );
   const [components, setComponents] = useState<ProgramComponent[]>(
-    editingProduct?.components ? [...editingProduct.components] : []
+    editingProduct?.components ? [...editingProduct.components] : [],
   );
 
   const todayStr = new Date().toLocaleDateString("en-GB", {
@@ -76,12 +76,14 @@ function ProductForm({
     (p) =>
       p.pharmacyId === pharmacyId &&
       p.productType !== "program" &&
-      p.id !== editingProduct?.id
+      p.id !== editingProduct?.id,
   );
 
   const handleAddComponent = () => {
     if (otherProducts.length === 0) {
-      showErrorToast("No single products available to bundle into this program");
+      showErrorToast(
+        "No single products available to bundle into this program",
+      );
       return;
     }
     setComponents((prev) => [
@@ -97,7 +99,7 @@ function ProductForm({
   const handleComponentChange = (
     index: number,
     field: "productId" | "qty",
-    value: string | number
+    value: string | number,
   ) => {
     setComponents((prev) => {
       const copy = [...prev];
@@ -133,7 +135,8 @@ function ProductForm({
       unit: unit.trim() || "unit",
       dateCreated: editingProduct ? editingProduct.dateCreated : todayStr,
       pricePerUnit: numPricePerUnit,
-      aggregatePrice: (editingProduct ? editingProduct.qty : numQty) * numPricePerUnit,
+      aggregatePrice:
+        (editingProduct ? editingProduct.qty : numQty) * numPricePerUnit,
       pharmaId: pharmaId.trim(),
       batchId: batchId.trim(),
       barcode: barcode.trim(),
@@ -168,7 +171,7 @@ function ProductForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-4 pt-2">
       {/* Exact 2-Column Form Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-4">
+      <div className="grid grid-cols-1 gap-x-5 gap-y-4 sm:grid-cols-2">
         {/* Row 1 */}
         <div className="space-y-1.5">
           <label className="block text-[12.5px] font-bold text-[#5d6274]">
@@ -179,7 +182,7 @@ function ProductForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="e.g. Paracetamol 500mg"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -191,7 +194,7 @@ function ProductForm({
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none cursor-pointer focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full cursor-pointer rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none"
           >
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>
@@ -209,7 +212,7 @@ function ProductForm({
           <select
             value={productType}
             onChange={(e) => setProductType(e.target.value as ProductType)}
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none cursor-pointer focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full cursor-pointer rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none"
           >
             <option value="single">Single product</option>
             <option value="program">Program (bundle)</option>
@@ -226,8 +229,10 @@ function ProductForm({
             onChange={(e) => setQty(e.target.value)}
             placeholder="0"
             disabled={Boolean(editingProduct)}
-            title={editingProduct ? "Use Adjust Stock to change quantity" : undefined}
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] disabled:bg-gray-50 focus:border-PortlandOrange"
+            title={
+              editingProduct ? "Use Adjust Stock to change quantity" : undefined
+            }
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9] disabled:bg-gray-50"
             required
           />
         </div>
@@ -242,7 +247,7 @@ function ProductForm({
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
             placeholder="tablet, bottle, box…"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -251,7 +256,7 @@ function ProductForm({
           <label className="block text-[12.5px] font-bold text-[#5d6274]">
             Date Created
           </label>
-          <div className="w-full h-11 px-3.5 flex items-center border border-[#d8dcee] rounded-lg text-[13.5px] text-[#5d6274] bg-[#f9fafc]">
+          <div className="flex h-11 w-full items-center rounded-lg border border-[#d8dcee] bg-[#f9fafc] px-3.5 text-[13.5px] text-[#5d6274]">
             {dateCreatedDisplay}
           </div>
         </div>
@@ -267,16 +272,17 @@ function ProductForm({
             value={pricePerUnit}
             onChange={(e) => setPricePerUnit(e.target.value)}
             placeholder="0.00"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
 
         <div className="space-y-1.5">
-          <label className="block text-[12.5px] font-bold text-[#5d6274] leading-tight">
+          <label className="block text-[12.5px] leading-tight font-bold text-[#5d6274]">
             Pharmaceutical ID{" "}
-            <span className="text-[#8c91a4] font-normal text-[11px]">
-              (per-product registration ID — not a pharmacy-level ID; confirm this is what&apos;s meant)
+            <span className="text-[11px] font-normal text-[#8c91a4]">
+              (per-product registration ID — not a pharmacy-level ID; confirm
+              this is what&apos;s meant)
             </span>
           </label>
           <input
@@ -284,7 +290,7 @@ function ProductForm({
             value={pharmaId}
             onChange={(e) => setPharmaId(e.target.value)}
             placeholder="PH-XXXXX"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
           />
         </div>
 
@@ -298,7 +304,7 @@ function ProductForm({
             value={batchId}
             onChange={(e) => setBatchId(e.target.value)}
             placeholder="B-YYYY-NNNN"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
           />
         </div>
 
@@ -311,7 +317,7 @@ function ProductForm({
             value={barcode}
             onChange={(e) => setBarcode(e.target.value)}
             placeholder="EAN/GTIN"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
           />
         </div>
 
@@ -326,7 +332,7 @@ function ProductForm({
             value={manufacturerPrice}
             onChange={(e) => setManufacturerPrice(e.target.value)}
             placeholder="0.00"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -341,7 +347,7 @@ function ProductForm({
             value={pharmaceuticalPrice}
             onChange={(e) => setPharmaceuticalPrice(e.target.value)}
             placeholder="0.00"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -357,7 +363,7 @@ function ProductForm({
             value={htvMarkup}
             onChange={(e) => setHtvMarkup(e.target.value)}
             placeholder="0.00"
-            className="w-full h-11 px-3.5 border border-[#d8dcee] rounded-lg text-[13.5px] text-[#15151a] bg-white outline-none placeholder:text-[#b3b8c9] focus:border-PortlandOrange"
+            className="focus:border-PortlandOrange h-11 w-full rounded-lg border border-[#d8dcee] bg-white px-3.5 text-[13.5px] text-[#15151a] outline-none placeholder:text-[#b3b8c9]"
             required
           />
         </div>
@@ -367,41 +373,42 @@ function ProductForm({
             Visible to Pharmacy
           </label>
           <div className="pt-2">
-            <label className="relative inline-block w-[38px] h-[22px] cursor-pointer">
+            <label className="relative inline-block h-5.5 w-9.5 cursor-pointer">
               <input
                 type="checkbox"
                 checked={markupVisible}
                 onChange={(e) => setMarkupVisible(e.target.checked)}
                 className="peer sr-only"
               />
-              <span className="absolute inset-0 bg-[#d8dcee] rounded-full transition-colors peer-checked:bg-PortlandOrange before:absolute before:size-4 before:left-[3px] before:top-[3px] before:bg-white before:rounded-full before:transition-transform peer-checked:before:translate-x-4"></span>
+              <span className="peer-checked:bg-PortlandOrange absolute inset-0 rounded-full bg-[#d8dcee] transition-colors before:absolute before:top-0.75 before:left-0.75 before:size-4 before:rounded-full before:bg-white before:transition-transform peer-checked:before:translate-x-4"></span>
             </label>
           </div>
         </div>
 
         {/* Program Components (if program) */}
         {productType === "program" && (
-          <div className="col-span-1 sm:col-span-2 space-y-3 rounded-xl border border-[#d8dcee] bg-[#f9fafc] p-4">
+          <div className="col-span-1 space-y-3 rounded-xl border border-[#d8dcee] bg-[#f9fafc] p-4 sm:col-span-2">
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="text-[#15151a] font-bold text-xs">
+                <h4 className="text-xs font-bold text-[#15151a]">
                   Program Components
                 </h4>
-                <p className="text-[#8c91a4] text-[11px]">
-                  Select which single products and quantities make up this bundle
+                <p className="text-[11px] text-[#8c91a4]">
+                  Select which single products and quantities make up this
+                  bundle
                 </p>
               </div>
               <button
                 type="button"
                 onClick={handleAddComponent}
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-[#d8dcee] bg-white text-xs font-bold text-[#15151a] hover:bg-gray-50 cursor-pointer"
+                className="inline-flex cursor-pointer items-center gap-1 rounded-full border border-[#d8dcee] bg-white px-3 py-1.5 text-xs font-bold text-[#15151a] hover:bg-gray-50"
               >
                 <Plus className="size-3.5" /> Add Component
               </button>
             </div>
 
             {components.length === 0 ? (
-              <p className="text-[#8c91a4] py-3 text-center text-xs">
+              <p className="py-3 text-center text-xs text-[#8c91a4]">
                 No components yet — add at least one.
               </p>
             ) : (
@@ -409,14 +416,14 @@ function ProductForm({
                 {components.map((comp, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center gap-2 rounded-lg bg-white p-2 border border-[#d8dcee]"
+                    className="flex items-center gap-2 rounded-lg border border-[#d8dcee] bg-white p-2"
                   >
                     <select
                       value={comp.productId}
                       onChange={(e) =>
                         handleComponentChange(idx, "productId", e.target.value)
                       }
-                      className="flex-1 h-10 px-3 border border-[#d8dcee] rounded-lg text-xs text-[#15151a] bg-white outline-none cursor-pointer"
+                      className="h-10 flex-1 cursor-pointer rounded-lg border border-[#d8dcee] bg-white px-3 text-xs text-[#15151a] outline-none"
                     >
                       {otherProducts.map((p) => (
                         <option key={p.id} value={p.id}>
@@ -434,7 +441,7 @@ function ProductForm({
                           handleComponentChange(idx, "qty", e.target.value)
                         }
                         placeholder="Qty"
-                        className="w-full h-10 px-3 border border-[#d8dcee] rounded-lg text-xs text-[#15151a] bg-white outline-none"
+                        className="h-10 w-full rounded-lg border border-[#d8dcee] bg-white px-3 text-xs text-[#15151a] outline-none"
                         required
                       />
                     </div>
@@ -442,7 +449,7 @@ function ProductForm({
                     <button
                       type="button"
                       onClick={() => handleRemoveComponent(idx)}
-                      className="p-2 text-ChiliPepper hover:bg-red-50 rounded-lg cursor-pointer"
+                      className="text-ChiliPepper cursor-pointer rounded-lg p-2 hover:bg-red-50"
                     >
                       <Trash2 className="size-4" />
                     </button>
@@ -455,8 +462,10 @@ function ProductForm({
       </div>
 
       {/* Footnote */}
-      <div className="text-[#8c91a4] text-xs leading-relaxed pt-2">
-        Aggregate price is computed automatically (price/unit × quantity — formula pending stakeholder confirmation, see open-questions doc). HTV Price is computed as Pharmaceutical Price + HTV Markup.
+      <div className="pt-2 text-xs leading-relaxed text-[#8c91a4]">
+        Aggregate price is computed automatically (price/unit × quantity —
+        formula pending stakeholder confirmation, see open-questions doc). HTV
+        Price is computed as Pharmaceutical Price + HTV Markup.
       </div>
 
       {/* Modal Actions */}
@@ -464,13 +473,13 @@ function ProductForm({
         <button
           type="button"
           onClick={onClose}
-          className="rounded-full px-5 py-2.5 text-xs font-bold text-[#15151a] bg-white border border-[#d8dcee] hover:bg-gray-50 cursor-pointer"
+          className="cursor-pointer rounded-full border border-[#d8dcee] bg-white px-5 py-2.5 text-xs font-bold text-[#15151a] hover:bg-gray-50"
         >
           Cancel
         </button>
         <button
           type="submit"
-          className="rounded-full px-6 py-2.5 text-xs font-bold text-white bg-[#15151a] hover:bg-black cursor-pointer shadow-xs"
+          className="cursor-pointer rounded-full bg-[#15151a] px-6 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-black"
         >
           Submit
         </button>
@@ -487,9 +496,12 @@ export default function AddProductModal({
 }: AddProductModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto w-full sm:max-w-[640px] rounded-[20px] p-8 bg-white border border-[#e7e9f3] shadow-2xl">
+      <DialogContent
+        aria-describedby={undefined}
+        className="max-h-[90vh] w-full overflow-y-auto rounded-4xl border border-[#e7e9f3] bg-white p-8 shadow-2xl sm:max-w-160"
+      >
         <DialogHeader className="pb-2">
-          <DialogTitle className="text-xl font-extrabold text-[#15151a] text-left">
+          <DialogTitle className="text-left text-xl font-extrabold text-[#15151a]">
             {editingProduct ? "Edit Product" : "New Product"}
           </DialogTitle>
         </DialogHeader>

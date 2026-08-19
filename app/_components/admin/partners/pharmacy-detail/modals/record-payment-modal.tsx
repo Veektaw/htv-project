@@ -47,10 +47,10 @@ function RecordPaymentForm({
       day: "2-digit",
       month: "short",
       year: "numeric",
-    })
+    }),
   );
   const [reference, setReference] = useState<string>(
-    `PAY-${invoice.number.replace("HTV-INV-", "")}`
+    `PAY-${invoice.number.replace("HTV-INV-", "")}`,
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -74,24 +74,30 @@ function RecordPaymentForm({
 
   return (
     <>
-      <div className="border-Iron rounded-xl border bg-GhostWhite p-4 text-xs space-y-1">
+      <div className="border-Iron bg-GhostWhite space-y-1 rounded-xl border p-4 text-xs">
         <div className="flex justify-between">
           <span className="text-MistBlue">Total Invoice Amount:</span>
-          <span className="font-bold text-RangoonGreen">€{invoice.amount.toLocaleString()}</span>
+          <span className="text-RangoonGreen font-bold">
+            €{invoice.amount.toLocaleString()}
+          </span>
         </div>
         <div className="flex justify-between">
           <span className="text-MistBlue">Already Paid:</span>
-          <span className="font-bold text-[#1f9254]">€{alreadyPaid.toLocaleString()}</span>
+          <span className="font-bold text-[#1f9254]">
+            €{alreadyPaid.toLocaleString()}
+          </span>
         </div>
         <div className="flex justify-between border-t pt-1 font-bold">
           <span className="text-RangoonGreen">Remaining Balance:</span>
-          <span className="text-PortlandOrange">€{remaining.toLocaleString()}</span>
+          <span className="text-PortlandOrange">
+            €{remaining.toLocaleString()}
+          </span>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 py-2 text-xs">
         <div className="space-y-1.5">
-          <Label className="text-xs font-bold text-CloudyGrey">
+          <Label className="text-CloudyGrey text-xs font-bold">
             Payment Method*
           </Label>
           <Select
@@ -109,7 +115,10 @@ function RecordPaymentForm({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="pay-amount" className="text-xs font-bold text-CloudyGrey">
+          <Label
+            htmlFor="pay-amount"
+            className="text-CloudyGrey text-xs font-bold"
+          >
             Payment Amount (€)*
           </Label>
           <Input
@@ -124,7 +133,10 @@ function RecordPaymentForm({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="pay-date" className="text-xs font-bold text-CloudyGrey">
+          <Label
+            htmlFor="pay-date"
+            className="text-CloudyGrey text-xs font-bold"
+          >
             Date Paid*
           </Label>
           <Input
@@ -137,7 +149,10 @@ function RecordPaymentForm({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="pay-ref" className="text-xs font-bold text-CloudyGrey">
+          <Label
+            htmlFor="pay-ref"
+            className="text-CloudyGrey text-xs font-bold"
+          >
             Reference / Transaction ID
           </Label>
           <Input
@@ -159,7 +174,7 @@ function RecordPaymentForm({
           </Button>
           <Button
             type="submit"
-            className="bg-RangoonGreen hover:bg-black rounded-full px-6 font-bold text-white"
+            className="bg-RangoonGreen rounded-full px-6 font-bold text-white hover:bg-black"
           >
             Record Payment
           </Button>
@@ -178,9 +193,9 @@ export default function RecordPaymentModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-[480px]">
+      <DialogContent aria-describedby={undefined} className="sm:max-w-120">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-RangoonGreen">
+          <DialogTitle className="text-RangoonGreen text-xl font-bold">
             Record Payment — {invoice.number}
           </DialogTitle>
         </DialogHeader>
