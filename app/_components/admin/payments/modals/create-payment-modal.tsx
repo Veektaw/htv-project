@@ -190,7 +190,7 @@ export default function CreatePaymentModal() {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="mx-8 mb-6 space-y-5 rounded-xl border border-gray-200 p-6">
                 {/* Row 1: User ID + Date */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-xs text-gray-500">
                       User ID
@@ -274,7 +274,7 @@ export default function CreatePaymentModal() {
                 </div>
 
                 {/* Row 2: Invoice ID + Payment REF */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-xs text-gray-500">
                       Invoice ID
@@ -341,7 +341,7 @@ export default function CreatePaymentModal() {
                 </div>
 
                 {/* Row 3: Description + Amount + Source */}
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block text-xs text-gray-500">
                       Description

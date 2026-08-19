@@ -5,7 +5,7 @@ import CreateNewInvoiceModal from "./modals/create-invoice";
 export default async function SubHeader() {
   const user = await getUser();
   return (
-    <div className="flex items-center gap-4">
+    <div className="flex flex-wrap items-center gap-3 sm:gap-4">
       <p className="py-2 text-base font-bold">Invoices</p>
 
       <CreateNewInvoiceModal user={user}>

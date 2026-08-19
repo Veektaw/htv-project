@@ -64,7 +64,7 @@ export default function SortAndDateFilter() {
   };
 
   return (
-    <div className="border-GreyCloud rounded-base flex w-fit gap-8 border px-5 py-4">
+    <div className="border-GreyCloud rounded-base flex w-full flex-wrap gap-4 border px-5 py-4 sm:w-fit sm:gap-8">
       <div className="space-y-1">
         <p className="text-xs font-medium text-black">Sort By Partner</p>
 

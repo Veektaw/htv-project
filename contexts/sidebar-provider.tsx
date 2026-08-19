@@ -17,24 +17,34 @@ import PrescriptionsIcon from "@/app/_components/shared/sidebar/icons/prescripti
 import PaymentsIcon from "@/app/_components/shared/sidebar/icons/payments";
 import ReconciliationsIcon from "@/app/_components/shared/sidebar/icons/reconciliations";
 import AppointmentsIcon from "@/app/_components/shared/sidebar/icons/appointments";
+import PharmacyIcon from "@/app/_components/shared/sidebar/icons/pharmacy";
+import FeesIcon from "@/app/_components/shared/sidebar/icons/fees";
+import ReportsIcon from "@/app/_components/shared/sidebar/icons/reports";
 import SettingsIcon from "@/app/_components/shared/sidebar/icons/settings";
 import ProfileIcon from "@/app/_components/shared/sidebar/icons/profile";
+import PortalInvoicesIcon from "@/app/_components/shared/sidebar/icons/portal-invoices";
+import PortalTeamIcon from "@/app/_components/shared/sidebar/icons/portal-team";
 
 export type NavigationItem = {
   name: string;
   href: string;
   disabled?: boolean;
+  isNew?: boolean;
+  sectionHeader?: string;
   icon: () => JSX.Element;
 };
 
 type SidebarContextType = {
   isAdminRoute: boolean;
+  isPharmacyRoute: boolean;
   links: NavigationItem[];
   openSidebar: boolean;
   setOpenSidebar: Dispatch<SetStateAction<boolean>>;
+  mobileNavOpen: boolean;
+  setMobileNavOpen: Dispatch<SetStateAction<boolean>>;
 };
 
-const adminLinks = [
+const adminLinks: NavigationItem[] = [
   { name: "Dashboard", href: "/admin/dashboard", icon: DashboardIcon },
   { name: "Users", href: "/admin/users", icon: UsersIcon },
   { name: "Invoices", href: "/admin/invoices", icon: InvoicesIcon },
@@ -55,10 +65,51 @@ const adminLinks = [
     icon: AppointmentsIcon,
     disabled: true,
   },
+  {
+    name: "Pharmacy",
+    href: "/admin/partners",
+    icon: PharmacyIcon,
+    sectionHeader: "PARTNERS",
+  },
+  {
+    name: "Platform Fees",
+    href: "/admin/platform-fees",
+    icon: FeesIcon,
+    sectionHeader: "PHARMACY ADMIN",
+  },
+  {
+    name: "Pharmacy Reports",
+    href: "/admin/pharmacy-reports",
+    icon: ReportsIcon,
+  },
   { name: "Settings", href: "/admin/settings", icon: SettingsIcon },
 ];
 
-const links = [
+const pharmacyLinks: NavigationItem[] = [
+  {
+    name: "Dashboard",
+    href: "/pharmacy/dashboard",
+    icon: DashboardIcon,
+    sectionHeader: "LAGOS CENTRAL PHARMACY",
+  },
+  {
+    name: "My Products",
+    href: "/pharmacy/products",
+    icon: PharmacyIcon,
+  },
+  {
+    name: "My Invoices",
+    href: "/pharmacy/invoices",
+    icon: PortalInvoicesIcon,
+  },
+  {
+    name: "My Team",
+    href: "/pharmacy/team",
+    icon: PortalTeamIcon,
+  },
+];
+
+const doctorLinks: NavigationItem[] = [
   { name: "Dashboard", href: "/dashboard", icon: DashboardIcon },
   { name: "Invoices", href: "/invoices", icon: InvoicesIcon },
   { name: "Cases", href: "/cases", icon: PrescriptionsIcon },
@@ -78,14 +129,32 @@ const SidebarContext = createContext<SidebarContextType>(
 export default function SidebarProvider({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [openSidebar, setOpenSidebar] = useState(true);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [prevPathname, setPrevPathname] = useState(pathname);
 
-  const isAdminRoute = pathname.split("/")[1] === "admin";
+  const segment = pathname.split("/")[1];
+  const isAdminRoute = segment === "admin";
+  const isPharmacyRoute = segment === "pharmacy";
+
+  if (pathname !== prevPathname) {
+    setPrevPathname(pathname);
+    setMobileNavOpen(false);
+  }
+
+  const activeLinks = isAdminRoute
+    ? adminLinks
+    : isPharmacyRoute
+    ? pharmacyLinks
+    : doctorLinks;
 
   const value: SidebarContextType = {
     isAdminRoute,
-    links: isAdminRoute ? adminLinks : links,
+    isPharmacyRoute,
+    links: activeLinks,
     openSidebar,
     setOpenSidebar,
+    mobileNavOpen,
+    setMobileNavOpen,
   };
 
   return <SidebarContext value={value}>{children}</SidebarContext>;
