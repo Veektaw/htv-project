@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import SidebarProvider from "@/contexts/sidebar-provider";
 import Sidebar from "../_components/shared/sidebar/sidebar";
 import MainWrapper from "../_components/shared/main-wrapper";
+import { PartnersProvider } from "../_components/admin/partners/contexts/partners-context";
 
 export default function layout({
   children,
@@ -9,12 +10,13 @@ export default function layout({
   children: ReactNode;
 }>) {
   return (
-    <SidebarProvider>
-      <section className="group flex h-screen">
-        <Sidebar />
-
-        <MainWrapper>{children}</MainWrapper>
-      </section>
-    </SidebarProvider>
+    <PartnersProvider>
+      <SidebarProvider>
+        <div className="flex h-screen w-screen overflow-hidden bg-[#eef1fa]">
+          <Sidebar />
+          <MainWrapper>{children}</MainWrapper>
+        </div>
+      </SidebarProvider>
+    </PartnersProvider>
   );
 }

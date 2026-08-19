@@ -1,6 +1,6 @@
 import z from "zod";
 
-const ROLES = ["admin", "doctor"] as const;
+const ROLES = ["admin", "doctor", "pharmacy"] as const;
 
 export const createUserFormSchema = z.object({
   email: z.string().nonempty("Email is required").email("Invalid email"),

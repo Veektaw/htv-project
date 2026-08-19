@@ -27,12 +27,12 @@ export default async function page({ searchParams }: PageParams) {
     ? dashboardRes.body.total_outstanding_count
     : null;
   return (
-    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-9 py-6 shadow-[0px_9px_20px_0px_#101E730F]">
+    <section className="bg-GhostWhite flex h-full flex-col gap-y-3.5 px-4 sm:px-6 lg:px-9 py-4 lg:py-6 shadow-[0px_9px_20px_0px_#101E730F]">
       <Header type="Admin">
         <SubHeader />
       </Header>
 
-      <section className="flex flex-1 flex-col gap-y-6 overflow-y-auto rounded-sm bg-white px-8 py-8.5">
+      <section className="flex flex-1 flex-col gap-y-6 overflow-y-auto rounded-sm bg-white px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8.5">
         <div className="grid gap-6 md:grid-cols-2">
           <TotalUsersCard
             value={totalUsers?.current_value ?? 0}
